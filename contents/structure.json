@@ -1,7 +1,126 @@
 {
-  "pages": {
-    "id": "m20938f5923mu023",
-    "title": "Home",
-    "childen": []
-  }
+  "pages": [
+    {
+      "id": "root",
+      "children": [
+        "m20938f5923mu023",
+        "m45678f5923mu024",
+        "m78901f5923mu025",
+        "m23456f5923mu027"
+      ]
+    },
+    {
+      "id": "m20938f5923mu023",
+      "title": "Home",
+      "childen": [],
+      "slug": "home",
+      "visible": true,
+      "crDate": 1780925707854,
+      "chDate": 1780925707854,
+      "content": [
+        "8r7z239n",
+        "w4789n24vnz29",
+        "qw378rt31479"
+      ],
+      "children": []
+    },
+    {
+      "id": "m45678f5923mu024",
+      "title": "Über uns",
+      "slug": "ueber-uns",
+      "visible": true,
+      "crDate": 1780925707854,
+      "chDate": 1780925707854,
+      "content": [
+        "wre98nz29c237",
+        "w4789n24vnz29",
+        "qw378rt31479"
+      ],
+      "children": [],
+      "description": "Erfahren Sie mehr über unsere Geschichte und unser Team.",
+      "previewImage": "images/about-preview.jpg",
+      "metaTitle": "Über uns - Unser Unternehmen",
+      "metaDescription": "Entdecken Sie die Geschichte unseres Unternehmens und unser engagiertes Team.",
+      "metaKeywords": [
+        "Unternehmen",
+        "Geschichte",
+        "Team"
+      ],
+      "ogTitle": "Über uns | Unser Unternehmen",
+      "ogDescription": "Erfahren Sie mehr über unsere Geschichte und unser Team.",
+      "ogImage": "images/about-og.jpg"
+    },
+    {
+      "id": "m78901f5923mu025",
+      "title": "Produkte",
+      "slug": "produkte",
+      "visible": true,
+      "crDate": 1780925707854,
+      "chDate": 1780925707854,
+      "content": [
+        "wre98nz29c237",
+        "w4789n24vnz29",
+        "qw378rt31479"
+      ],
+      "children": [
+        "m23456f5923mu027","m34567f5923mu028"
+      ],
+      "description": "Entdecken Sie unsere vielfältigen Produkte und Dienstleistungen.",
+      "previewImage": "images/products-preview.jpg",
+      "metaTitle": "Unsere Produkte",
+      "metaDescription": "Hier finden Sie alle unsere Produkte und Dienstleistungen im Überblick.",
+      "metaKeywords": [
+        "Produkte",
+        "Dienstleistungen"
+      ],
+      "ogTitle": "Produkte | Unsere Angebote",
+      "ogDescription": "Entdecken Sie unsere hochwertigen Produkte und Dienstleistungen.",
+      "ogImage": "images/products-og.jpg"
+    },
+    {
+      "id": "m23456f5923mu027",
+      "title": "Kontakt",
+      "slug": "kontakt",
+      "visible": false,
+      "crDate": 1780925707854,
+      "chDate": 1780925707854,
+      "content": [
+      ],
+      "children": [],
+      "description": "Kontaktieren Sie uns für Fragen und Anliegen.",
+      "previewImage": "images/contact-preview.jpg",
+      "metaTitle": "Kontakt - Wir helfen Ihnen gerne",
+      "metaDescription": "Kontaktieren Sie uns per Formular oder rufen Sie uns an.",
+      "metaKeywords": [
+        "Kontakt",
+        "Support",
+        "Anfrage"
+      ],
+      "ogTitle": "Kontakt | Wir helfen Ihnen",
+      "ogDescription": "Kontaktieren Sie uns für Fragen und Unterstützung.",
+      "ogImage": "images/contact-og.jpg"
+    },
+    {
+      "id": "m34567f5923mu028",
+      "title": "Blog",
+      "slug": "blog",
+      "visible": true,
+      "crDate": 1780925707854,
+      "chDate":1780925707854,
+      "content": [],
+      "children": [],
+      "description": "Aktuelle Artikel und Neuigkeiten aus unserem Unternehmen.",
+      "previewImage": "images/blog-preview.jpg",
+      "metaTitle": "Unser Blog - Aktuelle Artikel",
+      "metaDescription": "Lesen Sie die neuesten Artikel und Beiträge aus unserem Blog.",
+      "metaKeywords": [
+        "Blog",
+        "Artikel",
+        "Neuigkeiten"
+      ],
+      "ogTitle": "Blog | Unsere Neuigkeiten",
+      "ogDescription": "Entdecken Sie die neuesten Artikel und Beiträge in unserem Blog.",
+      "ogImage": "images/blog-og.jpg"
+    }
+  ]
 }

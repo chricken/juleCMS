@@ -1,12 +1,10 @@
 # JuleCMS
-
 Dieses Content Management System ist entstanden, als meine Frau bei den üblichen Anbietern an Grenzen gestoßen ist. Sei es, zu wenig Platz für E-Mail, zu große Kosten, Einschränkungen im Design.
 
 Deswegen habe ich beschlossen, ein Projekt umzusetzen, da sich schon lange machen wollte: Ein CMS
 Besonderes Augenmerk lege ich hier auf Benutzerfreundlichekeit. Komplexe wie Headless, Releaseworkflow oder Benutzerverwaltung werden weggelassen oder so weit abstrahhiert, dass der Benutzer damit nicht in Berührung kommt.
 
 ## Datenhaltung
-
 Alle Daten werden in JSON-Dateien abgelegt. Keine Datenbank und damit auch keine Verwaltung derselben. Ich geher hier davon aus, dass nicht mehrere Benutzer gleichzeitig daran arbeiten.
 
 Die Daten aus den Dateien werden beim Serverstart initial geladen und in Variablen gehalten, um den Zugriff zu vereínfachen und zu beschleunigen
@@ -22,9 +20,12 @@ Im Backend können die Seiten per Drag & Drop verschoben werden.
 Seiten können auch ineinander verschoben werden (Nesting).
 
 ### Seiten 
+Die Struktur aller Seiten sind in der structure.json abgelegt, zusammen mit der Verschachtelung, und den Inhalten.
+
+In den page-Daten sind nur die IDs der Kind-Elemente erfasst.
+Die wirklichen Nutzdaten aber befinden sich als JSON-Dateien in den Unterordnern pages und contents.
 
 ### Komponenten
-
 - Alle Inhalte werden in Komponenten umgesetzt
 - Jede Komponente braucht mindestens die folgenden Einstellungen:
 - - Typ 
@@ -56,7 +57,6 @@ Automatisch Seite finden per Named Routing Params
 - Mehrere Wassermarken. Vielleicht Copyright, Signatur, etc
 - Vorlagen 
 - 404 Seite
-
 
 ## Themes
 Die Themes liegen als Ordner in einem Verzeichnis.

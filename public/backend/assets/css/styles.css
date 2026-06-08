@@ -1,0 +1,11 @@
+main {
+    display: flex; /* Aktiviert Flexbox für die Kinder */
+}
+
+main > * {
+    margin-right: 10px; /* Optional: Abstand zwischen den Kindern */
+}
+
+pages {
+    width: 200px; /* Setzt die Breite von 'pages' auf 200px */
+}

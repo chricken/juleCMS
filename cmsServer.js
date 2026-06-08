@@ -16,7 +16,7 @@ server.use(router);
 
 const init = () => {
     manageContents.init().then(
-        () => console.log('Contents initialisiert'),
+        () => console.log('Inhalte initialisiert')
     ).then(
         themes.init
     ).then(
@@ -28,6 +28,8 @@ const init = () => {
                 else console.log(`Server läuft auf Port ${settings.get('port')}`);
             });
         }
+    ).catch(
+        console.warn
     )
 }
 

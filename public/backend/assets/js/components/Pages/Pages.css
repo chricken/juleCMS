@@ -1,0 +1,5 @@
+pages .page {
+    position: relative;
+    display: block;
+    margin-left: 10px;
+}
