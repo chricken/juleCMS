@@ -1,0 +1,12 @@
+{
+  "port": 80,
+
+  "availabeThemes": ["default"],
+  "theme": "default",
+
+  "logoFileName": "logo.png",
+  "trailerImgFileName": "trailer.jpg",
+
+  "watermarkFiles": [],
+  "signatureFiles": []
+}
