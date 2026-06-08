@@ -10,6 +10,8 @@ pnpm-lock.yaml
 # IDE
 .idea/
 .vscode/
+.proxyai/
+*.iml
 *.swp
 *.swo
 *~
