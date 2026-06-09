@@ -1,14 +1,16 @@
 'use strict';
 
-import data from "../../data.js";
 import elements from "../../elements.js";
 import dom from "../../dom.js";
-import compInput from '../input/input.js';
+import compInput from '../Input/Input.js';
+import ajax from "../../ajax.js";
+import CompContent from "../Content/Content.js";
 
 const base = ({
                   data = {},
                   parent = null
               }) => {
+
     const container = dom.create({
         cssClassName: 'base container',
         parent,
@@ -88,9 +90,9 @@ const meta = ({
 
 
 const content = ({
-                  data = {},
-                  parent = null
-              }) => {
+                     data = {},
+                     parent = null
+                 }) => {
     const container = dom.create({
         cssClassName: 'meta container',
         parent,
@@ -109,7 +111,17 @@ const content = ({
         tagName: 'h3',
     })
 
-
+    data.content.forEach((contentID, index) => {
+        ajax.loadJSON(`/api/content/${contentID}`).then(
+            data => {
+                CompContent({
+                    data,
+                    index,
+                    parent: container
+                });
+            }
+        )
+    })
 
 }
 
@@ -133,6 +145,7 @@ const Page = (page) => {
 
     base({data: page, parent: elements.page});
     meta({data: page, parent: elements.page});
+    content({data: page, parent: elements.page});
 
 
     dom.create({

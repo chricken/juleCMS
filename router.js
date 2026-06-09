@@ -16,6 +16,15 @@ router.get('/api/page/:id', (req, res) => {
 
 });
 
+router.get('/api/content/:contentID', (req, response) => {
+    // console.log('contentID', req.params.contentID);
+    manageContents.getContent(req.params.contentID).then(
+        res => response.json(res)
+    ).catch(
+        console.warn
+    )
+})
+
 router.get('/', (req, res) => {
     res.send('404: Seite nicht gefunden');
 })

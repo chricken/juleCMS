@@ -6,7 +6,7 @@ import structure from './contents/structure.json' with {type: 'json'};
 const necessaryContentFolders = ['images', 'items', 'pages'];
 
 const manageContents = {
-    pages:null,
+    pages: null,
     init() {
         return Promise.all(necessaryContentFolders.map(foldername =>
             fs.mkdir(`./contents/${foldername}`, {recursive: true})
@@ -16,7 +16,12 @@ const manageContents = {
             }
         )
 
-    }
+    },
+    getContent(id) {
+        return fs.readFile(`./contents/items/${id}.json`, 'utf-8').then(
+            res => JSON.parse(res)
+        )
+    },
 };
 
 export default manageContents;
