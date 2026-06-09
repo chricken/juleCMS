@@ -3,6 +3,116 @@
 import data from "../../data.js";
 import elements from "../../elements.js";
 import dom from "../../dom.js";
+import compInput from '../input/input.js';
+
+const base = ({
+                  data = {},
+                  parent = null
+              }) => {
+    const container = dom.create({
+        cssClassName: 'base container',
+        parent,
+        listeners: {
+            click(evt) {
+                evt.stopPropagation();
+                container.classList.toggle('open');
+            }
+        }
+    })
+
+    // Header
+    dom.create({
+        parent: container,
+        content: 'Base',
+        tagName: 'h3',
+    })
+
+    dom.create({
+        parent: container,
+        content: `ID: ${data.id}`,
+        cssClassName: 'info',
+    })
+
+    compInput({
+        parent: container,
+        legend: 'Slug',
+        key: 'slug',
+        data,
+    })
+
+    dom.create({
+        parent: container,
+        content: `Created: ${new Date(data.crDate).toLocaleDateString()}`,
+        cssClassName: 'info',
+
+    })
+    dom.create({
+        parent: container,
+        content: `Last Changed: ${new Date(data.chDate).toLocaleDateString()}`,
+        cssClassName: 'info',
+    })
+
+}
+
+
+const meta = ({
+                  data = {},
+                  parent = null
+              }) => {
+    const container = dom.create({
+        cssClassName: 'meta container',
+        parent,
+        listeners: {
+            click(evt) {
+                evt.stopPropagation();
+                container.classList.toggle('open');
+            }
+        }
+    })
+
+    // Header
+    dom.create({
+        parent: container,
+        content: 'Meta',
+        tagName: 'h3',
+    })
+
+    compInput({
+        parent: container,
+        legend: 'Meta Title',
+        key: 'metaTitle',
+        data,
+    })
+
+}
+
+
+const content = ({
+                  data = {},
+                  parent = null
+              }) => {
+    const container = dom.create({
+        cssClassName: 'meta container',
+        parent,
+        listeners: {
+            click(evt) {
+                evt.stopPropagation();
+                container.classList.toggle('open');
+            }
+        }
+    })
+
+    // Header
+    dom.create({
+        parent: container,
+        content: 'Content',
+        tagName: 'h3',
+    })
+
+
+
+}
+
 
 const Page = (page) => {
     elements.page.innerHTML = ``;
@@ -20,6 +130,9 @@ const Page = (page) => {
             }
         }
     })
+
+    base({data: page, parent: elements.page});
+    meta({data: page, parent: elements.page});
 
 
     dom.create({
