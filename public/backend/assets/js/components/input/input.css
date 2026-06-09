@@ -1,0 +1,6 @@
+span.input {
+    position: relative;
+    display: inline-block;
+    min-width: 50px;
+    border: 1px solid #aaa;
+}

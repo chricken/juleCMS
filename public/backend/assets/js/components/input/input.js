@@ -1,6 +1,7 @@
 'use strict';
 
 import dom from "../../dom.js";
+import elements from "../../elements.js";
 
 const input = ({
                    parent = null,
@@ -37,6 +38,18 @@ const input = ({
                 data[key] = evt.target.innerText;
             }
         }
+    })
+
+    let path = new URL(import.meta.url).pathname;
+    path = `${path.substring(0, path.lastIndexOf('/') + 1)}input.css`;
+
+    dom.create({
+        tagName: 'link',
+        attr: {
+            href: path,
+            rel: 'stylesheet',
+        },
+        parent: elements.page
     })
 
 };

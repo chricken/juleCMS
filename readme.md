@@ -66,4 +66,24 @@ Auf diesem Wege kann jedes Theme eine eigene HTML-Struktur und individuelle Scri
 Jede Installation von Jule CMS ist immer nur für eine Webseite zuständig. Das gewünschte Theme kann also entspannt in die Settings-Datei hinterlegt werden.
 
 ### CSS
-Media queries in eigene CSS Dateien 
+Media queries in eigene CSS Dateien
+
+## Blog
+
+Ein Blog-Beitrag ist eigentlich auch nur ein Komponenten-Typ.
+Blog kann sortiert und durchsucht werden.
+
+Blog-Kategorien
+
+Tags werden in den Blog-Daten hinterlegt.
+
+## Newsletter
+
+Über eine spezielle Component kann sich ein Besucher am Newsletter anmelden.
+Über einen speziellemn Link, der an jedem Newsletter angehängt ist, kann er sich abmelden.
+Oder seine Mail-Adresse eingeben, die wird dann gesucht und entfernt. 
+
+Es können bestehende Seiten als Newsletter versendet werden.
+Diese werden dann als HTML in den Mail-Body eingehängt. Achtung: Mailclients, die nur Text können, verstehen kein HTML.
+
+Bilder können hier nicht als Canvas dargestellt werden. Vielleicht auf dem Server vor-rendern?
