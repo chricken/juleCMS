@@ -7,7 +7,9 @@ const input = ({
                    parent = null,
                    legend = null,
                    data = {},
-                   key = null
+                   key = null,
+                   multiline = false,
+                   valueIsArray = false,
                }) => {
 
     // Das input-Element muss das Objekt bekommen, um es verändern zuu können
@@ -25,6 +27,9 @@ const input = ({
         tagName: 'span',
     })
 
+    // Wenn der Inhalt als Array gedacht ist, bereite die Daten passend vor.
+    let content = data[key] || (valueIsArray ? [] : '');
+
     dom.create({
         parent: container,
         tagName: 'span',
@@ -32,10 +37,24 @@ const input = ({
         attr: {
             contenteditable: true,
         },
-        content: data[key],
+        content: valueIsArray ? content.join(', ') : content,
         listeners: {
-            input(evt) {
-                data[key] = evt.target.innerText;
+            keydown(evt) {
+                // Enter abbrechen, wenn nicht multiline
+                if (!multiline && evt.key === 'Enter') {
+                    evt.preventDefault();
+                }
+            },
+            keyup(evt) {
+                // Array
+                if (valueIsArray)
+                    data[key] = evt.target.innerText
+                        .split(',')
+                        .map(el => el.trim())
+                        .map(el => el.toLowerCase());
+                else
+                    data[key] = evt.target.innerText;
+
             }
         }
     })

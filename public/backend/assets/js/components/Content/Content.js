@@ -1,24 +1,14 @@
 'use strict';
 
 import dom from "../../dom.js";
+import CompInput from "../Input/Input.js";
 
 const Content = ({
                      data = {},
                      parent = null,
-                     index = null
+                     index = null,
                  } = {}) => {
 
-    /*
-    id = null,
-                    title = '',
-                    type = 'default',
-                    content = '',
-                    images = [],
-                    tags = [],
-                    visible = true,
-                    crDate = null,
-                    chDate = null
-     */
     const container = dom.create({
         parent,
         cssClassName: 'container content edit',
@@ -30,25 +20,34 @@ const Content = ({
         cssClassName: 'index',
     })
 
+    // Type
     dom.create({
         parent: container,
         content: data.type,
         cssClassName: 'info',
     })
 
+    // Creation Date
     dom.create({
         parent: container,
-        content: data.title,
-        cssClassName: 'title',
-        attr: {
-            contenteditable: true,
-        },
-        listeners: {
-            input(evt) {
-                data.title = evt.target.innerText;
-            }
-        }
+        content: 'Erzeugt: ' + new Date(data.crDate).toLocaleDateString(),
+        cssClassName: 'info',
     })
+
+    // Change Date
+    dom.create({
+        parent: container,
+        content: 'Letzte Änderung: ' +  new Date(data.chDate).toLocaleDateString(),
+        cssClassName: 'info',
+    })
+
+    CompInput({
+        parent: container,
+        legend: 'Titel',
+        key: 'title',
+        data,
+    })
+
 
     // ID
     dom.create({
@@ -57,20 +56,31 @@ const Content = ({
         cssClassName: 'info',
     })
 
-    dom.create({
+    // Text
+    CompInput({
         parent: container,
-        content: data.content,
-        cssClassName: 'content',
-        attr: {
-            contenteditable: true,
-        },
-        listeners: {
-            input(evt) {
-                data.content = evt.target.innerText;
-            }
-        }
+        legend: 'Text',
+        key: 'content',
+        data,
+        multiline: true,
     })
 
+    // Tags
+    CompInput({
+        parent: container,
+        legend: 'Tags',
+        key: 'tags',
+        data,
+        valueIsArray: true,
+    })
+
+
+    /*
+        images = [],
+        visible = true,
+        crDate = null,
+        chDate = null
+     */
 
 };
 

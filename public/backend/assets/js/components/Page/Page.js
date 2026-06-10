@@ -71,6 +71,7 @@ const meta = ({
             }
         }
     })
+    console.log('meta', data);
 
     // Header
     dom.create({
@@ -79,11 +80,27 @@ const meta = ({
         tagName: 'h3',
     })
 
+
     compInput({
         parent: container,
-        legend: 'Meta Title',
+        legend: 'Titel',
         key: 'metaTitle',
         data,
+    })
+
+    compInput({
+        parent: container,
+        legend: 'Beschreibung',
+        key: 'metaDescription',
+        data,
+    })
+
+    compInput({
+        parent: container,
+        legend: 'Schlüsselwörter',
+        key: 'metaKeywords',
+        data,
+        valueIsArray: true,
     })
 
 }

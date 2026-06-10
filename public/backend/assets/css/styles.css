@@ -9,3 +9,294 @@ main > * {
 pages {
     width: 200px; /* Setzt die Breite von 'pages' auf 200px */
 }
+
+/* Minimalistisches, professionelles Design mit kräftigen Farben */
+
+:root {
+    --primary-color: #2c3e50;       /* Dunkles Blau für Professionalität */
+    --secondary-color: #e74c3c;     /* Kräftiges Rot für Akzente */
+    --accent-color: #3498db;        /* Helles Blau für Interaktionen */
+    --light-color: #ecf0f1;         /* Hellgrau für Hintergrund */
+    --dark-color: #2c3e50;          /* Dunkelgrau für Text */
+    --success-color: #27ae60;       /* Grün für Erfolg */
+    --warning-color: #f39c12;       /* Orange für Warnungen */
+    --border-radius: 4px;
+    --box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+}
+
+/* Grundlegende Stile */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: var(--light-color);
+    color: var(--dark-color);
+    line-height: 1.6;
+    padding: 0;
+    margin: 0;
+}
+
+/* Header */
+header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 2rem 0;
+    text-align: center;
+    box-shadow: var(--box-shadow);
+    margin-bottom: 2rem;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    font-weight: 300;
+    letter-spacing: 1px;
+}
+
+/* Navigation */
+nav {
+    background-color: white;
+    padding: 1rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--box-shadow);
+    border-left: 4px solid var(--accent-color);
+}
+
+/* Main Content */
+main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+/* Seitenstruktur */
+.pages {
+    margin-bottom: 3rem;
+}
+
+.pages h2 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    font-size: 1.8rem;
+    border-bottom: 2px solid var(--accent-color);
+    padding-bottom: 0.5rem;
+}
+
+.page {
+    background-color: white;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    border-left: 4px solid var(--accent-color);
+    transition: var(--transition);
+}
+
+.page:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.page-title {
+    font-size: 1.2rem;
+    color: var(--primary-color);
+    padding: 0.5rem;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.page-title:hover {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+/* Page Content */
+page {
+    background-color: white;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+page h2 {
+    color: var(--primary-color);
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    border-bottom: 2px solid var(--secondary-color);
+    padding-bottom: 0.5rem;
+}
+
+/* Container Stile */
+.container {
+    background-color: white;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    border-left: 4px solid var(--accent-color);
+}
+
+.container h3 {
+    color: var(--secondary-color);
+    margin-bottom: 1rem;
+    font-size: 1.4rem;
+}
+
+/* Info Stile */
+.info {
+    color: #7f8c8d;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    padding: 0.3rem 0;
+}
+
+/* Input Stile */
+.legendInput {
+    display: inline-block;
+    width: 120px;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.input {
+    display: inline-block;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: var(--border-radius);
+    min-width: 200px;
+    transition: var(--transition);
+}
+
+.input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+.input:hover {
+    border-color: var(--accent-color);
+}
+
+/* Content Stile */
+.content {
+    border: 1px solid #eee;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background-color: #f9f9f9;
+}
+
+.index {
+    background-color: var(--secondary-color);
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    margin-right: 0.5rem;
+}
+
+/* Button Stile */
+button {
+    background-color: var(--secondary-color);
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: var(--transition);
+    margin-top: 1rem;
+}
+
+button:hover {
+    background-color: #c0392b;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+/* Footer */
+footer {
+    background-color: var(--primary-color);
+    color: white;
+    text-align: center;
+    padding: 1.5rem;
+    margin-top: 3rem;
+    font-size: 0.9rem;
+}
+
+footer a {
+    color: var(--accent-color);
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 2rem;
+    }
+
+    page, .container {
+        padding: 1rem;
+    }
+
+    .legendInput {
+        display: block;
+        width: 100%;
+        margin-bottom: 0.3rem;
+    }
+
+    .input {
+        display: block;
+        width: 100%;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.page, .container, page {
+    animation: fadeIn 0.3s ease-out forwards;
+}
+
+/* Focus States für Barrierefreiheit */
+:focus {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+}
+
+/* Contenteditable Stile */
+[contenteditable="true"] {
+    padding: 0.3rem;
+    border: 1px dashed #ccc;
+    border-radius: var(--border-radius);
+}
+
+[contenteditable="true"]:focus {
+    border-color: var(--accent-color);
+    background-color: #f0f8ff;
+}
