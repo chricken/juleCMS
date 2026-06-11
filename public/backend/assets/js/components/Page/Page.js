@@ -6,20 +6,24 @@ import compInput from '../Input/Input.js';
 import ajax from "../../ajax.js";
 import CompContent from "../Content/Content.js";
 
+const collapse = (el, elInner) => {
+    el.classList.toggle('open');
+
+    if (el.classList.contains('open')) {
+        el.style.height = 80 + elInner.scrollHeight + 'px';
+    } else {
+        el.style.height = 60 + 'px';
+    }
+};
+
 const base = ({
                   data = {},
                   parent = null
               }) => {
 
     const container = dom.create({
-        cssClassName: 'base container',
-        parent,
-        listeners: {
-            click(evt) {
-                evt.stopPropagation();
-                container.classList.toggle('open');
-            }
-        }
+        cssClassName: 'base container collapsable transit',
+        parent
     })
 
     // Header
@@ -27,29 +31,41 @@ const base = ({
         parent: container,
         content: 'Base',
         tagName: 'h3',
+        listeners: {
+        click(evt) {
+            evt.stopPropagation();
+            // container.classList.toggle('open');
+            collapse(container, inner);
+        }
+    }
+    })
+
+    const inner = dom.create({
+        parent: container,
+        cssClassName: 'inner',
     })
 
     dom.create({
-        parent: container,
+        parent: inner,
         content: `ID: ${data.id}`,
         cssClassName: 'info',
     })
 
     compInput({
-        parent: container,
+        parent: inner,
         legend: 'Slug',
         key: 'slug',
         data,
     })
 
     dom.create({
-        parent: container,
+        parent: inner,
         content: `Created: ${new Date(data.crDate).toLocaleDateString()}`,
         cssClassName: 'info',
 
     })
     dom.create({
-        parent: container,
+        parent: inner,
         content: `Last Changed: ${new Date(data.chDate).toLocaleDateString()}`,
         cssClassName: 'info',
     })
@@ -62,41 +78,45 @@ const meta = ({
                   parent = null
               }) => {
     const container = dom.create({
-        cssClassName: 'meta container',
+        cssClassName: 'meta container collapsable transit',
         parent,
-        listeners: {
-            click(evt) {
-                evt.stopPropagation();
-                container.classList.toggle('open');
-            }
-        }
     })
-    console.log('meta', data);
-
     // Header
     dom.create({
         parent: container,
         content: 'Meta',
         tagName: 'h3',
+        listeners: {
+            click(evt) {
+                evt.stopPropagation();
+                // container.classList.toggle('open');
+                collapse(container, inner);
+            }
+        }
     })
 
 
-    compInput({
+    const inner = dom.create({
         parent: container,
+        cssClassName: 'inner',
+    })
+
+    compInput({
+        parent: inner,
         legend: 'Titel',
         key: 'metaTitle',
         data,
     })
 
     compInput({
-        parent: container,
+        parent: inner,
         legend: 'Beschreibung',
         key: 'metaDescription',
         data,
     })
 
     compInput({
-        parent: container,
+        parent: inner,
         legend: 'Schlüsselwörter',
         key: 'metaKeywords',
         data,
@@ -111,14 +131,8 @@ const content = ({
                      parent = null
                  }) => {
     const container = dom.create({
-        cssClassName: 'meta container',
+        cssClassName: 'meta container collapsable transit',
         parent,
-        listeners: {
-            click(evt) {
-                evt.stopPropagation();
-                container.classList.toggle('open');
-            }
-        }
     })
 
     // Header
@@ -126,6 +140,18 @@ const content = ({
         parent: container,
         content: 'Content',
         tagName: 'h3',
+        listeners: {
+            click(evt) {
+                evt.stopPropagation();
+                // container.classList.toggle('open');
+                collapse(container, inner);
+            }
+        }
+    })
+
+    const inner = dom.create({
+        parent: container,
+        cssClassName: 'inner',
     })
 
     data.content.forEach((contentID, index) => {
@@ -134,7 +160,7 @@ const content = ({
                 CompContent({
                     data,
                     index,
-                    parent: container
+                    parent: inner
                 });
             }
         )
@@ -176,17 +202,7 @@ const Page = (page) => {
             }
         }
     })
-    let path = new URL(import.meta.url).pathname;
-    path = `${path.substring(0, path.lastIndexOf('/') + 1)}Page.css`;
 
-    dom.create({
-        tagName: 'link',
-        attr: {
-            href: path,
-            rel: 'stylesheet',
-        },
-        parent: elements.page
-    })
 }
 
 export default Page;

@@ -1,0 +1,33 @@
+/* Content Stile */
+.content {
+    border: 1px solid #eee;
+    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    padding: 1rem;
+    padding-top: .5em;
+    margin-bottom: 1rem;
+    background-color: #f9f9f9;
+
+}
+
+.index {
+    position: absolute;
+    color: #000;
+    width: 35px;
+    height: 40px;
+    border-right: 1px solid #0003;
+    border-bottom: 1px solid #0003;
+    border-radius: 0 0 10px;
+    left: 0;
+    top: 0;
+    font-size: 0.8rem;
+    text-align: center;
+    padding-top: 7px;
+    margin-right: 0.5rem;
+}
+
+.type.nextToIndex {
+    position: relative;
+    margin-left: 35px;
+    margin-bottom: 1rem;
+}

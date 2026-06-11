@@ -2,6 +2,7 @@
 
 import dom from "../../dom.js";
 import CompInput from "../Input/Input.js";
+import elements from "../../elements.js";
 
 const Content = ({
                      data = {},
@@ -12,6 +13,11 @@ const Content = ({
     const container = dom.create({
         parent,
         cssClassName: 'container content edit',
+        listeners: {
+            click(evt) {
+                evt.stopPropagation();
+            }
+        }
     })
 
     dom.create({
@@ -24,6 +30,13 @@ const Content = ({
     dom.create({
         parent: container,
         content: data.type,
+        cssClassName: 'type nextToIndex',
+    })
+
+    // ID
+    dom.create({
+        parent: container,
+        content: 'ID: ' + data.id,
         cssClassName: 'info',
     })
 
@@ -37,7 +50,7 @@ const Content = ({
     // Change Date
     dom.create({
         parent: container,
-        content: 'Letzte Änderung: ' +  new Date(data.chDate).toLocaleDateString(),
+        content: 'Letzte Änderung: ' + new Date(data.chDate).toLocaleDateString(),
         cssClassName: 'info',
     })
 
@@ -49,12 +62,6 @@ const Content = ({
     })
 
 
-    // ID
-    dom.create({
-        parent: container,
-        content: 'ID: ' + data.id,
-        cssClassName: 'info',
-    })
 
     // Text
     CompInput({
@@ -75,12 +82,30 @@ const Content = ({
     })
 
 
+    // Images
+    console.log('images', data.images);
+    if (data.images) {
+
+    }
+
     /*
-        images = [],
-        visible = true,
-        crDate = null,
-        chDate = null
-     */
+    images = [],
+    visible = true,
+    */
+
+
+    let path = new URL(import.meta.url).pathname;
+    path = `${path.substring(0, path.lastIndexOf('/') + 1)}Content.css`;
+
+    dom.create({
+        tagName: 'link',
+        attr: {
+            href: path,
+            rel: 'stylesheet',
+        },
+        parent: elements.page
+    })
+
 
 };
 

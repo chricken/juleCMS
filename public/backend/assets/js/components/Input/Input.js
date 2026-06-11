@@ -40,12 +40,15 @@ const input = ({
         content: valueIsArray ? content.join(', ') : content,
         listeners: {
             keydown(evt) {
+                evt.stopPropagation();
                 // Enter abbrechen, wenn nicht multiline
                 if (!multiline && evt.key === 'Enter') {
                     evt.preventDefault();
                 }
             },
             keyup(evt) {
+                evt.stopPropagation();
+
                 // Array
                 if (valueIsArray)
                     data[key] = evt.target.innerText
@@ -54,6 +57,10 @@ const input = ({
                         .map(el => el.toLowerCase());
                 else
                     data[key] = evt.target.innerText;
+
+            },
+            click(evt){
+                evt.stopPropagation();
 
             }
         }
