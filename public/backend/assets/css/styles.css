@@ -61,23 +61,26 @@ main {
     background-color: white;
     padding: .5rem;
     padding-left: 1rem;
+    padding-bottom: 0;
     margin-bottom: 1.5rem;
     border-radius: var(--border-radius);
     box-shadow: var(--box-shadow);
-    border-left: 4px solid var(--accent-color);
 
     overflow: hidden;
+
+
+    h3 {
+        color: var(--secondary-color);
+        margin-bottom: 1rem;
+        font-size: 1.4rem;
+    }
 }
 
-.container.collapsable {
-    height: 60px;
+.container {
 
 }
-
-.container h3 {
-    color: var(--secondary-color);
-    margin-bottom: 1rem;
-    font-size: 1.4rem;
+.container.collapsable:not(.open) {
+    height: 50px;
 }
 
 /* Info Stile */
@@ -100,6 +103,7 @@ button {
     cursor: pointer;
     transition: var(--transition);
     margin-top: 1rem;
+    margin-right: 1rem;
 }
 
 button:hover {

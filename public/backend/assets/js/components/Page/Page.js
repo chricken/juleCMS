@@ -6,13 +6,15 @@ import compInput from '../Input/Input.js';
 import ajax from "../../ajax.js";
 import CompContent from "../Content/Content.js";
 
+import lang from "../../lang.js";
+
 const collapse = (el, elInner) => {
     el.classList.toggle('open');
 
     if (el.classList.contains('open')) {
         el.style.height = 80 + elInner.scrollHeight + 'px';
     } else {
-        el.style.height = 60 + 'px';
+        el.style.height = 50 + 'px';
     }
 };
 
@@ -23,25 +25,39 @@ const base = ({
 
     const container = dom.create({
         cssClassName: 'base container collapsable transit',
-        parent
+        parent,
+        styles: {
+            height: '50px',
+        }
+    })
+
+    const containerInner = dom.create({
+        cssClassName: 'containerInner transit',
+        parent: container,
+    })
+
+    dom.create({
+        content: '⯈',
+        cssClassName: 'indicatorOpen transit',
+        parent: containerInner,
     })
 
     // Header
     dom.create({
-        parent: container,
+        parent: containerInner,
         content: 'Base',
         tagName: 'h3',
         listeners: {
-        click(evt) {
-            evt.stopPropagation();
-            // container.classList.toggle('open');
-            collapse(container, inner);
+            click(evt) {
+                evt.stopPropagation();
+                // container.classList.toggle('open');
+                collapse(container, inner);
+            }
         }
-    }
     })
 
     const inner = dom.create({
-        parent: container,
+        parent: containerInner,
         cssClassName: 'inner',
     })
 
@@ -80,10 +96,24 @@ const meta = ({
     const container = dom.create({
         cssClassName: 'meta container collapsable transit',
         parent,
+        styles: {
+            height: '50px',
+        }
     })
+
+    const containerInner = dom.create({
+        cssClassName: 'containerInner transit',
+        parent: container,
+    })
+    dom.create({
+        content: '⯈',
+        cssClassName: 'indicatorOpen',
+        parent: containerInner,
+    })
+
     // Header
     dom.create({
-        parent: container,
+        parent: containerInner,
         content: 'Meta',
         tagName: 'h3',
         listeners: {
@@ -97,7 +127,7 @@ const meta = ({
 
 
     const inner = dom.create({
-        parent: container,
+        parent: containerInner,
         cssClassName: 'inner',
     })
 
@@ -131,13 +161,24 @@ const content = ({
                      parent = null
                  }) => {
     const container = dom.create({
-        cssClassName: 'meta container collapsable transit',
-        parent,
+        cssClassName: 'meta container collapsable open transit',
+        parent
+    })
+
+    const containerInner = dom.create({
+        cssClassName: 'containerInner transit',
+        parent: container,
+    })
+
+    dom.create({
+        content: '⯈',
+        cssClassName: 'indicatorOpen',
+        parent: containerInner,
     })
 
     // Header
     dom.create({
-        parent: container,
+        parent: containerInner,
         content: 'Content',
         tagName: 'h3',
         listeners: {
@@ -150,7 +191,7 @@ const content = ({
     })
 
     const inner = dom.create({
-        parent: container,
+        parent: containerInner,
         cssClassName: 'inner',
     })
 
@@ -165,6 +206,7 @@ const content = ({
             }
         )
     })
+
 
 }
 
@@ -193,7 +235,31 @@ const Page = (page) => {
 
     dom.create({
         tagName: 'button',
-        content: 'Save',
+        content: lang.getPhrase('savePage'),
+        parent: elements.page,
+        listeners: {
+            click(evt) {
+                evt.stopPropagation();
+                console.log(page);
+            }
+        }
+    })
+
+    dom.create({
+        tagName: 'button',
+        content: lang.getPhrase('newPageAfter'),
+        parent: elements.page,
+        listeners: {
+            click(evt) {
+                evt.stopPropagation();
+                console.log(page);
+            }
+        }
+    })
+
+    dom.create({
+        tagName: 'button',
+        content: lang.getPhrase('newPageIn'),
         parent: elements.page,
         listeners: {
             click(evt) {

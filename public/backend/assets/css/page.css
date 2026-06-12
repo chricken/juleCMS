@@ -6,6 +6,39 @@ page {
     /*box-shadow: var(--box-shadow);*/
     transition: var(--transition);
 
+    .container {
+        padding-left: 0;
+
+        .containerInner {
+            padding-left:1rem;
+
+            border-left: 4px solid var(--accent-color);
+
+            .indicatorOpen {
+                position: absolute;
+                left: -8px;
+                top: 0;
+                font-size: 32px;
+                color: var(--accent-color);
+                transform: rotate(0deg);
+            }
+        }
+    }
+
+    .container.open {
+
+        .containerInner {
+            border-left-width: 20px;
+
+            .indicatorOpen {
+                left: 2px;
+                color: var(--light-color);
+                transform: rotate(90deg);
+                font-size:20px;
+            }
+        }
+    }
+
     h2 {
         color: var(--primary-color);
         margin-bottom: 2rem;
