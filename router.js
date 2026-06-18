@@ -25,6 +25,16 @@ router.get('/api/content/:contentID', (req, response) => {
     )
 })
 
+router.post('/api/saveContent', (req, res) => {
+    console.log(req.body);
+    manageContents.saveContent(req.body).then(
+        () => res.send('Inhalt gespeichert')
+    ).catch(
+        console.warn
+    )
+
+});
+
 router.get('/', (req, res) => {
     res.send('404: Seite nicht gefunden');
 })

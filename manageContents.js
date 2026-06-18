@@ -22,6 +22,12 @@ const manageContents = {
             res => JSON.parse(res)
         )
     },
+    saveContent(data) {
+        return fs.writeFile(
+            `./contents/items/${data.id}.json`,
+            JSON.stringify(data)
+        )
+    },
 };
 
 export default manageContents;

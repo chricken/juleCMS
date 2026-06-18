@@ -2,6 +2,16 @@
 
 import dom from "../../dom.js";
 import elements from "../../elements.js";
+import ajax from "../../ajax.js";
+
+const debouncer = (func, delay) => {
+    let timeout;
+    return (...args) => {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), delay);
+    };
+};
+
 
 const input = ({
                    parent = null,
@@ -11,6 +21,8 @@ const input = ({
                    multiline = false,
                    valueIsArray = false,
                }) => {
+
+    const saveDebounced = debouncer(ajax.saveContent, 1000);
 
     // Das input-Element muss das Objekt bekommen, um es verändern zuu können
     // Der Key dient dazu, das richtige Element zu picken
@@ -46,6 +58,7 @@ const input = ({
                     evt.preventDefault();
                 }
             },
+
             keyup(evt) {
                 evt.stopPropagation();
 
@@ -58,8 +71,16 @@ const input = ({
                 else
                     data[key] = evt.target.innerText;
 
+                data.chDate = Date.now();
+                console.log(data);
+
+                // Leitet den Aufruf an den Debouncer weiter
+                saveDebounced(data);
+
+                // ajax.saveContent(data);
             },
-            click(evt){
+
+            click(evt) {
                 evt.stopPropagation();
 
             }

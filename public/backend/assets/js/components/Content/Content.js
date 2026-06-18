@@ -61,8 +61,6 @@ const Content = ({
         data,
     })
 
-
-
     // Text
     CompInput({
         parent: container,

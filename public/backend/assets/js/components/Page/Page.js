@@ -228,9 +228,9 @@ const Page = (page) => {
         }
     })
 
+    content({data: page, parent: elements.page});
     base({data: page, parent: elements.page});
     meta({data: page, parent: elements.page});
-    content({data: page, parent: elements.page});
 
 
     dom.create({
@@ -268,6 +268,7 @@ const Page = (page) => {
             }
         }
     })
+
 
 }
 
