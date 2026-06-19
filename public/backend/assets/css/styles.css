@@ -135,6 +135,10 @@ footer a:hover {
     text-decoration: underline;
 }
 
+.transit{
+    transition: all 0.3s ease-in-out;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     header h1 {

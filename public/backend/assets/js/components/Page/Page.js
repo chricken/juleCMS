@@ -5,6 +5,7 @@ import dom from "../../dom.js";
 import compInput from '../Input/Input.js';
 import ajax from "../../ajax.js";
 import CompContent from "../Content/Content.js";
+import CompAddContent from "../AddContent/AddContent.js";
 
 import lang from "../../lang.js";
 
@@ -47,6 +48,7 @@ const base = ({
         parent: containerInner,
         content: 'Base',
         tagName: 'h3',
+        cssClassName: 'transit',
         listeners: {
             click(evt) {
                 evt.stopPropagation();
@@ -195,6 +197,11 @@ const content = ({
         cssClassName: 'inner',
     })
 
+    CompAddContent({
+        parent: inner,
+        index: 0
+    })
+
     data.content.forEach((contentID, index) => {
         ajax.loadJSON(`/api/content/${contentID}`).then(
             data => {
@@ -203,6 +210,11 @@ const content = ({
                     index,
                     parent: inner
                 });
+
+                CompAddContent({
+                    parent: inner,
+                    index: index + 1
+                })
             }
         )
     })

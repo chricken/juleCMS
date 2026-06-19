@@ -39,6 +39,15 @@ page {
         }
     }
 
+    .container.collapsable {
+        h3 {
+            cursor: pointer;
+        }
+        h3:hover {
+            color: var(--accent-color);
+        }
+    }
+
     h2 {
         color: var(--primary-color);
         margin-bottom: 2rem;

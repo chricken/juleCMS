@@ -6,6 +6,7 @@ import manageContents from './manageContents.js';
 
 import express from 'express';
 import router from './router.js';
+import opn from 'better-opn';
 
 const server = express();
 
@@ -27,6 +28,12 @@ const init = () => {
                 if (err) console.log(err);
                 else console.log(`Server läuft auf Port ${settings.get('port')}`);
             });
+        }
+    ).then(
+        () => {
+            process.env.OPEN_MATCH_HOST_ONLY = 'true';
+            opn(`http://localhost:${settings.get('port')}`);
+            opn(`http://localhost:${settings.get('port')}/backend`);
         }
     ).catch(
         console.warn
