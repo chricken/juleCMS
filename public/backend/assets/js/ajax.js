@@ -17,6 +17,9 @@ const ajax = {
         ).catch(
             console.warn
         )
+    },
+    crateContent(){
+        console.log('create content');
     }
 }
 
