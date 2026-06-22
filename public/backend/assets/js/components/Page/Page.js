@@ -8,6 +8,7 @@ import CompContent from "../Content/Content.js";
 import CompAddContent from "../AddContent/AddContent.js";
 
 import lang from "../../lang.js";
+import helpers from "../../helpers.js";
 
 const collapse = (el, elInner) => {
     el.classList.toggle('open');
@@ -224,6 +225,9 @@ const content = ({
 
 
 const Page = (page) => {
+
+    const saveDebounced = helpers.debouncer(ajax.savePage, 1000);
+
     elements.page.innerHTML = ``;
 
     dom.create({
@@ -236,6 +240,7 @@ const Page = (page) => {
         listeners: {
             input(evt) {
                 page.title = evt.target.innerText;
+                saveDebounced(page);
             }
         }
     })

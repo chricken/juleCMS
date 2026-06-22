@@ -1,16 +1,9 @@
 'use strict';
 
+import helpers from "../../helpers.js";
 import dom from "../../dom.js";
 import elements from "../../elements.js";
 import ajax from "../../ajax.js";
-
-const debouncer = (func, delay) => {
-    let timeout;
-    return (...args) => {
-        clearTimeout(timeout);
-        timeout = setTimeout(() => func.apply(this, args), delay);
-    };
-};
 
 
 const input = ({
@@ -22,7 +15,7 @@ const input = ({
                    valueIsArray = false,
                }) => {
 
-    const saveDebounced = debouncer(ajax.saveContent, 1000);
+    const saveDebounced = helpers.debouncer(ajax.saveContent, 1000);
 
     // Das input-Element muss das Objekt bekommen, um es verändern zuu können
     // Der Key dient dazu, das richtige Element zu picken

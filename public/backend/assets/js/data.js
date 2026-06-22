@@ -1,7 +1,8 @@
 'use strict';
 
 const data = {
-    pages:[]
+    pages:[],
+    currentPage: null,
 };
 
 export default data;

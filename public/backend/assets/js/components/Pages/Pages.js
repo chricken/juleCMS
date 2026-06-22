@@ -15,7 +15,7 @@ const CompSinglePage = ({page, index, parent}) => {
             listeners: {
                 click(evt) {
                     evt.stopPropagation();
-                    // console.log(page);
+                    data.currentPage = page.id;
                     compDetailsPage(page);
                 }
             }
@@ -44,13 +44,6 @@ const CompSinglePage = ({page, index, parent}) => {
 
 const Pages = () => {
     elements.pages.innerHTML = ``;
-    /*
-    dom.create({
-        tagName: 'h2',
-        content: 'Seiten',
-        parent: elements.pages,
-    })
-     */
 
     const pageRoot = data.pages.find(page => page.id === 'root');
     if (pageRoot) pageRoot.children.forEach((pageID, index) => {

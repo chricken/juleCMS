@@ -8,7 +8,7 @@ import compPages from "./components/Pages/Pages.js";
 const init = () => {
 
     ajax.loadJSON('/api/pages').then(
-        payload => data.pages = payload.pages,
+        payload => data.pages = payload,
     ).then(
         dom.mapping
     ).then(

@@ -12,7 +12,7 @@ const manageContents = {
             fs.mkdir(`./contents/${foldername}`, {recursive: true})
         )).then(
             () => {
-                manageContents.pages = structure;
+                manageContents.pages = structure.pages;
             }
         )
 
@@ -28,6 +28,20 @@ const manageContents = {
             JSON.stringify(data)
         )
     },
-};
+    savePages() {
+       return fs.readFile(`./contents/structure.json`).then(
+            payload => {
+                payload = JSON.parse(payload.toString());
+                payload.pages = manageContents.pages;
+                return payload;
+            }
+        ).then(
+            payload => fs.writeFile(
+                `./contents/structure.json`,
+                JSON.stringify(payload)
+            )
+        )
+    }
+}
 
-export default manageContents;
+    export default manageContents;

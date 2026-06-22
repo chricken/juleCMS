@@ -7,6 +7,7 @@ import ajax from "../../ajax.js";
 
 const AddContent = ({
                         parent = null,
+                        index = 0
                     } = {}) => {
 
     const container = dom.create({
