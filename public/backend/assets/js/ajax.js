@@ -1,5 +1,8 @@
 'use strict';
 
+import data from "./data.js";
+import compPage from "./components/Page/Page.js";
+
 const ajax = {
     loadJSON(url) {
         console.log(url);
@@ -18,20 +21,28 @@ const ajax = {
             console.warn
         )
     },
-    createContent(){
+    createContent(pageID, index) {
         console.log('create content');
         fetch('/api/createContent', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({pageID, index})
         }).then(
             res => res.json()
         ).then(
-            console.log
+            payload => {
+                console.log(payload)
+                data.pages = [
+                    ...data.pages.filter(page => page.id !== payload.id),
+                    payload
+                ]
+                // compPage(payload);
+            }
         ).catch(
             console.warn
         )
     },
-    savePage(data){
+    savePage(data) {
         console.log('Save Page', data);
         fetch('/api/savePage', {
             method: 'POST',

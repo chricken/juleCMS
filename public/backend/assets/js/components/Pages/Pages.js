@@ -7,7 +7,7 @@ import dom from "../../dom.js";
 import compDetailsPage from "../Page/Page.js";
 
 const CompSinglePage = ({page, index, parent}) => {
-    if (page.id !== 'root') {
+    if (page && page.id !== 'root') {
 
         const container = dom.create({
             cssClasses: ['page'],

@@ -7,7 +7,8 @@ import ajax from "../../ajax.js";
 
 const AddContent = ({
                         parent = null,
-                        index = 0
+                        index = 0,
+                        page = null,
                     } = {}) => {
 
     const container = dom.create({
@@ -27,7 +28,9 @@ const AddContent = ({
         listeners: {
             click(evt) {
                 evt.stopPropagation();
-                ajax.createContent();
+                console.log('add page', page);
+
+                ajax.createContent(page.id, index);
             }
         }
     })

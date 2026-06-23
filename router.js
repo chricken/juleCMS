@@ -8,8 +8,7 @@ const router = express.Router();
 router.use(express.json());
 
 router.get('/api/pages', (req, res) => {
-    console.log('pages', manageContents.pages);
-
+    // console.log('pages', manageContents.pages);
     res.send(manageContents.pages);
 });
 
@@ -28,7 +27,7 @@ router.get('/api/content/:contentID', (req, response) => {
 })
 
 router.post('/api/saveContent', (req, res) => {
-    console.log(req.body);
+    // console.log(req.body);
     manageContents.saveContent(req.body).then(
         () => res.send('Inhalt gespeichert')
     ).catch(
@@ -51,12 +50,30 @@ router.post('/api/savePage', (req, res) => {
 
     // console.log(manageContents.pages);
     manageContents.savePages().then(
-        (msg) => res.send('Seite gespeichert')
+        msg => res.json({
+            type: 'success',
+            msg: 'Seite gespeichert'
+        })
     ).catch(
-        console.warn
+        err => {
+            console.warn(err)
+            res.json({
+                type: 'err',
+                msg: err
+            })
+        }
     )
 
 });
+
+router.post('/api/createContent', (req, res) => {
+    console.log('create content', req.body);
+    manageContents.addContent(req.body.pageID, req.body.index).then(
+        page => res.json(page)
+    ).catch(
+        console.warn
+    )
+})
 
 router.get('/', (req, res) => {
     res.send('404: Seite nicht gefunden');

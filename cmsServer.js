@@ -32,7 +32,7 @@ const init = () => {
     ).then(
         () => {
             process.env.OPEN_MATCH_HOST_ONLY = 'true';
-            opn(`http://localhost:${settings.get('port')}`);
+            // opn(`http://localhost:${settings.get('port')}`);
             opn(`http://localhost:${settings.get('port')}/backend`);
         }
     ).catch(

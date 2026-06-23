@@ -13,10 +13,10 @@ const input = ({
                    key = null,
                    multiline = false,
                    valueIsArray = false,
+                   callback = ajax.saveContent,
                }) => {
 
-    const saveDebounced = helpers.debouncer(ajax.saveContent, 1000);
-
+    callback = helpers.debouncer(callback, 1000);
     // Das input-Element muss das Objekt bekommen, um es verändern zuu können
     // Der Key dient dazu, das richtige Element zu picken
 
@@ -65,10 +65,9 @@ const input = ({
                     data[key] = evt.target.innerText;
 
                 data.chDate = Date.now();
-                console.log(data);
 
                 // Leitet den Aufruf an den Debouncer weiter
-                saveDebounced(data);
+                callback(data);
 
                 // ajax.saveContent(data);
             },
