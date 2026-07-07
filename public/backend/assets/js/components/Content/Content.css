@@ -1,6 +1,6 @@
 /* Content Stile */
 .content {
-    border: 1px solid #eee;
+    outline: 2px solid var(--dark-color);
     border-right: 1px solid #ccc;
     border-bottom: 1px solid #ccc;
     padding: 1rem;
@@ -30,4 +30,27 @@
     position: relative;
     margin-left: 35px;
     margin-bottom: 1rem;
+}
+
+.btn-delete {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width:30px;
+    height:30px;
+    text-align:center;
+    background-color: var(--warning-color);
+    color: white;
+    border: none;
+    padding: 0.2rem 0.5rem;
+    border-radius: 0 0 0 5px;
+    cursor: pointer;
+    z-index:1000;
+}
+
+.btn-delete:hover {
+    background-color: var(--secondary-color);
+    color: white;
+    width:40px;
+    height:40px;
 }

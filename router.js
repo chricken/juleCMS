@@ -75,6 +75,18 @@ router.post('/api/createContent', (req, res) => {
     )
 })
 
+router.post('/api/removeContent', (req, res) => {
+
+    console.log('remove content', req.body);
+
+    manageContents.removeContent(req.body.contentID).then(
+        () => res.send()
+    ).catch(
+        console.warn
+    )
+
+})
+
 router.get('/', (req, res) => {
     res.send('404: Seite nicht gefunden');
 })

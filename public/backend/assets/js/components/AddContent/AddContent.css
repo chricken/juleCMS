@@ -10,9 +10,9 @@
     display: block;
     background-color: var(--light-color);
     color: var(--dark-color);
-    border-radius: .1rem 1rem 1rem .1rem;
+    border-radius: 1rem;
     padding: 0.2rem;
-    width: 100px;
+    /*width: 100px;*/
     text-align: center;
     font-size: 10px;
     font-weight: bold;

@@ -5,6 +5,8 @@ import CompInput from "../Input/Input.js";
 import elements from "../../elements.js";
 import ajax from "../../ajax.js";
 
+import compDetailsPage from "../Page/Page.js";
+
 const AddContent = ({
                         parent = null,
                         index = 0,
@@ -29,8 +31,17 @@ const AddContent = ({
             click(evt) {
                 evt.stopPropagation();
                 console.log('add page', page);
-
-                ajax.createContent(page.id, index);
+                let scrollTop = document.documentElement.scrollTop;
+                ajax.createContent(page.id, index).then(
+                    (payload) => {
+                        console.log('payload', payload);
+                        page = payload;
+                        compDetailsPage(page);
+                        requestAnimationFrame(() => {
+                            document.documentElement.scrollTop = scrollTop;
+                        });
+                    }
+                );
             }
         }
     })

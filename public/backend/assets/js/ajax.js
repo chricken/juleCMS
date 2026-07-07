@@ -23,7 +23,7 @@ const ajax = {
     },
     createContent(pageID, index) {
         console.log('create content');
-        fetch('/api/createContent', {
+        return fetch('/api/createContent', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({pageID, index})
@@ -31,15 +31,21 @@ const ajax = {
             res => res.json()
         ).then(
             payload => {
-                console.log(payload)
                 data.pages = [
                     ...data.pages.filter(page => page.id !== payload.id),
                     payload
                 ]
-                // compPage(payload);
+                return payload;
             }
-        ).catch(
-            console.warn
+        )
+    },
+    removeContent(contentID) {
+        return fetch('/api/removeContent', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({contentID})
+        }).then(
+            () => console.log('Content removed')
         )
     },
     savePage(data) {

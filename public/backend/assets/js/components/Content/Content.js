@@ -4,6 +4,8 @@ import dom from "../../dom.js";
 import CompInput from "../Input/Input.js";
 import elements from "../../elements.js";
 
+import ajax from "../../ajax.js";
+
 const Content = ({
                      data = {},
                      parent = null,
@@ -26,11 +28,38 @@ const Content = ({
         cssClassName: 'index',
     })
 
+    dom.create({
+        parent: container,
+        content: '✖',
+        cssClassName: 'btn-delete transit',
+        listeners: {
+            click(evt) {
+                evt.stopPropagation();
+                console.log('delete content', data);
+                ajax.removeContent(data.id).then(
+                    () => {
+                        console.log('deleted');
+                        container.remove();
+                    }
+                ).catch((err) => {
+                    console.error('Error removing content:', err);
+                })
+            }
+        }
+    })
+
     // Type
     dom.create({
         parent: container,
         content: data.type,
         cssClassName: 'type nextToIndex',
+    })
+
+    CompInput({
+        parent: container,
+        legend: 'Titel',
+        key: 'title',
+        data,
     })
 
     // ID
@@ -52,13 +81,6 @@ const Content = ({
         parent: container,
         content: 'Letzte Änderung: ' + new Date(data.chDate).toLocaleDateString(),
         cssClassName: 'info',
-    })
-
-    CompInput({
-        parent: container,
-        legend: 'Titel',
-        key: 'title',
-        data,
     })
 
     // Text

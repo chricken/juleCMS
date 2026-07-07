@@ -19,23 +19,25 @@ const manageContents = {
         )
 
     },
+
     getContent(id) {
         return fs.readFile(`./contents/items/${id}.json`, 'utf-8').then(
             res => JSON.parse(res)
         )
     },
+
     addContent(pageID, index) {
 
         const item = new Item();
 
         // Neuen Content einhängen
-        manageContents.pages
-            .find(page => page.id === pageID)
-            .content.splice(
+        let page = manageContents.pages.find(page => page.id === pageID);
+        page.content.splice(
             index,
             0,
             item.id
         );
+        console.log(page);
 
         // Page speichern
         return manageContents.savePages().then(
@@ -54,10 +56,25 @@ const manageContents = {
             console.warn
         )
     },
+
     saveContent(data) {
         return fs.writeFile(
             `./contents/items/${data.id}.json`,
             JSON.stringify(data)
+        )
+    },
+
+    removeContent(contentID) {
+        console.log(manageContents.pages);
+        manageContents.pages = manageContents.pages.map(page => {
+            if (page.content)
+                page.content = page.content.filter(item => item !== contentID);
+            return page;
+        })
+        console.log(manageContents.pages);
+
+        return fs.unlink(`./contents/items/${contentID}.json`).then(
+            () => manageContents.savePages()
         )
     },
     savePages() {
