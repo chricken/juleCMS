@@ -27,6 +27,11 @@ const Base = ({
         }
     })
 
+    dom.create({
+        parent: container,
+        cssClassName: 'border transit',
+    })
+
     const containerInner = dom.create({
         cssClassName: 'containerInner transit',
         parent: container,

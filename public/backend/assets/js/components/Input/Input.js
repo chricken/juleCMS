@@ -14,6 +14,7 @@ const input = ({
                    multiline = false,
                    valueIsArray = false,
                    callback = ajax.saveContent,
+                   nextToIndex = false,
                }) => {
 
     callback = helpers.debouncer(callback, 1000);
@@ -22,12 +23,12 @@ const input = ({
 
     const container = dom.create({
         parent,
-
+        cssClassName: `container-input ${nextToIndex ? 'nextToIndex' : ''}`,
     })
 
     dom.create({
         parent: container,
-        cssClassName: 'legendInput',
+        cssClassName: `legendInput ${nextToIndex ? 'nextToIndex' : ''}`,
         content: legend,
         tagName: 'span',
     })

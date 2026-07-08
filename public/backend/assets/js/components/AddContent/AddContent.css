@@ -14,9 +14,10 @@
     padding: 0.2rem;
     /*width: 100px;*/
     text-align: center;
-    font-size: 10px;
+    font-size: 30px;
     font-weight: bold;
     cursor: pointer;
+    height: 30px;
 }
 
 .add:hover {
@@ -25,4 +26,13 @@
     /*width: 100px;*/
     text-align: center;
     /*font-size: 20px;*/
+}
+
+.addInner {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: -41px;
+    color: #fff;
+    font-size: 60px;
 }

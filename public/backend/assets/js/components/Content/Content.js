@@ -4,17 +4,18 @@ import dom from "../../dom.js";
 import CompInput from "../Input/Input.js";
 import elements from "../../elements.js";
 
-import ajax from "../../ajax.js";
 
 const Content = ({
                      data = {},
                      parent = null,
                      index = null,
+                     onRemove = () => {
+                     },
                  } = {}) => {
 
     const container = dom.create({
         parent,
-        cssClassName: 'container content edit',
+        cssClassName: 'container content edit transit',
         listeners: {
             click(evt) {
                 evt.stopPropagation();
@@ -22,70 +23,63 @@ const Content = ({
         }
     })
 
-    dom.create({
+    const elInner = dom.create({
         parent: container,
-        content: index.toString(),
-        cssClassName: 'index',
     })
 
     dom.create({
-        parent: container,
+        parent: elInner,
+        content: index.toString(),
+        cssClassName: 'index transit',
+    })
+
+    dom.create({
+        content: '⯈',
+        parent: elInner,
+        cssClassName: 'content-opener transit',
+        listeners: {
+            click(evt) {
+                evt.stopPropagation();
+                if (container.classList.contains('open')) {
+                    container.classList.remove('open');
+                    container.style.height = null;
+                } else {
+                    container.classList.add('open');
+                    container.style.height = elInner.getBoundingClientRect().height + 30 + 'px';
+                }
+            }
+        }
+    })
+
+    // Interaktivity
+    dom.create({
+        parent: elInner,
         content: '✖',
         cssClassName: 'btn-delete transit',
         listeners: {
             click(evt) {
                 evt.stopPropagation();
-                console.log('delete content', data);
-                ajax.removeContent(data.id).then(
-                    () => {
-                        console.log('deleted');
-                        container.remove();
-                    }
-                ).catch((err) => {
-                    console.error('Error removing content:', err);
-                })
+                onRemove(data);
             }
         }
     })
 
-    // Type
     dom.create({
-        parent: container,
-        content: data.type,
-        cssClassName: 'type nextToIndex',
+        parent: elInner,
+        cssClassName: 'dragger transit',
     })
 
+    // Inhalte
     CompInput({
-        parent: container,
-        legend: 'Titel',
+        parent: elInner,
         key: 'title',
         data,
-    })
-
-    // ID
-    dom.create({
-        parent: container,
-        content: 'ID: ' + data.id,
-        cssClassName: 'info',
-    })
-
-    // Creation Date
-    dom.create({
-        parent: container,
-        content: 'Erzeugt: ' + new Date(data.crDate).toLocaleDateString(),
-        cssClassName: 'info',
-    })
-
-    // Change Date
-    dom.create({
-        parent: container,
-        content: 'Letzte Änderung: ' + new Date(data.chDate).toLocaleDateString(),
-        cssClassName: 'info',
+        nextToIndex: true,
     })
 
     // Text
     CompInput({
-        parent: container,
+        parent: elInner,
         legend: 'Text',
         key: 'content',
         data,
@@ -94,7 +88,7 @@ const Content = ({
 
     // Tags
     CompInput({
-        parent: container,
+        parent: elInner,
         legend: 'Tags',
         key: 'tags',
         data,
@@ -103,10 +97,38 @@ const Content = ({
 
 
     // Images
-    console.log('images', data.images);
+    // console.log('images', data.images);
     if (data.images) {
 
     }
+
+    // Type
+    dom.create({
+        parent: elInner,
+        content: data.type,
+        cssClassName: 'type',
+    })
+
+    // ID
+    dom.create({
+        parent: elInner,
+        content: 'ID: ' + data.id,
+        cssClassName: 'info',
+    })
+
+    // Creation Date
+    dom.create({
+        parent: elInner,
+        content: 'Erzeugt: ' + new Date(data.crDate).toLocaleDateString(),
+        cssClassName: 'info',
+    })
+
+    // Change Date
+    dom.create({
+        parent: elInner,
+        content: 'Letzte Änderung: ' + new Date(data.chDate).toLocaleDateString(),
+        cssClassName: 'info',
+    })
 
     /*
     images = [],

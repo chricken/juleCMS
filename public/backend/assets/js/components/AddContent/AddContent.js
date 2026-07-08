@@ -23,9 +23,8 @@ const AddContent = ({
         }
     })
 
-    dom.create({
+    const addOuter = dom.create({
         parent: container,
-        content: '+',
         cssClassName: 'add transit',
         listeners: {
             click(evt) {
@@ -34,7 +33,7 @@ const AddContent = ({
                 let scrollTop = document.documentElement.scrollTop;
                 ajax.createContent(page.id, index).then(
                     (payload) => {
-                        console.log('payload', payload);
+                        // console.log('payload', payload);
                         page = payload;
                         compDetailsPage(page);
                         requestAnimationFrame(() => {
@@ -44,6 +43,12 @@ const AddContent = ({
                 );
             }
         }
+    })
+
+    const addInner = dom.create({
+        parent: addOuter,
+        content: '+',
+        cssClassName: 'addInner',
     })
 
     let path = new URL(import.meta.url).pathname;

@@ -6,7 +6,10 @@ const helpers = {
         let timeout;
         return (...args) => {
             clearTimeout(timeout);
-            timeout = setTimeout(() => func.apply(this, args), delay);
+            timeout = setTimeout(() => {
+                // console.log('debouncer', args);
+                func(...args)
+            }, delay);
         };
     },
 
@@ -14,7 +17,7 @@ const helpers = {
         el.classList.toggle('open');
 
         if (el.classList.contains('open')) {
-            el.style.height = 80 + elInner.scrollHeight + 'px';
+            el.style.height = 80 + elInner.getBoundingClientRect().height + 'px';
         } else {
             el.style.height = 50 + 'px';
         }

@@ -1,28 +1,42 @@
 /* Input Stile */
-.legendInput {
-    display: inline-block;
-    width: 120px;
-    font-weight: 600;
-    color: var(--primary-color);
-    vertical-align: top;
+.container-input {
+    position: relative;
+
+
+    .legendInput {
+        display: inline-block;
+        width: 120px;
+        font-weight: 600;
+        color: var(--primary-color);
+        vertical-align: top;
+    }
+
+
+    .input {
+        display: inline-block;
+        padding: 0.5rem;
+        border: 1px solid #ddd;
+        border-radius: var(--border-radius);
+        width: 600px;
+        transition: var(--transition);
+        vertical-align: top;
+    }
+
+    .input:focus {
+        outline: none;
+        border-color: var(--accent-color);
+        box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+    }
+
+    .input:hover {
+        border-color: var(--accent-color);
+    }
 }
 
-.input {
-    display: inline-block;
-    padding: 0.5rem;
-    border: 1px solid #ddd;
-    border-radius: var(--border-radius);
-    width: 600px;
-    transition: var(--transition);
-    vertical-align: top;
-}
+.container-input.nextToIndex {
+    top: -5px;
 
-.input:focus {
-    outline: none;
-    border-color: var(--accent-color);
-    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
-}
-
-.input:hover {
-    border-color: var(--accent-color);
+    .legendInput {
+        width: 45px;
+    }
 }

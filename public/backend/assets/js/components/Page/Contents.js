@@ -1,25 +1,29 @@
 'use strict';
 
-import elements from "../../elements.js";
 import dom from "../../dom.js";
-import compInput from '../Input/Input.js';
 import ajax from "../../ajax.js";
 import CompContent from "../Content/Content.js";
 import CompAddContent from "../AddContent/AddContent.js";
 
+import Page from "../Page/Page.js";
+
 import lang from "../../lang.js";
 import helpers, {collapse} from "../../helpers.js";
+import data from "../../data.js";
 
 const Contents = ({
-                      data = {},
+                      page = {},
                       parent = null
                   }) => {
-
-    console.log('mage-data', data);
 
     const container = dom.create({
         cssClassName: 'meta container collapsable open transit',
         parent
+    })
+
+    dom.create({
+        parent: container,
+        cssClassName: 'border transit',
     })
 
     const containerInner = dom.create({
@@ -55,10 +59,10 @@ const Contents = ({
     CompAddContent({
         parent: inner,
         index: 0,
-        page: data
+        page
     })
 
-    data.content.forEach((contentID, index) => {
+    page.content.forEach((contentID, index) => {
 
         const placeholder = dom.create({
             parent: inner,
@@ -70,12 +74,23 @@ const Contents = ({
                 CompContent({
                     data: content,
                     index,
-                    parent: placeholder
+                    parent: placeholder,
+                    onRemove: (content) => {
+                        ajax.removeContent(content.id).then(
+                            () => {
+                                console.log(data.pages);
+                                Page(data.pages.find(item => item.id === page.id));
+                                // Contents({page: data.pages.find(item => item.id === page.id), parent});
+                            }
+                        ).catch((err) => {
+                            console.error('Error removing content:', err);
+                        })
+                    }
                 });
                 CompAddContent({
                     parent: placeholder,
                     index: index + 1,
-                    page: data
+                    page
                 })
             }
         )

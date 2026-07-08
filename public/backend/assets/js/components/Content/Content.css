@@ -10,13 +10,57 @@
 
 }
 
+.content.edit {
+    padding-left: 30px;
+    position: relative;
+    overflow: hidden;
+    height: 50px;
+}
+
+.content.edit.open {
+    /*height: auto;*/
+
+    .content-opener {
+        transform: rotate(90deg) translateY(-20px);
+    }
+    .dragger {
+        top: 52px;
+    }
+    .index {
+        color: #000;
+        width: 35px;
+        border-right-color:  #003;
+        border-bottom-color:  #003;
+    }
+}
+
+.content-opener {
+    position: absolute;
+    cursor: pointer;
+    left: 13px;
+    font-size: 40px;
+    top: -15px;
+    z-index: 1000;
+}
+
+
+.dragger {
+    position: absolute;
+    left: 0;
+    top: 0px;
+    background: var(--dark-color);
+    width: 20px;
+    bottom: 0;
+    border-radius: 0 10px 0 0;
+}
+
 .index {
     position: absolute;
-    color: #000;
-    width: 35px;
+    color: #fff;
+    width: 20px;
     height: 40px;
-    border-right: 1px solid #0003;
-    border-bottom: 1px solid #0003;
+    border-right: 1px solid transparent;
+    border-bottom: 1px solid transparent;
     border-radius: 0 0 10px;
     left: 0;
     top: 0;
@@ -24,6 +68,7 @@
     text-align: center;
     padding-top: 7px;
     margin-right: 0.5rem;
+    z-index:10;
 }
 
 .type.nextToIndex {
@@ -36,21 +81,21 @@
     position: absolute;
     right: 0;
     top: 0;
-    width:30px;
-    height:30px;
-    text-align:center;
+    width: 30px;
+    height: 30px;
+    text-align: center;
     background-color: var(--warning-color);
     color: white;
     border: none;
     padding: 0.2rem 0.5rem;
     border-radius: 0 0 0 5px;
     cursor: pointer;
-    z-index:1000;
+    z-index: 1000;
 }
 
 .btn-delete:hover {
     background-color: var(--secondary-color);
     color: white;
-    width:40px;
-    height:40px;
+    width: 40px;
+    height: 40px;
 }

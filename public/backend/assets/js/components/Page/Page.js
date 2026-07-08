@@ -36,7 +36,7 @@ const Page = (page) => {
         }
     })
 
-    Contents({data: page, parent: elements.page});
+    Contents({page, parent: elements.page});
     Base({data: page, parent: elements.page});
     Meta({data: page, parent: elements.page});
 

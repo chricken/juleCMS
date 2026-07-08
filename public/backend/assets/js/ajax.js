@@ -5,10 +5,11 @@ import compPage from "./components/Page/Page.js";
 
 const ajax = {
     loadJSON(url) {
-        console.log(url);
+        // console.log(url);
         return fetch(url).then(res => res.json());
     },
     saveContent(data) {
+
         fetch('/api/saveContent', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
@@ -16,7 +17,7 @@ const ajax = {
         }).then(
             res => res.json()
         ).then(
-            console.log
+            // console.log
         ).catch(
             console.warn
         )
@@ -45,7 +46,11 @@ const ajax = {
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({contentID})
         }).then(
-            () => console.log('Content removed')
+            res => res.json()
+        ).then(
+            (pages) => {
+                data.pages = pages;
+            }
         )
     },
     savePage(data) {

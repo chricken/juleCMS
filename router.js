@@ -27,9 +27,14 @@ router.get('/api/content/:contentID', (req, response) => {
 })
 
 router.post('/api/saveContent', (req, res) => {
-    // console.log(req.body);
+
+    // console.log('save Content', req.body);
+
     manageContents.saveContent(req.body).then(
-        () => res.send('Inhalt gespeichert')
+        () => res.json({
+            status: 'success',
+            msg:'Inhalt gespeichert'
+        })
     ).catch(
         console.warn
     )
@@ -37,7 +42,7 @@ router.post('/api/saveContent', (req, res) => {
 });
 
 router.post('/api/savePage', (req, res) => {
-    console.log(req.body);
+    // console.log('save Page', req.body);
     let page = manageContents.pages.find(page => page.id === req.body.id);
     console.log(page);
     // Attribute übertragen, Referenz behalten
@@ -51,7 +56,7 @@ router.post('/api/savePage', (req, res) => {
     // console.log(manageContents.pages);
     manageContents.savePages().then(
         msg => res.json({
-            type: 'success',
+            status: 'success',
             msg: 'Seite gespeichert'
         })
     ).catch(
@@ -67,7 +72,7 @@ router.post('/api/savePage', (req, res) => {
 });
 
 router.post('/api/createContent', (req, res) => {
-    console.log('create content', req.body);
+    // console.log('create content', req.body);
     manageContents.addContent(req.body.pageID, req.body.index).then(
         page => res.json(page)
     ).catch(
@@ -76,11 +81,10 @@ router.post('/api/createContent', (req, res) => {
 })
 
 router.post('/api/removeContent', (req, res) => {
-
-    console.log('remove content', req.body);
+    // console.log(req.body);
 
     manageContents.removeContent(req.body.contentID).then(
-        () => res.send()
+        () => res.json(manageContents.pages)
     ).catch(
         console.warn
     )

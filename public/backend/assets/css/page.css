@@ -9,10 +9,20 @@ page {
     .container {
         padding-left: 0;
 
+        .border {
+            position: absolute;
+            width: 3px;
+            background: var(--accent-color);
+            top: 0;
+            bottom: 0;
+            left: 0;
+        }
+
         .containerInner {
             padding-left:1rem;
 
-            border-left: 4px solid var(--accent-color);
+            /*border-left: 4px solid var(--accent-color);*/
+            border-left: 4px solid transparent;
 
             .indicatorOpen {
                 position: absolute;
@@ -26,6 +36,10 @@ page {
     }
 
     .container.open {
+
+        .border {
+            width: 20px;
+        }
 
         .containerInner {
             border-left-width: 20px;

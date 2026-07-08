@@ -65,13 +65,11 @@ const manageContents = {
     },
 
     removeContent(contentID) {
-        console.log(manageContents.pages);
         manageContents.pages = manageContents.pages.map(page => {
             if (page.content)
                 page.content = page.content.filter(item => item !== contentID);
             return page;
         })
-        console.log(manageContents.pages);
 
         return fs.unlink(`./contents/items/${contentID}.json`).then(
             () => manageContents.savePages()
