@@ -19,6 +19,8 @@ const CompSinglePage = ({page, index, parent}) => {
                     // Es muss aus den gespeicherten Daten die aktuelle Seite mit der ID gesucht werden
                     // Wenn die Seite hier zwischengespeichert wird, verliert er die Referenz,
                     // da die Seite immutatable ist
+                    console.log(data.pages);
+
                     compDetailsPage(data.pages.find(item => item.id === page.id));
                 }
             }

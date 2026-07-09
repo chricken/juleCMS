@@ -53,6 +53,28 @@ const ajax = {
             }
         )
     },
+    moveContent() {
+        console.log(data);
+        return fetch('/api/moveContent', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                currentPage: data.currentPage,
+                dropIndex: data.dropIndex,
+                dragID: data.dragID,
+            })
+        }).then(
+            res => res.json()
+        ).then(
+            result => {
+                data.pages = [
+                    ...data.pages.filter(page => page.id !== result.payload.id),
+                    result.payload
+                ]
+                return result.payload;
+            }
+        )
+    },
     savePage(data) {
         console.log('Save Page', data);
         fetch('/api/savePage', {

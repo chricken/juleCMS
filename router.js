@@ -14,7 +14,6 @@ router.get('/api/pages', (req, res) => {
 
 router.get('/api/page/:id', (req, res) => {
     console.log(req.params.id);
-
 });
 
 router.get('/api/content/:contentID', (req, response) => {
@@ -33,13 +32,29 @@ router.post('/api/saveContent', (req, res) => {
     manageContents.saveContent(req.body).then(
         () => res.json({
             status: 'success',
-            msg:'Inhalt gespeichert'
+            msg: 'Inhalt gespeichert'
         })
     ).catch(
         console.warn
     )
 
 });
+
+router.post('/api/moveContent', (req, res) => {
+    console.log(req.body);
+
+    return manageContents.moveContent(req.body).then(
+        page => res.json({
+            status: 'success',
+            payload: page
+        })
+    ).catch(
+       err => res.json({
+            status: 'err',
+            err
+        })
+    )
+})
 
 router.post('/api/savePage', (req, res) => {
     // console.log('save Page', req.body);

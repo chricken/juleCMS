@@ -4,6 +4,7 @@ import dom from "../../dom.js";
 import ajax from "../../ajax.js";
 import CompContent from "../Content/Content.js";
 import CompAddContent from "../AddContent/AddContent.js";
+import CompDropContent from "../DropContent/DropContent.js";
 
 import Page from "../Page/Page.js";
 
@@ -15,6 +16,9 @@ const Contents = ({
                       page = {},
                       parent = null
                   }) => {
+
+    console.log('page', page);
+
 
     const container = dom.create({
         cssClassName: 'meta container collapsable open transit',
@@ -56,6 +60,12 @@ const Contents = ({
         cssClassName: 'inner',
     })
 
+    CompDropContent({
+        parent: inner,
+        index: 0,
+        page
+    })
+
     CompAddContent({
         parent: inner,
         index: 0,
@@ -85,8 +95,21 @@ const Contents = ({
                         ).catch((err) => {
                             console.error('Error removing content:', err);
                         })
+                    },
+                    onDragStart: () => {
+                        container.classList.add('dragging');
+                    },
+                    onDragEnd: () => {
+                        container.classList.remove('dragging');
                     }
                 });
+
+                CompDropContent({
+                    parent: placeholder,
+                    index: index + 1,
+                    page
+                })
+
                 CompAddContent({
                     parent: placeholder,
                     index: index + 1,

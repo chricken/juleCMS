@@ -17,7 +17,7 @@ const helpers = {
         el.classList.toggle('open');
 
         if (el.classList.contains('open')) {
-            el.style.height = 80 + elInner.getBoundingClientRect().height + 'px';
+            el.style.height = 'auto';
         } else {
             el.style.height = 50 + 'px';
         }

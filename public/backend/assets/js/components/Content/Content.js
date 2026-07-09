@@ -3,7 +3,7 @@
 import dom from "../../dom.js";
 import CompInput from "../Input/Input.js";
 import elements from "../../elements.js";
-
+import settings from "../../data.js";
 
 const Content = ({
                      data = {},
@@ -11,14 +11,34 @@ const Content = ({
                      index = null,
                      onRemove = () => {
                      },
+                     onDragStart = () => {
+                     },
+                     onDragEnd = () => {
+                     },
                  } = {}) => {
 
     const container = dom.create({
         parent,
         cssClassName: 'container content edit transit',
+        attr: {
+            // draggable: true,
+        },
         listeners: {
             click(evt) {
                 evt.stopPropagation();
+            },
+            mousedown(evt) {
+                evt.stopPropagation();
+            },
+            dragstart(evt) {
+                console.log('dragstart');
+                settings.dragID = data.id;
+                onDragStart();
+            },
+            dragend() {
+                container.draggable = false;
+                // settings.dragID = null;
+                onDragEnd();
             }
         }
     })
@@ -67,6 +87,13 @@ const Content = ({
     dom.create({
         parent: elInner,
         cssClassName: 'dragger transit',
+        listeners: {
+            mousedown(evt) {
+                evt.stopPropagation();
+                container.draggable = true;
+            },
+
+        }
     })
 
     // Inhalte

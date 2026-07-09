@@ -75,6 +75,25 @@ const manageContents = {
             () => manageContents.savePages()
         )
     },
+
+    moveContent({currentPage, dropIndex, dragID}) {
+
+        // console.log('move content', currentPage, dropIndex, dragID);
+        currentPage = manageContents.pages.find(page => page.id === currentPage);
+        // console.log(currentPage);
+
+        let currentIndex = currentPage.content.findIndex(item => item === dragID);
+        currentPage.content.splice(currentIndex, 1);
+
+        if (dropIndex > currentIndex) dropIndex--;
+        currentPage.content.splice(dropIndex, 0, dragID);
+
+        // console.log(currentPage);
+        return manageContents.savePages().then(
+            () => currentPage
+        )
+    },
+
     savePages() {
         return fs.readFile(`./contents/structure.json`).then(
             payload => {
