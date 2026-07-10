@@ -42,7 +42,7 @@ const Meta = ({
     // Header
     dom.create({
         parent: containerInner,
-        content: 'Meta',
+        content: lang.getPhrase('meta'),
         tagName: 'h3',
         listeners: {
             click(evt) {

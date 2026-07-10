@@ -11,6 +11,7 @@ pages {
     }
 
     .page {
+        position: relative;
         background-color: white;
         border-left: 4px solid var(--accent-color);
 
@@ -26,6 +27,17 @@ pages {
         .page-title:hover {
             background-color: var(--accent-color);
             color: white;
+        }
+    }
+
+    .page.active {
+        background-color: var(--dark-color);
+        /*left: -5px;*/
+        padding-left: 5px;
+
+       > .page-title {
+            color: white;
+
         }
     }
 

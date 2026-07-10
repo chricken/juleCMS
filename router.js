@@ -2,6 +2,7 @@
 
 import express from 'express';
 import manageContents from "./manageContents.js";
+import Page from "./classes/Page.js";
 
 const router = express.Router();
 
@@ -49,7 +50,7 @@ router.post('/api/moveContent', (req, res) => {
             payload: page
         })
     ).catch(
-       err => res.json({
+        err => res.json({
             status: 'err',
             err
         })
@@ -86,6 +87,88 @@ router.post('/api/savePage', (req, res) => {
 
 });
 
+router.post('/api/newPageAfter', (req, res) => {
+    let afterMe = req.body;
+
+    let myPage = new Page({
+        title: 'Neue Seite',
+    });
+
+    manageContents.pages.push(myPage);
+
+    // Element suchen, dessen Kind die Ausgangsseite ist
+    let parent = manageContents.pages.find(page => page.children.includes(afterMe.id));
+    let index = parent.children.indexOf(afterMe.id);
+    parent.children.splice(index + 1, 0, myPage.id);
+
+    manageContents.savePages().then(
+        () => res.json({
+            status: 'success',
+            payload: manageContents.pages,
+            newID: myPage.id
+        })
+    ).catch(
+        err => {
+            console.warn(err)
+            res.json({
+                type: 'err',
+                msg: err
+            })
+        }
+    )
+});
+
+router.post('/api/newPageIn', (req, res) => {
+    let inMe = req.body;
+
+    let myPage = new Page({
+        title: 'Neue Seite',
+    });
+
+    manageContents.pages.push(myPage);
+
+    // Element suchen, dessen Kind die Ausgangsseite ist
+    let parent = manageContents.pages.find(page => page.id === inMe.id);
+    parent.children.push(myPage.id);
+
+    manageContents.savePages().then(
+        () => res.json({
+            status: 'success',
+            payload: manageContents.pages,
+            newID: myPage.id
+        })
+    ).catch(
+        err => {
+            console.warn(err)
+            res.json({
+                type: 'err',
+                msg: err
+            })
+        }
+    )
+});
+
+router.post('/api/removePage', (req, res) => {
+
+    manageContents.removePage(req.body.id);
+
+    manageContents.savePages().then(
+        () => res.json({
+            status: 'success',
+            payload: manageContents.pages
+        })
+    ).catch(
+        err => {
+            console.warn(err)
+            res.json({
+                type: 'err',
+                msg: err
+            })
+        }
+    )
+})
+
+
 router.post('/api/createContent', (req, res) => {
     // console.log('create content', req.body);
     manageContents.addContent(req.body.pageID, req.body.index).then(
@@ -105,6 +188,7 @@ router.post('/api/removeContent', (req, res) => {
     )
 
 })
+
 
 router.get('/', (req, res) => {
     res.send('404: Seite nicht gefunden');

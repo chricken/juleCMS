@@ -4,6 +4,7 @@ import dom from "../../dom.js";
 import CompInput from "../Input/Input.js";
 import elements from "../../elements.js";
 import settings from "../../data.js";
+import lang from "../../lang.js";
 
 const Content = ({
                      data = {},
@@ -34,6 +35,7 @@ const Content = ({
                 console.log('dragstart');
                 settings.dragID = data.id;
                 onDragStart();
+                evt.dataTransfer.setDragImage(container, 0, 0);
             },
             dragend() {
                 container.draggable = false;
@@ -146,14 +148,14 @@ const Content = ({
     // Creation Date
     dom.create({
         parent: elInner,
-        content: 'Erzeugt: ' + new Date(data.crDate).toLocaleDateString(),
+        content: `${lang.getPhrase('createdAt')}: ` + new Date(data.crDate).toLocaleDateString(),
         cssClassName: 'info',
     })
 
     // Change Date
     dom.create({
         parent: elInner,
-        content: 'Letzte Änderung: ' + new Date(data.chDate).toLocaleDateString(),
+        content: `${lang.getPhrase('changedAt')}: ` + new Date(data.chDate).toLocaleDateString(),
         cssClassName: 'info',
     })
 
@@ -161,7 +163,6 @@ const Content = ({
     images = [],
     visible = true,
     */
-
 
     let path = new URL(import.meta.url).pathname;
     path = `${path.substring(0, path.lastIndexOf('/') + 1)}Content.css`;

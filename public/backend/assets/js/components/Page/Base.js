@@ -46,7 +46,7 @@ const Base = ({
     // Header
     dom.create({
         parent: containerInner,
-        content: 'Base',
+        content: lang.getPhrase('base'),
         tagName: 'h3',
         cssClassName: 'transit',
         listeners: {

@@ -6,6 +6,8 @@ import dom from "../../dom.js";
 
 import compDetailsPage from "../Page/Page.js";
 
+let activeMenuLink = null;
+
 const CompSinglePage = ({page, index, parent}) => {
     if (page && page.id !== 'root') {
 
@@ -15,6 +17,11 @@ const CompSinglePage = ({page, index, parent}) => {
             listeners: {
                 click(evt) {
                     evt.stopPropagation();
+
+                    activeMenuLink?.classList.remove('active');
+                    activeMenuLink = container;
+                    activeMenuLink.classList.add('active');
+
                     data.currentPage = page.id;
                     // Es muss aus den gespeicherten Daten die aktuelle Seite mit der ID gesucht werden
                     // Wenn die Seite hier zwischengespeichert wird, verliert er die Referenz,
@@ -25,6 +32,12 @@ const CompSinglePage = ({page, index, parent}) => {
                 }
             }
         })
+        console.log(page.id, data.currentPage);
+        if (page.id === data.currentPage) {
+            container.classList.add('active');
+            activeMenuLink = container;
+        }
+
 
         dom.create({
             cssClasses: ['page-title'],

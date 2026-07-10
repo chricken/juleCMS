@@ -2,6 +2,8 @@
 
 import data from "./data.js";
 import compPage from "./components/Page/Page.js";
+import compPages from "./components/Pages/Pages.js";
+import elements from "./elements.js";
 
 const ajax = {
     loadJSON(url) {
@@ -84,11 +86,69 @@ const ajax = {
         }).then(
             res => res.json()
         ).then(
-            console.log
+            result => {
+                data.pages = result.payload;
+                compPages()
+            }
         ).catch(
             console.warn
         )
 
+    },
+    newPageAfter(page) {
+        fetch('/api/newPageAfter', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(page)
+        }).then(
+            res => res.json()
+        ).then(
+            result => {
+                data.pages = result.payload;
+                data.currentPage = result.newID;
+                compPages()
+                compPage(data.pages.find(p => p.id === result.newID));
+            }
+        ).catch(
+            console.warn
+        )
+
+    },
+    newPageIn(page) {
+        fetch('/api/newPageIn', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(page)
+        }).then(
+            res => res.json()
+        ).then(
+            result => {
+                data.pages = result.payload;
+                data.currentPage = result.newID;
+                compPages()
+                compPage(data.pages.find(p => p.id === result.newID));
+            }
+        ).catch(
+            console.warn
+        )
+
+    },
+    removePage(page) {
+        fetch('/api/removePage', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(page)
+        }).then(
+            res => res.json()
+        ).then(
+            result => {
+                data.pages = result.payload;
+                compPages();
+                elements.page.innerHTML = '';
+            }
+        ).catch(
+            console.warn
+        )
     }
 }
 

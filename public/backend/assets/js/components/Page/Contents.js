@@ -44,7 +44,7 @@ const Contents = ({
     // Header
     dom.create({
         parent: containerInner,
-        content: 'Content',
+        content: lang.getPhrase('contents'),
         tagName: 'h3',
         listeners: {
             click(evt) {
@@ -71,6 +71,7 @@ const Contents = ({
         index: 0,
         page
     })
+    console.log(page);
 
     page.content.forEach((contentID, index) => {
 

@@ -94,6 +94,25 @@ const manageContents = {
         )
     },
 
+    removePage(pageID){
+        console.log('remove page', pageID);
+
+        // Seite aus allen Kind-Listen entfernen
+        manageContents.pages.forEach(
+            page => {
+                page.children = page.children.filter(child => child !== pageID);
+            }
+        );
+
+        let page = manageContents.pages.find(page => page.id === pageID);
+        console.log(page.id, page.children);
+
+        manageContents.pages = manageContents.pages.filter(page => page.id !== pageID);
+
+        page.children.forEach(child => manageContents.removePage(child));
+
+    },
+
     savePages() {
         return fs.readFile(`./contents/structure.json`).then(
             payload => {

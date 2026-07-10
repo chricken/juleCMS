@@ -22,7 +22,7 @@
     /*height: auto;*/
 
     .content-opener {
-        transform: rotate(90deg) scale(60%) translateY(32px);
+        transform: rotate(90deg) scale(60%) translateY(40px);
         color: #fff;
     }
 
