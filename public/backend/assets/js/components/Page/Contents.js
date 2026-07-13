@@ -19,7 +19,6 @@ const Contents = ({
 
     console.log('page', page);
 
-
     const container = dom.create({
         cssClassName: 'meta container collapsable open transit',
         parent
@@ -81,41 +80,47 @@ const Contents = ({
         })
 
         ajax.loadJSON(`/api/content/${contentID}`).then(
-            content => {
-                CompContent({
-                    data: content,
-                    index,
-                    parent: placeholder,
-                    onRemove: (content) => {
-                        ajax.removeContent(content.id).then(
-                            () => {
-                                console.log(data.pages);
-                                Page(data.pages.find(item => item.id === page.id));
-                                // Contents({page: data.pages.find(item => item.id === page.id), parent});
-                            }
-                        ).catch((err) => {
-                            console.error('Error removing content:', err);
-                        })
-                    },
-                    onDragStart: () => {
-                        container.classList.add('dragging');
-                    },
-                    onDragEnd: () => {
-                        container.classList.remove('dragging');
-                    }
-                });
+            result => {
+                if (result.status === 'error') {
+                    console.error('Error loading content:', result.message);
+                    return false;
+                } else {
+                    let content = result.payload;
+                    CompContent({
+                        data: content,
+                        index,
+                        parent: placeholder,
+                        onRemove: (content) => {
+                            ajax.removeContent(content.id).then(
+                                () => {
+                                    console.log(data.pages);
+                                    Page(data.pages.find(item => item.id === page.id));
+                                    // Contents({page: data.pages.find(item => item.id === page.id), parent});
+                                }
+                            ).catch((err) => {
+                                console.error('Error removing content:', err);
+                            })
+                        },
+                        onDragStart: () => {
+                            container.classList.add('dragging');
+                        },
+                        onDragEnd: () => {
+                            container.classList.remove('dragging');
+                        }
+                    });
 
-                CompDropContent({
-                    parent: placeholder,
-                    index: index + 1,
-                    page
-                })
+                    CompDropContent({
+                        parent: placeholder,
+                        index: index + 1,
+                        page
+                    })
 
-                CompAddContent({
-                    parent: placeholder,
-                    index: index + 1,
-                    page
-                })
+                    CompAddContent({
+                        parent: placeholder,
+                        index: index + 1,
+                        page
+                    })
+                }
             }
         )
     })

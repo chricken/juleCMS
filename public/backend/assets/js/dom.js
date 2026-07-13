@@ -54,6 +54,7 @@ const dom = {
     mapping(){
         elements.pages = document.querySelector('pages');
         elements.page = document.querySelector('page');
+        elements.nav = document.querySelector('nav');
     }
 }
 

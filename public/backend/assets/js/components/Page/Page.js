@@ -36,37 +36,26 @@ const Page = (page) => {
         }
     })
 
-    Contents({page, parent: elements.page});
+    if (page.id !== 'root') {
+        Contents({page, parent: elements.page});
+    }
     Base({data: page, parent: elements.page});
     Meta({data: page, parent: elements.page});
 
-/*
-    dom.create({
-        tagName: 'button',
-        content: lang.getPhrase('savePage'),
-        parent: elements.page,
-        listeners: {
-            click(evt) {
-                evt.stopPropagation();
-                console.log('Save Page', page);
+    if (page.id !== 'root') {
+        dom.create({
+            tagName: 'button',
+            content: lang.getPhrase('newPageAfter'),
+            parent: elements.page,
+            listeners: {
+                click(evt) {
+                    evt.stopPropagation();
+                    console.log('New Page after', page);
+                    ajax.newPageAfter(page);
+                }
             }
-        }
-    })
-
- */
-
-    dom.create({
-        tagName: 'button',
-        content: lang.getPhrase('newPageAfter'),
-        parent: elements.page,
-        listeners: {
-            click(evt) {
-                evt.stopPropagation();
-                console.log('New Page after', page);
-                ajax.newPageAfter(page);
-            }
-        }
-    })
+        })
+    }
 
     dom.create({
         tagName: 'button',
@@ -81,20 +70,22 @@ const Page = (page) => {
         }
     })
 
-    dom.create({
-        tagName: 'button',
-        content: lang.getPhrase('removePage'),
-        parent: elements.page,
-        listeners: {
-            click(evt) {
-                if(confirm(lang.getPhrase('sureDeletePage'))) {
-                    evt.stopPropagation();
-                console.log('Remove Page', page);
-                ajax.removePage(page);
+    if (page.id !== 'root') {
+        dom.create({
+            tagName: 'button',
+            content: lang.getPhrase('removePage'),
+            parent: elements.page,
+            listeners: {
+                click(evt) {
+                    if (confirm(lang.getPhrase('sureDeletePage'))) {
+                        evt.stopPropagation();
+                        console.log('Remove Page', page);
+                        ajax.removePage(page);
+                    }
                 }
             }
-        }
-    })
+        })
+    }
 
 
 }

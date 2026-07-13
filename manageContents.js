@@ -94,9 +94,7 @@ const manageContents = {
         )
     },
 
-    removePage(pageID){
-        console.log('remove page', pageID);
-
+    removePage(pageID) {
         // Seite aus allen Kind-Listen entfernen
         manageContents.pages.forEach(
             page => {
@@ -105,12 +103,20 @@ const manageContents = {
         );
 
         let page = manageContents.pages.find(page => page.id === pageID);
-        console.log(page.id, page.children);
 
-        manageContents.pages = manageContents.pages.filter(page => page.id !== pageID);
-
-        page.children.forEach(child => manageContents.removePage(child));
-
+        return Promise.all(
+            // Wenn content kein Array ist, benutze dieses leere Array
+            (page.content || []).map(
+                contentID => manageContents.removeContent(contentID)
+            )
+        ).then(
+            () => console.log('Content removed')
+        ).then(
+            () => {
+                manageContents.pages = manageContents.pages.filter(page => page.id !== pageID);
+                page.children.forEach(child => manageContents.removePage(child));
+            }
+        )
     },
 
     savePages() {

@@ -13,6 +13,7 @@ const server = express();
 server.use(express.static('public', {
     extensions: ['html']
 }));
+
 server.use(router);
 
 const init = () => {

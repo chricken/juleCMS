@@ -11,13 +11,13 @@ const themes = {
             res => Promise.all(
                 res.map(
                     file => {
-                        console.log(file);
+                        console.log(14, file);
                         return fs.cp(
                             `./themes/${settings.get('theme')}/${file}`,
                             `./public/${file}`,
-                            { recursive: true }
+                            {recursive: true}
                         ).then(
-                            () => console.log(`Theme ${file} kopiert`),
+                            () => console.log(20, `Theme ${file} kopiert`),
                         )
                     }
                 )
@@ -25,10 +25,7 @@ const themes = {
         );
     },
     init() {
-        return new Promise((resolve, reject) => {
-            themes.load();
-            resolve();
-        })
+        return themes.load();
     }
 }
 

@@ -20,9 +20,17 @@ router.get('/api/page/:id', (req, res) => {
 router.get('/api/content/:contentID', (req, response) => {
     // console.log('contentID', req.params.contentID);
     manageContents.getContent(req.params.contentID).then(
-        res => response.json(res)
+        res => response.json({
+            status: 'success',
+            payload: res
+        })
     ).catch(
-        console.warn
+        err => {
+            response.status(404).json({
+                status: 'err',
+                msg: err
+            })
+        }
     )
 })
 
@@ -42,7 +50,7 @@ router.post('/api/saveContent', (req, res) => {
 });
 
 router.post('/api/moveContent', (req, res) => {
-    console.log(req.body);
+    // console.log(req.body);
 
     return manageContents.moveContent(req.body).then(
         page => res.json({
@@ -60,7 +68,7 @@ router.post('/api/moveContent', (req, res) => {
 router.post('/api/savePage', (req, res) => {
     // console.log('save Page', req.body);
     let page = manageContents.pages.find(page => page.id === req.body.id);
-    console.log(page);
+    // console.log(page);
     // Attribute übertragen, Referenz behalten
     // Object.assign(page, req.body)
 
@@ -168,7 +176,6 @@ router.post('/api/removePage', (req, res) => {
     )
 })
 
-
 router.post('/api/createContent', (req, res) => {
     // console.log('create content', req.body);
     manageContents.addContent(req.body.pageID, req.body.index).then(
@@ -188,7 +195,6 @@ router.post('/api/removeContent', (req, res) => {
     )
 
 })
-
 
 router.get('/', (req, res) => {
     res.send('404: Seite nicht gefunden');
