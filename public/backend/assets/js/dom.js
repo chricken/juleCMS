@@ -52,9 +52,8 @@ const dom = {
     	return neu;
     },
     mapping(){
-        elements.pages = document.querySelector('pages');
-        elements.page = document.querySelector('page');
         elements.nav = document.querySelector('nav');
+        elements.main = document.querySelector('main');
     }
 }
 

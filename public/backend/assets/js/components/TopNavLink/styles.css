@@ -1,0 +1,13 @@
+.top-nav-link {
+    position: relative;
+    cursor: pointer;
+
+
+}
+.top-nav-link:hover {
+    color:var(--accent-color);
+}
+
+.top-nav-link:not(:last-child)::after {
+    content: ' | ';
+}

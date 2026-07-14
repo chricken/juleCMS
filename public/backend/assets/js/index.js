@@ -3,7 +3,8 @@
 import ajax from "./ajax.js";
 import data from "./data.js";
 import dom from "./dom.js";
-import compPages from "./components/Pages/Pages.js";
+import viewPages from "./views/Pages.js";
+import viewTopNav from "./views/TopNav.js";
 
 const init = () => {
 
@@ -12,7 +13,9 @@ const init = () => {
     ).then(
         dom.mapping
     ).then(
-        compPages
+        viewTopNav
+    ).then(
+        viewPages
     ).catch(
         console.warn
     )

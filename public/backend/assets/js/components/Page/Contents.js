@@ -17,8 +17,6 @@ const Contents = ({
                       parent = null
                   }) => {
 
-    console.log('page', page);
-
     const container = dom.create({
         cssClassName: 'meta container collapsable open transit',
         parent

@@ -8,17 +8,13 @@ import compDetailsPage from "../Page/Page.js";
 
 let activeMenuLink = null;
 
-const CompSinglePage = ({page, index, parent}) => {
-    // if (page && page.id === 'root') {
-
-    // } else {
-    console.log(page);
+const CompNavPage = ({page, index, parent}) => {
 
     const container = dom.create({
-        cssClasses: ['page'],
+        cssClasses: ['page', 'page-single'],
         parent,
-        attr:{
-          draggable: true,
+        attr: {
+            // draggable: true,
         },
         listeners: {
             click(evt) {
@@ -34,18 +30,41 @@ const CompSinglePage = ({page, index, parent}) => {
                 // da die Seite immutatable ist
                 compDetailsPage(data.pages.find(item => item.id === page.id));
             },
+            /*
             dragstart(evt) {
                 console.log('dragstart', evt);
+                    container.classList.add('invisible-while-dragging');
                 elements.pages.classList.add('dragging');
             },
             dragend(evt) {
                 console.log('dragend', evt);
                 elements.pages.classList.remove('dragging');
             },
+            */
         }
     })
 
-    // console.log(page.id, data.currentPage);
+    /*
+    // Element, um Seiten zu droppen
+    dom.create({
+        cssClassName: 'dropperPage dropperPage-before',
+        content: `Drop before ${page.title}`,
+        parent: container,
+        insert: 'prepend',
+        listeners: {
+            dragenter(evt) {
+                evt.preventDefault();
+                container.classList.add('drag-over');
+            },
+            dragleave(evt) {
+                evt.preventDefault();
+                container.classList.remove('drag-leave');
+            },
+            drop(evt) {
+            }
+        }
+    })
+    */
 
     if (page.id === data.currentPage) {
         container.classList.add('active');
@@ -58,64 +77,40 @@ const CompSinglePage = ({page, index, parent}) => {
         parent: container,
     })
 
-    // Element, um Seiten zu droppen
-    dom.create({
-        cssClassName:'dropperPage',
-        content:'Drop Here',
-        parent:container,
-        listeners:{
-            dragenter(evt){
-              evt.preventDefault();
-              container.classList.add('drag-over');
-            },
-            dragleave(evt){
-              evt.preventDefault();
-              container.classList.remove('drag-leave');
-            },
-            drop(evt){}
-        }
-    })
-
-    // Element, um Seiten hinzuzufügen
-    dom.create({
-        cssClassName:'addPage',
-        content:'+',
-        parent:container,
-        listeners:{
-           click(){
-               console.log('add page');
-           }
-        }
-    })
 
     // Verschachtelte Seiten
     if (page.children.length) {
         page.children.forEach((pageID, index) => {
             const page = data.pages.find(page => page.id === pageID);
-            CompSinglePage({
+            CompNavPage({
                 page,
                 index,
                 parent: container
             });
         })
     }
-    // }
+/*
+    // Element, um Seiten zu droppen
+    dom.create({
+        cssClassName: 'dropperPage dropperPage-after',
+        content: `Drop after ${page.title}`,
+        parent: container,
+        listeners: {
+            dragenter(evt) {
+                evt.preventDefault();
+                container.classList.add('drag-over');
+            },
+            dragleave(evt) {
+                evt.preventDefault();
+                container.classList.remove('drag-leave');
+            },
+            drop(evt) {
+            }
+        }
+    })
+    */
 }
 
 
-const Pages = () => {
-    elements.pages.innerHTML = ``;
-    const pageRoot = data.pages.find(page => page.id === 'root');
-    /*
-        if (pageRoot) pageRoot.children.forEach((pageID, index) => {
 
-            const page = data.pages.find(page => page.id === pageID);
-            CompSinglePage({page, index, parent: elements.pages});
-
-        })
-     */
-    CompSinglePage({page: pageRoot, index: 0, parent: elements.pages});
-
-}
-
-export default Pages;
+export default CompNavPage;

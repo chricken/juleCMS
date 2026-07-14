@@ -1,5 +1,7 @@
 /* Seitenstruktur */
 pages {
+    position: relative;
+    display: block;
     /*margin-bottom: 3rem;*/
 
     h2 {
@@ -12,6 +14,7 @@ pages {
 
     .page {
         position: relative;
+        display: block;
         background-color: white;
         border-left: 4px solid var(--accent-color);
         padding-top: var(--padding);
@@ -20,6 +23,8 @@ pages {
         transition: none;
 
         .page-title {
+            position: relative;
+            display: block;
             padding: .2em;
             padding-left: .5rem;
             font-size: 1.2rem;
@@ -35,7 +40,17 @@ pages {
 
         .dropperPage {
             position: relative;
+            left: 0;
+            z-index: 1000;
             display: none;
+        }
+
+        .dropperPage-before {
+            top: 0;
+        }
+
+        .dropperPage-after {
+            bottom: 0;
         }
 
         .addPage {
@@ -67,6 +82,7 @@ pages {
     }
 
     .dropperPage {
+        /*position: absolute;*/
         display: block;
     }
 

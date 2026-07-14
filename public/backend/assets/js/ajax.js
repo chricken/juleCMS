@@ -2,7 +2,7 @@
 
 import data from "./data.js";
 import compPage from "./components/Page/Page.js";
-import compPages from "./components/Pages/Pages.js";
+// import compPages from "./components/Pages/Pages.js";
 import elements from "./elements.js";
 
 const ajax = {
