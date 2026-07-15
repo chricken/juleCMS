@@ -1,5 +1,5 @@
 /* Page Content */
-page {
+page, .column {
     background-color: white;
     padding: 2rem;
     /*margin-bottom: 2rem;*/
@@ -69,5 +69,9 @@ page {
         border-bottom: 2px solid var(--secondary-color);
         padding-bottom: 0.5rem;
     }
+
+}
+
+.content-column {
 
 }

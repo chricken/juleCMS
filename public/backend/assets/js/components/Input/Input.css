@@ -40,3 +40,8 @@
         width: 45px;
     }
 }
+.column {
+    .input {
+        width: 350px;
+    }
+}

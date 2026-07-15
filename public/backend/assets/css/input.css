@@ -1,0 +1,16 @@
+.inputContainer {
+    position: relative;
+    display: block;
+    border-left:5px solid var(--accent-color);
+    padding-left:5px;
+    margin-bottom:5px;
+
+    input, textarea {
+        position: relative;
+        width:250px;
+    }
+
+    textarea {
+        height:100px;
+    }
+}

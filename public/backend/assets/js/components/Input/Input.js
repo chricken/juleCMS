@@ -15,6 +15,7 @@ const input = ({
                    valueIsArray = false,
                    callback = ajax.saveContent,
                    nextToIndex = false,
+                   isInForm = false,
                }) => {
 
     callback = helpers.debouncer(callback, 1000);
@@ -57,14 +58,19 @@ const input = ({
                 evt.stopPropagation();
 
                 // Array
-                if (valueIsArray)
-                    data[key] = evt.target.innerText
-                        .split(',')
-                        .map(el => el.trim())
-                        .map(el => el.toLowerCase());
-                else
-                    data[key] = evt.target.innerText;
-
+                if (isInForm) {
+                    // Kommalisten bleiben Komma-Listen
+                    data.set(key, evt.target.innerText);
+                } else {
+                    if (valueIsArray) {
+                        data[key] = evt.target.innerText
+                            .split(',')
+                            .map(el => el.trim())
+                            .map(el => el.toLowerCase());
+                    } else {
+                        data[key] = evt.target.innerText;
+                    }
+                }
                 data.chDate = Date.now();
 
                 // Leitet den Aufruf an den Debouncer weiter
@@ -89,7 +95,7 @@ const input = ({
             href: path,
             rel: 'stylesheet',
         },
-        parent: elements.page
+        parent: container
     })
 
 };

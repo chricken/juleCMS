@@ -4,6 +4,7 @@ import elements from "../elements.js";
 import dom from "../dom.js";
 import CompNavPage from "../components/NavPage/NavPage.js";
 import data from "../data.js";
+import compDetailsPage from "../components/Page/Page.js";
 
 const viewPages = () =>{
 
@@ -20,7 +21,11 @@ const viewPages = () =>{
         parent:elements.main,
     })
 
+    data.currentPage = pageRoot.id;
+
     CompNavPage({page: pageRoot, index: 0, parent: elements.pages});
+
+    compDetailsPage(pageRoot);
 
 }
 

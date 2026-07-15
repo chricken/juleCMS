@@ -4,6 +4,7 @@ const lang = {
     currentLanguage: 'de',
     availableLanguages: ['de', 'en'],
     getPhrase(phrase) {
+        // console.log(phrase);
         return lang.translations[phrase][lang.currentLanguage];
     },
     translations: {
@@ -35,6 +36,18 @@ const lang = {
             de: 'Grundlagen',
             en: 'Base Data',
         },
+        title:{
+          de: 'Titel',
+          en: 'Title',
+        },
+        desc:{
+          de: 'Beschreibung',
+          en: 'Description',
+        },
+        selectFile:{
+            de: 'Datei auswählen',
+            en: 'Select File',
+        },
         createdAt: {
             de: 'Erstellt am',
             en: 'Created at',
@@ -46,6 +59,34 @@ const lang = {
         sureDeletePage:{
             de: 'Wollen Sie diese Seite wirklich löschen?',
             en: 'Are you sure you want to delete this page?',
+        },
+        settings:{
+            de: 'Einstellungen',
+            en: 'Settings',
+        },
+        media:{
+            de: 'Medien',
+            en: 'Media',
+        },
+        pages:{
+            de: 'Seiten',
+            en: 'Pages',
+        },
+        watermark:{
+            de: 'Wasserzeichen',
+            en: 'Watermark',
+        },
+        theme:{
+            de: 'Theme',
+            en: 'Theme',
+        },
+        tags:{
+            de: 'Tags',
+            en: 'Tags',
+        },
+        description:{
+            de: 'Beschreibung',
+            en: 'Description',
         }
     }
 }
