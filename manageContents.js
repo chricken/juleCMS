@@ -2,20 +2,22 @@
 
 import {promises as fs} from 'fs';
 import structure from './contents/structure.json' with {type: 'json'};
+import media from './contents/media.json' with {type: 'json'};
 import helpers from "./helpers.js";
 import Item from "./classes/Item.js";
 
-const necessaryContentFolders = ['images', 'items', 'pages'];
+const necessaryContentFolders = ['items', 'pages', 'media'];
 
 const manageContents = {
     pages: null,
+    media: null,
     init() {
         return Promise.all(necessaryContentFolders.map(foldername =>
             fs.mkdir(`./contents/${foldername}`, {recursive: true})
         )).then(
-            () => {
-                manageContents.pages = structure.pages;
-            }
+            () => manageContents.pages = structure.pages
+        ).then(
+            () => manageContents.media = media
         )
 
     },
@@ -132,7 +134,31 @@ const manageContents = {
                 JSON.stringify(payload)
             )
         )
+    },
+
+    saveMedia(payload) {
+        console.log('save media', payload);
+        manageContents.media[payload.id] = payload;
+
+        // Der Speichervorgang soll noch eine Sekunde warten, bevor er startet
+        saveMediaFileDebounce();
+    },
+
+    saveMediaFileDebounce() {
+        let timerID = null;
+
+        return () => {
+            if (timerID) clearTimeout(timerID);
+            timerID = setTimeout(() => {
+                fs.writeFile(
+                    `./contents/media.json`,
+                    JSON.stringify(manageContents.media)
+                )
+            }, 1000);
+        }
     }
 }
+
+let saveMediaFileDebounce = manageContents.saveMediaFileDebounce();
 
 export default manageContents;

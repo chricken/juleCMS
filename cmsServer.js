@@ -14,7 +14,11 @@ server.use(express.static('public', {
     extensions: ['html']
 }));
 
-server.use(router);
+server.use('/api', router);
+
+server.get('/', (req, res) => {
+    res.status(404).send('404: Seite nicht gefunden');
+})
 
 const init = () => {
     manageContents.init().then(

@@ -1,0 +1,6 @@
+.container-input-file {
+    form {
+        position: relative;
+        display: inline-block;
+    }
+}

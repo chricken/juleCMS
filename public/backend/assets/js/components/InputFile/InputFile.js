@@ -17,21 +17,22 @@ const inputFile = ({
                        formData = new FormData(),
                        key = null,
                        multiple = false,
-                       callback = ajax.saveContent,
+                       onChange = ajax.saveContent,
                    }) => {
 
 
     const container = dom.create({
         parent,
-        cssClassName: `container-input`,
+        cssClassName: `container-input container-input-file`,
     })
 
-    dom.create({
-        parent: container,
-        cssClassName: `legendInput`,
-        content: legend,
-        tagName: 'span',
-    })
+    if (legend)
+        dom.create({
+            parent: container,
+            cssClassName: `legendInput`,
+            content: legend,
+            tagName: 'span',
+        })
 
     let tempForm = dom.create({
         tagName: 'form',
@@ -44,13 +45,28 @@ const inputFile = ({
         cssClassName: 'input-file',
         attr: {
             type: 'file',
-            name: key
+            name: key,
+
         },
         listeners: {
             change(evt) {
                 let tempFileData = new FormData(tempForm);
-                console.log(tempFileData);
+                // console.log(tempFileData);
+                const files = tempFileData.getAll(key); // Array mit allen Dateien aus form1
 
+                // vorhandene Bilddaten entfernen
+                let index = 0;
+                while (formData.has(`${key}[${index}]`)) {
+                    formData.delete(`${key}[${index}]`);
+                    index++;
+                }
+                // Neue Bilddaten hinzufügen
+                files.forEach((file, index) => {
+                    formData.append(`${key}[${index}]`, file); // z. B. "form1_files[0]", "form1_files[1]"
+                });
+                console.log('formdata', formData);
+
+                onChange(tempFileData);
             }
         }
     })

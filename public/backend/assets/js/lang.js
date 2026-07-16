@@ -87,6 +87,14 @@ const lang = {
         description:{
             de: 'Beschreibung',
             en: 'Description',
+        },
+        image:{
+            de: 'Bild',
+            en: 'Image',
+        },
+        commaSeparated:{
+            de: 'Komma getrennt',
+            en: 'Comma separated',
         }
     }
 }

@@ -24,6 +24,21 @@ const ajax = {
             console.warn
         )
     },
+    saveMedia(formData) {
+        console.log('save media', formData);
+        fetch('/api/saveMedia', {
+            method: 'POST',
+            body: formData
+        }).then(
+            res => res.json()
+        ).then(
+            payload => {
+                console.log(payload);
+            }
+        ).catch(
+            console.warn
+        )
+    },
     createContent(pageID, index) {
         console.log('create content');
         return fetch('/api/createContent', {

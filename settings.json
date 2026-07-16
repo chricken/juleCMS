@@ -8,5 +8,7 @@
   "trailerImgFileName": "trailer.jpg",
 
   "watermarkFiles": [],
-  "signatureFiles": []
+  "signatureFiles": [],
+
+  "defaultResolutions": [1600, 960, 600]
 }

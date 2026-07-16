@@ -1,6 +1,9 @@
 'use strict';
 
+
 import express from 'express';
+import formidable from 'formidable';
+
 import manageContents from "./manageContents.js";
 import Page from "./classes/Page.js";
 
@@ -8,16 +11,16 @@ const router = express.Router();
 
 router.use(express.json());
 
-router.get('/api/pages', (req, res) => {
+router.get('/pages', (req, res) => {
     // console.log('pages', manageContents.pages);
     res.send(manageContents.pages);
 });
 
-router.get('/api/page/:id', (req, res) => {
+router.get('/page/:id', (req, res) => {
     console.log(req.params.id);
 });
 
-router.get('/api/content/:contentID', (req, response) => {
+router.get('/content/:contentID', (req, response) => {
     // console.log('contentID', req.params.contentID);
     manageContents.getContent(req.params.contentID).then(
         res => response.json({
@@ -34,7 +37,7 @@ router.get('/api/content/:contentID', (req, response) => {
     )
 })
 
-router.post('/api/saveContent', (req, res) => {
+router.post('/saveContent', (req, res) => {
 
     // console.log('save Content', req.body);
 
@@ -49,7 +52,7 @@ router.post('/api/saveContent', (req, res) => {
 
 });
 
-router.post('/api/moveContent', (req, res) => {
+router.post('/moveContent', (req, res) => {
     // console.log(req.body);
 
     return manageContents.moveContent(req.body).then(
@@ -65,7 +68,7 @@ router.post('/api/moveContent', (req, res) => {
     )
 })
 
-router.post('/api/savePage', (req, res) => {
+router.post('/savePage', (req, res) => {
     // console.log('save Page', req.body);
     let page = manageContents.pages.find(page => page.id === req.body.id);
     // console.log(page);
@@ -95,7 +98,46 @@ router.post('/api/savePage', (req, res) => {
 
 });
 
-router.post('/api/newPageAfter', (req, res) => {
+router.post('/saveMedia', (req, res) => {
+    const form = formidable({
+        multiples: true,
+        uploadDir: './contents/media',
+        keepExtensions: true,
+    });
+
+    form.parse(req, (err, fields, files) => {
+        if (err) {
+            console.warn(err)
+            res.json({
+                status: 'error',
+                payload: err
+            })
+        } else {
+            Object.entries(fields).forEach(([key, value]) => {
+                fields[key] = value[0];
+            })
+            // Die AddMedia-Oberfläche soll nur ein Bild übertragen, daher genügt dieser Ansatz
+            fields.filename = Object.values(files)[0][0].newFilename;
+
+            fields.id = fields.filename.split('.')[0];
+
+            fields.tags = fields.tags.replaceAll(' ', ',');
+            fields.tags = fields.tags.replaceAll(',,', ',');
+            fields.tags = fields.tags.split(',');
+            fields.tags = fields.tags.filter(tag => (tag !== '') && (tag !== ' '));
+            fields.tags = fields.tags.map(tag => tag.toLowerCase());
+
+            manageContents.saveMedia(fields);
+
+            res.json({
+                status: 'success',
+                payload: fields
+            })
+        }
+    })
+})
+
+router.post('/newPageAfter', (req, res) => {
     let afterMe = req.body;
 
     let myPage = new Page({
@@ -126,7 +168,7 @@ router.post('/api/newPageAfter', (req, res) => {
     )
 });
 
-router.post('/api/newPageIn', (req, res) => {
+router.post('/newPageIn', (req, res) => {
     let inMe = req.body;
 
     let myPage = new Page({
@@ -156,7 +198,7 @@ router.post('/api/newPageIn', (req, res) => {
     )
 });
 
-router.post('/api/removePage', (req, res) => {
+router.post('/removePage', (req, res) => {
 
     manageContents.removePage(req.body.id);
 
@@ -176,7 +218,7 @@ router.post('/api/removePage', (req, res) => {
     )
 })
 
-router.post('/api/createContent', (req, res) => {
+router.post('/createContent', (req, res) => {
     // console.log('create content', req.body);
     manageContents.addContent(req.body.pageID, req.body.index).then(
         page => res.json(page)
@@ -185,7 +227,7 @@ router.post('/api/createContent', (req, res) => {
     )
 })
 
-router.post('/api/removeContent', (req, res) => {
+router.post('/removeContent', (req, res) => {
     // console.log(req.body);
 
     manageContents.removeContent(req.body.contentID).then(
@@ -194,10 +236,6 @@ router.post('/api/removeContent', (req, res) => {
         console.warn
     )
 
-})
-
-router.get('/', (req, res) => {
-    res.send('404: Seite nicht gefunden');
 })
 
 
