@@ -1,0 +1,13 @@
+.card {
+    position: relative;
+    display: inline-block;
+    margin: var(--padding);
+    width:300px;
+    vertical-align: top;
+
+    h2 {
+        font-size: 1.2rem;
+        color: var(--primary-color);
+    }
+
+}

@@ -8,9 +8,7 @@ import CompInput from "../components/Input/Input.js";
 import CompInputFile from "../components/InputFile/InputFile.js";
 import ajax from "../ajax.js";
 
-const viewMedia = () => {
-
-    elements.main.innerHTML = '';
+const selectAndUpload = () => {
 
     // Der File-Input verlangt ein FormData-Objekt
     let media = new FormData();
@@ -31,7 +29,7 @@ const viewMedia = () => {
     })
 
 // Title
-    CompInput({
+    let inpTitle = CompInput({
         parent: containerUpload,
         data: media,
         key: 'title',
@@ -39,7 +37,7 @@ const viewMedia = () => {
         isInForm: true,
     })
 
-    CompInput({
+    let inpDescription = CompInput({
         parent: containerUpload,
         data: media,
         key: 'description',
@@ -47,7 +45,7 @@ const viewMedia = () => {
         isInForm: true,
     })
 
-    CompInput({
+    let inpTags = CompInput({
         parent: containerUpload,
         data: media,
         key: 'tags',
@@ -57,7 +55,7 @@ const viewMedia = () => {
         isInForm: true,
     })
 
-    CompInputFile({
+    let inpImage = CompInputFile({
         parent: containerUpload,
         legend: lang.getPhrase('image'),
         key: 'image',
@@ -73,11 +71,68 @@ const viewMedia = () => {
             click(evt) {
                 evt.stopPropagation();
                 console.log('Upload', media);
-                ajax.saveMedia(media);
+                ajax.saveMedia(media).then(
+                    res => {
+                        inpImage.clear();
+                        inpTitle.clear();
+                        inpDescription.clear();
+                        inpTags.clear();
+                        inpTitle.focus();
+                        console.log('res', res);
+                    }
+                )
             }
         }
     })
 
+}
+
+const overview = () => {
+    ajax.loadMediaOverview().then(res => {
+        console.log(res);
+        const containerOverview = dom.create({
+            cssClassName: 'column column-right',
+            parent: elements.main,
+        })
+
+       Object.values(res).forEach(image => {
+            const container = dom.create({
+                parent: containerOverview,
+                cssClassName: 'card card-image',
+            })
+
+            dom.create({
+                tagName: 'h2',
+                content: image.title,
+                parent: container,
+            })
+
+            dom.create({
+                tagName: 'p',
+                content: image.description,
+                parent: container,
+            })
+
+           dom.create({
+                tagName: 'img',
+                attr: {
+                },
+           })
+
+           dom.create({
+               tagName: 'button',
+                content: 'Save Changes',
+                parent: container,
+           })
+        })
+    })
+}
+
+const viewMedia = () => {
+
+    elements.main.innerHTML = '';
+    selectAndUpload();
+    overview();
 
 }
 

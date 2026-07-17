@@ -84,7 +84,11 @@ const inputFile = ({
         },
         parent: container
     })
-
+    return {
+        clear() {
+            elInput.value = '';
+        }
+    }
 };
 
 export default inputFile;

@@ -98,7 +98,7 @@ router.post('/savePage', (req, res) => {
 
 });
 
-router.post('/saveMedia', (req, res) => {
+router.post('/saveMedia', (req, response) => {
     const form = formidable({
         multiples: true,
         uploadDir: './contents/media',
@@ -108,7 +108,7 @@ router.post('/saveMedia', (req, res) => {
     form.parse(req, (err, fields, files) => {
         if (err) {
             console.warn(err)
-            res.json({
+            response.json({
                 status: 'error',
                 payload: err
             })
@@ -127,14 +127,19 @@ router.post('/saveMedia', (req, res) => {
             fields.tags = fields.tags.filter(tag => (tag !== '') && (tag !== ' '));
             fields.tags = fields.tags.map(tag => tag.toLowerCase());
 
-            manageContents.saveMedia(fields);
-
-            res.json({
-                status: 'success',
-                payload: fields
-            })
+            manageContents.saveMedia(fields).then(
+                res =>
+                    response.json({
+                        status: 'success',
+                        payload: res
+                    })
+            )
         }
     })
+})
+
+router.get('/loadMediaOverview', (req, response) => {
+    response.json(manageContents.media);
 })
 
 router.post('/newPageAfter', (req, res) => {

@@ -26,17 +26,22 @@ const ajax = {
     },
     saveMedia(formData) {
         console.log('save media', formData);
-        fetch('/api/saveMedia', {
+        return fetch('/api/saveMedia', {
             method: 'POST',
             body: formData
         }).then(
             res => res.json()
         ).then(
             payload => {
-                console.log(payload);
+                // Debug Ausgabe und Weiterleitung
+                // console.log(payload);
+                return payload;
             }
-        ).catch(
-            console.warn
+        )
+    },
+    loadMediaOverview() {
+        return fetch('/api/loadMediaOverview').then(
+            res => res.json()
         )
     },
     createContent(pageID, index) {

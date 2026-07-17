@@ -5,8 +5,10 @@ import structure from './contents/structure.json' with {type: 'json'};
 import media from './contents/media.json' with {type: 'json'};
 import helpers from "./helpers.js";
 import Item from "./classes/Item.js";
+import settings from "./settings.js";
+import {Jimp} from "jimp";
 
-const necessaryContentFolders = ['items', 'pages', 'media'];
+const necessaryContentFolders = ['items', 'pages', 'media', 'watermarks'];
 
 const manageContents = {
     pages: null,
@@ -137,11 +139,27 @@ const manageContents = {
     },
 
     saveMedia(payload) {
-        console.log('save media', payload);
-        manageContents.media[payload.id] = payload;
+        // console.log('save media', payload);
 
-        // Der Speichervorgang soll noch eine Sekunde warten, bevor er startet
-        saveMediaFileDebounce();
+        // Größe anpassen
+       return manageContents.convertImage({
+            path: './contents/media/',
+            filename: payload.filename,
+            id: payload.id,
+        }).then(
+            res => {
+                payload.resized = res;
+            }
+        ).then(
+            () => {
+                manageContents.media[payload.id] = payload;
+                // console.log('converted', payload);
+            }
+        ).then(
+            // Der Speichervorgang soll noch eine Sekunde warten, bevor er startet
+            saveMediaFileDebounce
+        )
+
     },
 
     saveMediaFileDebounce() {
@@ -156,8 +174,55 @@ const manageContents = {
                 )
             }, 1000);
         }
+    },
+
+    convertImage({
+                     path = './',
+                     filename = null,
+                     id = null,
+                 }) {
+        // Diese Funktion scheint mir kein Promise zu sein.
+        let defRes = settings.get('defaultResolutions');
+        return Jimp.read(`${path}${filename}`).then(
+            // Daher bin ich nicht ganz sicher, ob das Timing später Probleme bereitet
+            image => {
+                let img = image.clone();
+                let w = img.bitmap.width;
+                let filenames = []
+                return Promise.all(
+                    defRes
+                        .filter(val => val <= w)
+                        .map(res => {
+                            // console.log(`${path}${id}_${res}.png`);
+                            filenames.push({
+                                filename: `${id}_${res}.png`,
+                                width: res
+                            })
+
+                            return image.clone()
+                                .resize({w: res, h: Jimp.AUTO})
+                                .write(`${path}${id}_${res}.png`);
+                        })
+                ).then(
+                    () => {
+                        // Rückgabe der Variable
+                        // console.log(filenames)
+                        return filenames;
+                    }
+                )
+            }
+        ).then(
+            res => {
+                // Debugausgabe und Weiterleitung
+                // console.log('done')
+                return res;
+            }
+        )
     }
+
+
 }
+
 
 let saveMediaFileDebounce = manageContents.saveMediaFileDebounce();
 

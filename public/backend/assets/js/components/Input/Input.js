@@ -37,7 +37,7 @@ const input = ({
     // Wenn der Inhalt als Array gedacht ist, bereite die Daten passend vor.
     let content = data[key] || (valueIsArray ? [] : '');
 
-    dom.create({
+    let elInput = dom.create({
         parent: container,
         tagName: 'span',
         cssClassName: 'input',
@@ -97,6 +97,15 @@ const input = ({
         },
         parent: container
     })
+
+    return {
+        clear() {
+            elInput.innerText = '';
+        },
+        focus(){
+            elInput.focus();
+        }
+    }
 
 };
 
