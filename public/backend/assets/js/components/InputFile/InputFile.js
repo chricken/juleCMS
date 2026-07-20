@@ -51,6 +51,7 @@ const inputFile = ({
         listeners: {
             change(evt) {
                 let tempFileData = new FormData(tempForm);
+                elPreview.innerHTML = '';
                 // console.log(tempFileData);
                 const files = tempFileData.getAll(key); // Array mit allen Dateien aus form1
 
@@ -63,8 +64,18 @@ const inputFile = ({
                 // Neue Bilddaten hinzufügen
                 files.forEach((file, index) => {
                     formData.append(`${key}[${index}]`, file); // z. B. "form1_files[0]", "form1_files[1]"
+                    let fileReader = new FileReader();
+                    fileReader.readAsDataURL(file);
+                    fileReader.addEventListener('load', () => {
+                        dom.create({
+                            tagName: 'img',
+                            src: fileReader.result,
+                            parent: elPreview,
+                            cssClassName: 'preview-img',
+                        })
+                    });
                 });
-                console.log('formdata', formData);
+                // console.log('formdata', formData);
 
                 onChange(tempFileData);
             }
@@ -72,6 +83,13 @@ const inputFile = ({
     })
 
     multiple && elInput.setAttribute('multiple', true);
+
+    // Preview
+    const elPreview = dom.create({
+        parent: container,
+        cssClassName: 'preview',
+    })
+
 
     let path = new URL(import.meta.url).pathname;
     path = `${path.substring(0, path.lastIndexOf('/') + 1)}inputFile.css`;
@@ -87,6 +105,7 @@ const inputFile = ({
     return {
         clear() {
             elInput.value = '';
+            elPreview.innerHTML = '';
         }
     }
 };

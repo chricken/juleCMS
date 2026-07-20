@@ -6,7 +6,11 @@ import data from "../data.js";
 import lang from "../lang.js";
 import CompInput from "../components/Input/Input.js";
 import CompInputFile from "../components/InputFile/InputFile.js";
+import CompImageInOverview from "../components/ImageInOverview/ImageInOverview.js";
 import ajax from "../ajax.js";
+import ImageInOverview from "../components/ImageInOverview/ImageInOverview.js";
+
+let containerOverview = null;
 
 const selectAndUpload = () => {
 
@@ -14,11 +18,12 @@ const selectAndUpload = () => {
     let media = new FormData();
     media.set('title', '');
     media.set('description', '');
+    media.set('altName', '');
     media.set('tags', '');
 
 
     const containerUpload = dom.create({
-        cssClassName: 'column',
+        cssClassName: 'column column-left',
         parent: elements.main,
     })
 
@@ -42,6 +47,14 @@ const selectAndUpload = () => {
         data: media,
         key: 'description',
         legend: lang.getPhrase('description'),
+        isInForm: true,
+    })
+
+    let inpAltName = CompInput({
+        parent: containerUpload,
+        data: media,
+        key: 'altName',
+        legend: lang.getPhrase('alternativeName'),
         isInForm: true,
     })
 
@@ -70,15 +83,18 @@ const selectAndUpload = () => {
         listeners: {
             click(evt) {
                 evt.stopPropagation();
-                console.log('Upload', media);
+                // console.log('Upload', media);
                 ajax.saveMedia(media).then(
                     res => {
                         inpImage.clear();
                         inpTitle.clear();
                         inpDescription.clear();
+                        inpAltName.clear();
                         inpTags.clear();
                         inpTitle.focus();
-                        console.log('res', res);
+                        // console.log('res', res);
+                        containerOverview.remove();
+                        overview();
                     }
                 )
             }
@@ -89,42 +105,27 @@ const selectAndUpload = () => {
 
 const overview = () => {
     ajax.loadMediaOverview().then(res => {
-        console.log(res);
-        const containerOverview = dom.create({
+        // console.log(res);
+        containerOverview = dom.create({
             cssClassName: 'column column-right',
             parent: elements.main,
         })
 
-       Object.values(res).forEach(image => {
-            const container = dom.create({
+        Object.values(res).forEach(image => {
+            ImageInOverview({
+                image,
                 parent: containerOverview,
-                cssClassName: 'card card-image',
-            })
-
-            dom.create({
-                tagName: 'h2',
-                content: image.title,
-                parent: container,
-            })
-
-            dom.create({
-                tagName: 'p',
-                content: image.description,
-                parent: container,
-            })
-
-           dom.create({
-                tagName: 'img',
-                attr: {
-                },
-           })
-
-           dom.create({
-               tagName: 'button',
-                content: 'Save Changes',
-                parent: container,
-           })
+                onDeleted: () => {
+                    containerOverview.remove();
+                    overview();
+                }
+            });
         })
+        return {
+            clear() {
+                containerOverview.innerHTML = '';
+            }
+        }
     })
 }
 

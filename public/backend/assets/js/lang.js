@@ -95,6 +95,18 @@ const lang = {
         commaSeparated:{
             de: 'Komma getrennt',
             en: 'Comma separated',
+        },
+        alternativeName:{
+            de: 'Alternative',
+            en: 'Alternative',
+        },
+        delete:{
+            de: 'Löschen',
+            en: 'Delete',
+        },
+        sureDeleteImage:{
+            de: 'Sind Sie sicher, dass Sie dieses Bild löschen möchten?',
+            en: 'Are you sure you want to delete this image?',
         }
     }
 }

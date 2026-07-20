@@ -6,7 +6,9 @@ class Image {
     constructor({
                     id = null,
                     title = '',
-                    originalFilename = '',
+                    filename = '',
+                    tags = [],
+                    resized = [],
                     description = '',
                     altName = '',
                     type = 'default',
@@ -16,9 +18,10 @@ class Image {
                 } = {}) {
 
         Object.assign(this, {
-            title, type, content, visible,
-            images, tags, originalFilename,
+            title, type, visible,
+            tags, filename,
             description, altName,
+            resized
         });
 
         this.id = id || helpers.createID();

@@ -5,7 +5,6 @@ import dom from "../../dom.js";
 import elements from "../../elements.js";
 import ajax from "../../ajax.js";
 
-
 const input = ({
                    parent = null,
                    legend = null,

@@ -1,13 +1,20 @@
 .card {
     position: relative;
     display: inline-block;
-    margin: var(--padding);
+    margin: var(--padding-far);
     width:300px;
+    padding:1rem;
     vertical-align: top;
+    border:1px solid var(--light-color);
+    box-shadow: var(--box-shadow);
 
     h2 {
         font-size: 1.2rem;
         color: var(--primary-color);
     }
-
+    .tags {
+        margin-top: 0.5rem;
+        font-size: 0.8rem;
+        color: var(--secondary-color);
+    }
 }

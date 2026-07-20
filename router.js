@@ -3,7 +3,7 @@
 
 import express from 'express';
 import formidable from 'formidable';
-
+import {promises as fs} from 'fs';
 import manageContents from "./manageContents.js";
 import Page from "./classes/Page.js";
 
@@ -136,6 +136,28 @@ router.post('/saveMedia', (req, response) => {
             )
         }
     })
+})
+
+router.post('/deleteMedia', (req, response) => {
+
+    manageContents.deleteMedia(req.body).then(
+        res => {
+            console.log(Object.keys(manageContents.media));
+            response.json({
+                status: 'success',
+                payload: res
+            })
+        }
+    ).catch(
+        console.warn
+    )
+
+})
+
+router.get('/getImg/:filename', (req, response) => {
+    let filename = req.params.filename;
+
+    response.sendFile(filename, {root: './contents/media'});
 })
 
 router.get('/loadMediaOverview', (req, response) => {

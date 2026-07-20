@@ -25,7 +25,7 @@ const ajax = {
         )
     },
     saveMedia(formData) {
-        console.log('save media', formData);
+        // console.log('save media', formData);
         return fetch('/api/saveMedia', {
             method: 'POST',
             body: formData
@@ -169,7 +169,20 @@ const ajax = {
         ).catch(
             console.warn
         )
-    }
+    },
+    deleteMedia(image) {
+        return fetch('/api/deleteMedia', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(image)
+        }).then(
+            res => res.json()
+        ).then(
+            res => res.payload
+        ).catch(
+            console.warn
+        )
+    },
 }
 
 export default ajax;

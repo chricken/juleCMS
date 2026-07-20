@@ -3,4 +3,17 @@
         position: relative;
         display: inline-block;
     }
+
+    .preview {
+        margin-top: 1rem;
+        border: 1px dashed var(--primary-color);
+        min-height:20px;
+
+        .preview-img {
+            position: relative;
+            height: 100px;
+            margin-right: 1rem;
+        }
+    }
+
 }

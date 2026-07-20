@@ -5,6 +5,7 @@ import structure from './contents/structure.json' with {type: 'json'};
 import media from './contents/media.json' with {type: 'json'};
 import helpers from "./helpers.js";
 import Item from "./classes/Item.js";
+import Image from "./classes/Image.js";
 import settings from "./settings.js";
 import {Jimp} from "jimp";
 
@@ -142,24 +143,60 @@ const manageContents = {
         // console.log('save media', payload);
 
         // Größe anpassen
-       return manageContents.convertImage({
+        return manageContents.convertImage({
             path: './contents/media/',
             filename: payload.filename,
             id: payload.id,
         }).then(
-            res => {
-                payload.resized = res;
-            }
+            res => payload.resized = res
         ).then(
             () => {
-                manageContents.media[payload.id] = payload;
-                // console.log('converted', payload);
+                console.log('converted', payload);
+                manageContents.media[payload.id] = new Image(payload);
             }
         ).then(
             // Der Speichervorgang soll noch eine Sekunde warten, bevor er startet
             saveMediaFileDebounce
         )
 
+    },
+
+    deleteMedia(payload) {
+        let count = 0;
+
+        return new Promise(resolve => {
+            resolve()
+        }).then(
+            () => {
+                delete manageContents.media[payload.id]
+            }
+        ).then(
+            manageContents.saveMediaFileDebounce
+        ).then(
+            () => {
+                if (payload.filename) {
+                    count++;
+                    return fs.unlink(`./contents/media/${payload.filename}`)
+                }
+            }
+        ).then(
+            () => {
+                if (payload.resized.length) {
+                    count += payload.resized.length;
+                    return Promise.all(
+                        payload.resized.map(
+                            file => fs.unlink(`./contents/media/${file.filename}`)
+                        )
+                    )
+                }
+            }
+        ).then(
+            () => {
+                return {
+                    filesDeleted: count
+                }
+            }
+        )
     },
 
     saveMediaFileDebounce() {
