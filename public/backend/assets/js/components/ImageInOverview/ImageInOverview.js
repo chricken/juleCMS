@@ -5,6 +5,8 @@ import elements from "../../elements.js";
 import lang from "../../lang.js";
 import ajax from "../../ajax.js";
 
+import CompTag from "../Tag/Tag.js";
+
 const ImageInOverview = ({
                              image = null,
                              parent = null,
@@ -24,14 +26,15 @@ const ImageInOverview = ({
 
     dom.create({
         tagName: 'p',
-        content: image.description,
+        content: image.description.replaceAll('\r\n', '<br>'),
         parent: container,
     })
 
+
     dom.create({
         tagName: 'p',
-        content: image.tags.join(', '),
-        cssClassName: 'tags',
+        content: `${lang.getPhrase('changedAt')} : ${new Date(image.chDate).toLocaleString()}`,
+        cssClassName: 'chDate smallInfo',
         parent: container,
     })
     // console.log(image);
@@ -45,9 +48,22 @@ const ImageInOverview = ({
         src: `/api/getImg/${filename}`
     })
 
+    // Tags
+    const elTags = dom.create({
+        parent: container,
+        cssClassName: 'tags',
+    })
+    image.tags.forEach(tag => {
+        CompTag({
+            parent: elTags,
+            content: tag,
+        })
+    })
+
+    // Buttons
     dom.create({
         tagName: 'button',
-        content: 'Edit',
+        content: lang.getPhrase('edit'),
         parent: container,
     })
 
@@ -62,7 +78,7 @@ const ImageInOverview = ({
                     console.log('delete image', image);
                     ajax.deleteMedia(image).then(
                         (res) => {
-                            console.log(`${image.title} deleted`,res.filesDeleted );
+                            console.log(`${image.title} deleted`, res.filesDeleted);
                             onDeleted(image);
                         }
                     )

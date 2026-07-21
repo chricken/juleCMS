@@ -1,6 +1,6 @@
 .card {
     position: relative;
-    display: inline-block;
+    display: block;
     margin: var(--padding-far);
     width:300px;
     padding:1rem;

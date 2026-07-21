@@ -21,6 +21,24 @@ const selectAndUpload = () => {
     media.set('altName', '');
     media.set('tags', '');
 
+    const validate = () => {
+        let valid = true;
+
+        if (!inpTitle.get()) {
+            valid = false;
+        }
+        if (inpImage.getFiles().length === 0) {
+            valid = false;
+        }
+        console.log(valid, !inpTitle.get(), inpImage.getFiles().length === 0);
+
+        if (valid) {
+            elButton.removeAttribute('disabled');
+        } else {
+            elButton.setAttribute('disabled', true);
+
+        }
+    }
 
     const containerUpload = dom.create({
         cssClassName: 'column column-left',
@@ -40,6 +58,9 @@ const selectAndUpload = () => {
         key: 'title',
         legend: lang.getPhrase('title'),
         isInForm: true,
+        onInput: () => {
+            validate();
+        }
     })
 
     let inpDescription = CompInput({
@@ -48,6 +69,7 @@ const selectAndUpload = () => {
         key: 'description',
         legend: lang.getPhrase('description'),
         isInForm: true,
+        multiline: true
     })
 
     let inpAltName = CompInput({
@@ -62,6 +84,7 @@ const selectAndUpload = () => {
         parent: containerUpload,
         data: media,
         key: 'tags',
+        toLowerCase: true,
         // legend: `${lang.getPhrase('tags')} (${lang.getPhrase('commaSeparated')})`,
         legend: `${lang.getPhrase('tags')}`,
         valueIsArray: true,
@@ -74,15 +97,20 @@ const selectAndUpload = () => {
         key: 'image',
         formData: media,
         // multiple: true,
+        onChange: () => {
+            validate();
+        },
     })
 
-    dom.create({
+    let elButton = dom.create({
         tagName: 'button',
         content: 'Upload',
         parent: containerUpload,
         listeners: {
             click(evt) {
                 evt.stopPropagation();
+                console.log(media);
+
                 // console.log('Upload', media);
                 ajax.saveMedia(media).then(
                     res => {
@@ -95,31 +123,64 @@ const selectAndUpload = () => {
                         // console.log('res', res);
                         containerOverview.remove();
                         overview();
+                        validate();
                     }
                 )
+
             }
         }
     })
+    elButton.setAttribute('disabled', true);
 
 }
 
 const overview = () => {
     ajax.loadMediaOverview().then(res => {
-        // console.log(res);
+
+        res = Object.values(res);
+        res.sort((a, b) => b.chDate - a.chDate);
+
         containerOverview = dom.create({
             cssClassName: 'column column-right',
             parent: elements.main,
         })
 
-        Object.values(res).forEach(image => {
+        const inputFilter = CompInput({
+            parent: containerOverview,
+            legend: lang.getPhrase('filter'),
+
+            onInput(value) {
+                console.log('Input', value);
+
+            }
+        })
+
+        const colsNarrow = [
+            dom.create({
+                cssClassName: 'colNarrow',
+                parent: containerOverview,
+            }),
+            dom.create({
+                cssClassName: 'colNarrow',
+                parent: containerOverview,
+            }),
+            dom.create({
+                cssClassName: 'colNarrow',
+                parent: containerOverview,
+            }),
+        ];
+
+        let slot = 0;
+        res.forEach((image, index) => {
             ImageInOverview({
                 image,
-                parent: containerOverview,
+                parent: colsNarrow[slot],
                 onDeleted: () => {
                     containerOverview.remove();
                     overview();
                 }
             });
+            slot = (slot + 1) % 3;
         })
         return {
             clear() {

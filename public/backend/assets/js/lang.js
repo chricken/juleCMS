@@ -49,12 +49,12 @@ const lang = {
             en: 'Select File',
         },
         createdAt: {
-            de: 'Erstellt am',
-            en: 'Created at',
+            de: 'Erstellt',
+            en: 'Created',
         },
         changedAt: {
-            de: 'Geändert am',
-            en: 'Changed at',
+            de: 'Geändert',
+            en: 'Changed',
         },
         sureDeletePage:{
             de: 'Wollen Sie diese Seite wirklich löschen?',
@@ -104,9 +104,17 @@ const lang = {
             de: 'Löschen',
             en: 'Delete',
         },
+        edit:{
+            de: 'Bearbeiten',
+            en: 'Edit',
+        },
         sureDeleteImage:{
             de: 'Sind Sie sicher, dass Sie dieses Bild löschen möchten?',
             en: 'Are you sure you want to delete this image?',
+        },
+        filter:{
+            de: 'Filter',
+            en: 'Filter',
         }
     }
 }

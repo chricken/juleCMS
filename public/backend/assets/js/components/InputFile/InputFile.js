@@ -46,7 +46,6 @@ const inputFile = ({
         attr: {
             type: 'file',
             name: key,
-
         },
         listeners: {
             change(evt) {
@@ -102,10 +101,14 @@ const inputFile = ({
         },
         parent: container
     })
+
     return {
         clear() {
             elInput.value = '';
             elPreview.innerHTML = '';
+        },
+        getFiles(){
+            return elInput.files;
         }
     }
 };

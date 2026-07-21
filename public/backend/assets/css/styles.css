@@ -122,6 +122,10 @@ button:active {
     transform: translateY(0);
 }
 
+button[disabled]{
+    background-color: var(--light-color);
+}
+
 /* Footer */
 footer {
     background-color: var(--primary-color);

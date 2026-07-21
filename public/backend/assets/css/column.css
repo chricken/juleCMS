@@ -4,5 +4,12 @@
     min-height: 100px;
 }
 .column-left {
-    width:400px;
+    width: 400px;
+}
+.column-right {
+    .colNarrow {
+        position: relative;
+        display: inline-block;
+        vertical-align: top;
+    }
 }

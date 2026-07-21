@@ -10,5 +10,7 @@
   "watermarkFiles": [],
   "signatureFiles": [],
 
+  "defaultWatermark": null,
+
   "defaultResolutions": [1600, 960, 600, 260]
 }
