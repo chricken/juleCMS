@@ -98,6 +98,8 @@ const ImageInOverview = ({
         },
         parent: container
     })
+
+    return container;
 }
 
 export default ImageInOverview;

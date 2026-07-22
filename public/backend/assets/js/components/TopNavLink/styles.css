@@ -1,13 +1,23 @@
 .top-nav-link {
     position: relative;
     cursor: pointer;
-
+    font-size: 16px;
 
 }
+
 .top-nav-link:hover {
-    color:var(--accent-color);
+    color: var(--accent-color);
 }
 
 .top-nav-link:not(:last-child)::after {
     content: ' | ';
+}
+
+.top-nav-link.active {
+    font-size: 24px;
+}
+
+.top-nav-link.active::after {
+    font-size: 16px;
+
 }

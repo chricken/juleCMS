@@ -11,11 +11,15 @@ import ViewTheme from "./Theme.js";
 import ViewSettings from "./Settings.js";
 import lang from "../lang.js";
 
-const TopNav = () => {
+const TopNav = ({
+                    activeView = null
+                } = {}) => {
 
     elements.nav.innerHTML = '';
 
-    TopNavLink({
+    elements.allTopNavs = {};
+
+    elements.allTopNavs['pages'] = TopNavLink({
         legend: lang.getPhrase('pages'),
         callback: () => {
             console.log('Pages')
@@ -23,7 +27,7 @@ const TopNav = () => {
         },
     });
 
-    TopNavLink({
+    elements.allTopNavs['media'] = TopNavLink({
         legend: lang.getPhrase('media'),
         callback: () => {
             console.log('Media')
@@ -31,7 +35,7 @@ const TopNav = () => {
         },
     });
 
-    TopNavLink({
+    elements.allTopNavs['watermark'] = TopNavLink({
         legend: lang.getPhrase('watermark'),
         callback: () => {
             console.log('Watermark')
@@ -39,7 +43,7 @@ const TopNav = () => {
         },
     });
 
-    TopNavLink({
+    elements.allTopNavs['theme'] = TopNavLink({
         legend: lang.getPhrase('theme'),
         callback: () => {
             console.log('Theme')
@@ -47,12 +51,27 @@ const TopNav = () => {
         },
     });
 
-    TopNavLink({
+    elements.allTopNavs['settings'] = TopNavLink({
         legend: lang.getPhrase('settings'),
         callback: () => {
             console.log('Settings')
             ViewSettings();
         },
+    });
+
+    // Klasse activehinzufügen
+    activeView && elements.allTopNavs[activeView].classList.add('active');
+
+
+    return {}
+}
+
+// Methode an die exportierte Funktion anhängen
+TopNav.clearAll = ({
+                       className = 'active'
+                   } = {}) => {
+    Object.values(elements.allTopNavs).forEach(topNav => {
+        topNav.classList.remove(className)
     });
 }
 

@@ -16,10 +16,12 @@ const input = ({
                    value = null,
                    multiline = false,
                    valueIsArray = false,
-                   callback = ajax.saveContent,
                    nextToIndex = false,
                    isInForm = false,
                    toLowerCase = false,
+                   hasClearButton = true,
+                   callback = () => {
+                   },
                    onInput = () => {
                    },
                }) => {
@@ -36,7 +38,7 @@ const input = ({
 
     let content;
     if (data && data[key]) {
-        content = data[key];
+        content = valueIsArray ? data[key].split(',').map(el => el.trim()) : data[key];
     } else if (value) {
         content = valueIsArray ? value.split(',').map(el => el.trim()) : value;
     } else {
@@ -86,21 +88,30 @@ const input = ({
                         : evt.target.innerText
                     );
                 } else {
+
                     if (valueIsArray) {
-                        data[key] = evt.target.innerText
+                        value = evt.target.innerText
                             .split(',')
                             .map(el => el.trim())
                             .map(el => toLowerCase
                                 ? el.toLowerCase()
                                 : el
                             )
+                        if (data) {
+                            data[key] = evt.target.innerText
+                        }
                     } else {
-                        data[key] = toLowerCase
+                        value = toLowerCase
                             ? evt.target.innerText.toLowerCase()
                             : evt.target.innerText;
+                        if (data) {
+                            data[key] = value;
+                        }
                     }
                 }
-                data.chDate = Date.now();
+
+                // Datum aktualisiseren
+                data && (data.chDate = Date.now());
 
                 // Leitet den Aufruf an den Debouncer weiter
                 callback(data);
@@ -114,6 +125,19 @@ const input = ({
             }
         }
     })
+
+    if (hasClearButton) {
+        dom.create({
+            tagName: 'button',
+            content: 'X',
+            parent: container,
+            listeners: {
+                click() {
+                    elInput.innerText = '';
+                }
+            }
+        })
+    }
 
     let path = new URL(import.meta.url).pathname;
     path = `${path.substring(0, path.lastIndexOf('/') + 1)}input.css`;

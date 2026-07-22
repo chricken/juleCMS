@@ -27,6 +27,7 @@ const viewPages = () =>{
 
     compDetailsPage(pageRoot);
 
+    elements.allTopNavs['pages']?.highlight()
 }
 
 export default viewPages;

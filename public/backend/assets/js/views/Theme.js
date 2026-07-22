@@ -14,6 +14,7 @@ const viewTheme = () => {
         parent:elements.main,
     })
 
+    elements.allTopNavs['theme']?.highlight()
 }
 
 export default viewTheme;

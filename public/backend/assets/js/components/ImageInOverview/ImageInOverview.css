@@ -9,3 +9,8 @@
     }
 
 }
+
+.card-image.hidden {
+    display: none;
+
+}

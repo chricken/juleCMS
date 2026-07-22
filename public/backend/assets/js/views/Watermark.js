@@ -14,6 +14,7 @@ const viewWatermark = () => {
         parent:elements.main,
     })
 
+    elements.allTopNavs['watermark']?.highlight()
 }
 
 export default viewWatermark;

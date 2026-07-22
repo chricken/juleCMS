@@ -150,8 +150,20 @@ const overview = () => {
             legend: lang.getPhrase('filter'),
 
             onInput(value) {
-                console.log('Input', value);
+                // console.log('Input', value, allImages);
+                allImages.forEach(item => {
+                    let hide = true;
+                    if (item.image.title.toLowerCase().includes(value.toLowerCase())) {
+                        hide = false;
+                    }
+                    if (item.image.description.toLowerCase().includes(value.toLowerCase())) {
+                        hide = false;
+                    }
+                    hide
+                        ? item.elImage.classList.add('hidden')
+                        : item.elImage.classList.remove('hidden');
 
+                })
             }
         })
 
@@ -171,8 +183,8 @@ const overview = () => {
         ];
 
         let slot = 0;
-        res.forEach((image, index) => {
-            ImageInOverview({
+        let allImages = res.map((image, index) => {
+            let elImage = ImageInOverview({
                 image,
                 parent: colsNarrow[slot],
                 onDeleted: () => {
@@ -181,6 +193,11 @@ const overview = () => {
                 }
             });
             slot = (slot + 1) % 3;
+
+            return {
+                image,
+                elImage,
+            }
         })
         return {
             clear() {
@@ -195,6 +212,8 @@ const viewMedia = () => {
     elements.main.innerHTML = '';
     selectAndUpload();
     overview();
+
+    elements.allTopNavs['media']?.highlight()
 
 }
 

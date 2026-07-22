@@ -14,12 +14,13 @@ const viewSettings = () => {
         parent:elements.main,
     })
 
-    diom.create({
+    dom.create({
         tagName:'p',
         content:'Max Bild-Auflösung bei Upload',
         parent:elements.main,
     })
 
+    elements.allTopNavs['settings']?.highlight()
 }
 
 export default viewSettings;
