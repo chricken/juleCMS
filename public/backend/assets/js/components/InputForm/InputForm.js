@@ -5,21 +5,21 @@ import dom from "../../dom.js";
 import elements from "../../elements.js";
 import ajax from "../../ajax.js";
 
-const input = ({
-                   parent = null,
-                   legend = null,
-                   value = '',
-                   multiline = false,
-                   valueIsArray = false,
-                   nextToIndex = false,
-                   isInForm = false,
-                   toLowerCase = false,
-                   hasClearButton = true,
-                   onInput = () => {
-                   },
-               }) => {
-
-    value = valueIsArray ? value.map(el => el.trim()).join(',') : value;
+// Diese Komponente soll verwendet werden, wenn es sich um ein Input-Element für ein Formular handelt
+// Hier wird das ganze formData übergeben und direkt editiert
+// Das mache ich so, damit die Referenz nicht gebrochen wird.
+const inputForm = ({
+                       parent = null,
+                       legend = null,
+                       formData = null, // Das input-Element muss das Objekt bekommen, um es verändern zu können
+                       key = null,  // Der Key dient dazu, das richtige Attribut aus data zu picken
+                       multiline = false,
+                       nextToIndex = false,
+                       toLowerCase = false,
+                       hasClearButton = true,
+                       onInput = () => {
+                       },
+                   }) => {
 
     const container = dom.create({
         parent,
@@ -37,10 +37,10 @@ const input = ({
         parent: container,
         tagName: 'span',
         cssClassName: 'input',
+        content: formData.get(key),  // Wurde oben aufbereitet
         attr: {
             contenteditable: true,
         },
-        content: value,  // Wurde oben aufbereitet
         listeners: {
             keydown(evt) {
                 evt.stopPropagation();
@@ -53,26 +53,20 @@ const input = ({
             keyup(evt) {
                 evt.stopPropagation();
 
-                if (valueIsArray) {
-                    value = evt.target.innerText
-                        .split(',')
-                        .map(el => el.trim())
-                        .map(el => toLowerCase
-                            ? el.toLowerCase()
-                            : el
-                        )
-                } else {
-                    value = toLowerCase
-                        ? evt.target.innerText.toLowerCase()
-                        : evt.target.innerText;
-                }
+                formData.set(key, toLowerCase
+                    ? evt.target.innerText.toLowerCase()
+                    : evt.target.innerText
+                );
 
-                onInput(value);
+                // Datum aktualisiseren
+                formData.set('chDate', Date.now());
+
+                // Leitet den Aufruf an den Debouncer weiter
+                onInput(formData);
             },
 
             click(evt) {
                 evt.stopPropagation();
-
             }
         }
     })
@@ -86,6 +80,7 @@ const input = ({
             listeners: {
                 click() {
                     elInput.innerText = '';
+                    formData.set(key, '');
                     elInput.focus();
                 }
             }
@@ -93,7 +88,7 @@ const input = ({
     }
 
     let path = new URL(import.meta.url).pathname;
-    path = `${path.substring(0, path.lastIndexOf('/') + 1)}input.css`;
+    path = `${path.substring(0, path.lastIndexOf('/') + 1)}inputForm.css`;
 
     dom.create({
         tagName: 'link',
@@ -118,4 +113,4 @@ const input = ({
 
 };
 
-export default input;
+export default inputForm;
