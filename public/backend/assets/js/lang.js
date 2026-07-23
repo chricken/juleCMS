@@ -115,6 +115,10 @@ const lang = {
         filter:{
             de: 'Filter',
             en: 'Filter',
+        },
+        sortBy:{
+            de: 'Sortieren nach',
+            en: 'Sort by',
         }
     }
 }

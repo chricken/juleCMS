@@ -17,7 +17,7 @@
         padding: 0.5rem;
         border: 1px solid #ddd;
         border-radius: var(--border-radius);
-        width: 600px;
+        min-width: 600px;
         transition: var(--transition);
         vertical-align: top;
     }
@@ -31,6 +31,24 @@
     .input:hover {
         border-color: var(--accent-color);
     }
+
+    .clear-button {
+        position: absolute;
+        right: 0;
+        bottom: 12px;
+        padding: 0;
+        width: 23px;
+        height: 22px;
+        background-color: transparent;
+        color: var(--primary-color);
+        /*outline: 1px solid #000;*/
+        border-radius: 5px;
+    }
+
+    .clear-button:hover {
+        background-color: var(--light-color);
+        color: var(--primary-color);
+    }
 }
 
 .container-input.nextToIndex {
@@ -40,8 +58,19 @@
         width: 45px;
     }
 }
+
 .column {
     .input {
-        width: 350px;
+        /*width: 350px;*/
+        width: calc(100% - 120px);
+    }
+}
+
+/* Input Stile */
+.column-left {
+    .container-input {
+        .input {
+            min-width: 330px;
+        }
     }
 }

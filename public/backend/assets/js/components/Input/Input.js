@@ -37,12 +37,18 @@ const input = ({
     // Wenn der Inhalt als Array gedacht ist, bereite die Daten passend vor.
 
     let content;
+    /*
+    console.log('data key 1', data, key);
+    console.log('data[key] 2', data[key]);
+    console.log('data[key].split 3', data[key]?.split);
+    */
+
     if (data && data[key]) {
-        content = valueIsArray ? data[key].split(',').map(el => el.trim()) : data[key];
+        content = valueIsArray ? data[key].map(el => el.trim()).join(',') : data[key];
     } else if (value) {
-        content = valueIsArray ? value.split(',').map(el => el.trim()) : value;
+        content = valueIsArray ? value.map(el => el.trim()).join(',') : value;
     } else {
-        content = valueIsArray ? [] : '';
+        content = '';
     }
 
 
@@ -90,7 +96,7 @@ const input = ({
                 } else {
 
                     if (valueIsArray) {
-                        value = evt.target.innerText
+                        content = evt.target.innerText
                             .split(',')
                             .map(el => el.trim())
                             .map(el => toLowerCase
@@ -98,10 +104,11 @@ const input = ({
                                 : el
                             )
                         if (data) {
+                            // Wenn wir mit Formulardaten arbeiten, muss es ein Array bleiben
                             data[key] = evt.target.innerText
                         }
                     } else {
-                        value = toLowerCase
+                        content = toLowerCase
                             ? evt.target.innerText.toLowerCase()
                             : evt.target.innerText;
                         if (data) {
@@ -115,7 +122,7 @@ const input = ({
 
                 // Leitet den Aufruf an den Debouncer weiter
                 callback(data);
-                onInput(evt.target.innerText);
+                onInput(content);
                 // ajax.saveContent(data);
             },
 
@@ -131,9 +138,11 @@ const input = ({
             tagName: 'button',
             content: 'X',
             parent: container,
+            cssClassName: 'clear-button',
             listeners: {
                 click() {
                     elInput.innerText = '';
+                    elInput.focus();
                 }
             }
         })

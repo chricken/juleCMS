@@ -7,6 +7,7 @@ import lang from "../lang.js";
 import CompInput from "../components/Input/Input.js";
 import CompInputFile from "../components/InputFile/InputFile.js";
 import CompImageInOverview from "../components/ImageInOverview/ImageInOverview.js";
+import CompBtnSort from "../components/BtnSort/BtnSort.js";
 import ajax from "../ajax.js";
 import ImageInOverview from "../components/ImageInOverview/ImageInOverview.js";
 
@@ -135,55 +136,101 @@ const selectAndUpload = () => {
 }
 
 const overview = () => {
-    ajax.loadMediaOverview().then(res => {
 
-        res = Object.values(res);
-        res.sort((a, b) => b.chDate - a.chDate);
+    let payload = [];
 
-        containerOverview = dom.create({
-            cssClassName: 'column column-right',
-            parent: elements.main,
-        })
+    if (containerOverview) containerOverview.remove();
 
-        const inputFilter = CompInput({
-            parent: containerOverview,
-            legend: lang.getPhrase('filter'),
+    containerOverview = dom.create({
+        cssClassName: 'column column-right',
+        parent: elements.main,
+    })
 
-            onInput(value) {
-                // console.log('Input', value, allImages);
-                allImages.forEach(item => {
-                    let hide = true;
-                    if (item.image.title.toLowerCase().includes(value.toLowerCase())) {
-                        hide = false;
-                    }
-                    if (item.image.description.toLowerCase().includes(value.toLowerCase())) {
-                        hide = false;
-                    }
-                    hide
-                        ? item.elImage.classList.add('hidden')
-                        : item.elImage.classList.remove('hidden');
+    // Filter
+    const inputFilter = CompInput({
+        parent: containerOverview,
+        legend: lang.getPhrase('filter'),
 
-                })
-            }
-        })
+        onInput(value) {
+            // console.log('Input', value, allImages);
+            allImages.forEach(item => {
+                let hide = true;
+                if (item.image.title.toLowerCase().includes(value.toLowerCase())) {
+                    hide = false;
+                }
+                if (item.image.description.toLowerCase().includes(value.toLowerCase())) {
+                    hide = false;
+                }
+                hide
+                    ? item.elImage.classList.add('hidden')
+                    : item.elImage.classList.remove('hidden');
+
+            })
+        }
+    })
+
+    // Sortierung
+    const containerSort = dom.create({
+        tagName: 'div',
+        cssClassName: 'container-sort',
+        parent: containerOverview,
+    })
+
+    CompBtnSort({
+        parent: containerSort,
+        legend: 'title',
+        onSort(asc) {
+            payload.sort((a, b) => {
+                if (asc) {
+                    return (a.title.toLowerCase() < b.title.toLowerCase()) ? 1 : -1;
+                } else {
+                    return (a.title.toLowerCase() < b.title.toLowerCase()) ? -1 : 1;
+                }
+            })
+            render()
+        }
+    })
+
+    CompBtnSort({
+        parent: containerSort,
+        legend: 'changedAt',
+        onSort(asc) {
+            payload.sort((a, b) => {
+                if (asc) {
+                    return (a.chDate < b.chDate) ? 1 : -1;
+                } else {
+                    return (a.chDate < b.chDate) ? -1 : 1;
+                }
+            })
+            render()
+        }
+    })
+
+    const containerContent = dom.create({
+        tagName: 'div',
+        parent: containerOverview,
+    })
+
+    const render = () => {
+        containerContent.innerHTML = '';
 
         const colsNarrow = [
             dom.create({
                 cssClassName: 'colNarrow',
-                parent: containerOverview,
+                parent: containerContent,
             }),
             dom.create({
                 cssClassName: 'colNarrow',
-                parent: containerOverview,
+                parent: containerContent,
             }),
             dom.create({
                 cssClassName: 'colNarrow',
-                parent: containerOverview,
+                parent: containerContent,
             }),
         ];
 
         let slot = 0;
-        let allImages = res.map((image, index) => {
+        let allImages = payload.map((image, index) => {
             let elImage = ImageInOverview({
                 image,
                 parent: colsNarrow[slot],
@@ -204,6 +251,14 @@ const overview = () => {
                 containerOverview.innerHTML = '';
             }
         }
+    }
+
+    ajax.loadMediaOverview().then(res => {
+
+        payload = Object.values(res);
+        payload.sort((a, b) => b.chDate - a.chDate);
+        return render();
+
     })
 }
 
