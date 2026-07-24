@@ -84,6 +84,7 @@ const Contents = ({
                     return false;
                 } else {
                     let content = result.payload;
+
                     CompContent({
                         data: content,
                         index,
@@ -106,6 +107,7 @@ const Contents = ({
                             container.classList.remove('dragging');
                         }
                     });
+
 
                     CompDropContent({
                         parent: placeholder,

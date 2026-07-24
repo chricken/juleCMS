@@ -5,11 +5,13 @@ import dom from "../dom.js";
 import data from "../data.js";
 import lang from "../lang.js";
 import CompInput from "../components/Input/Input.js";
+// import CompInputForm from "../components/Input/Input.js";
 import CompInputFile from "../components/InputFile/InputFile.js";
 import CompImageInOverview from "../components/ImageInOverview/ImageInOverview.js";
 import CompBtnSort from "../components/BtnSort/BtnSort.js";
 import ajax from "../ajax.js";
 import ImageInOverview from "../components/ImageInOverview/ImageInOverview.js";
+import CompTag from "../components/Tag/Tag.js";
 
 let containerOverview = null;
 
@@ -52,44 +54,49 @@ const selectAndUpload = () => {
         parent: containerUpload,
     })
 
-// Title
+    // Title
     let inpTitle = CompInput({
         parent: containerUpload,
-        data: media,
-        key: 'title',
+        value: media.get("title"),
         legend: lang.getPhrase('title'),
-        isInForm: true,
-        onInput: () => {
+        onInput: (value) => {
+            media.set('title', value);
             validate();
         }
     })
 
     let inpDescription = CompInput({
         parent: containerUpload,
-        data: media,
-        key: 'description',
+        value: media.get("description"),
         legend: lang.getPhrase('description'),
-        isInForm: true,
-        multiline: true
+        multiline: true,
+        onInput: (value) => {
+            media.set('description', value);
+            validate();
+        }
     })
 
     let inpAltName = CompInput({
         parent: containerUpload,
-        data: media,
-        key: 'altName',
+        value: media.altName,
         legend: lang.getPhrase('alternativeName'),
-        isInForm: true,
+        onInput: (value) => {
+            media.set('altName', value);
+            validate();
+        }
     })
 
     let inpTags = CompInput({
         parent: containerUpload,
-        data: media,
-        key: 'tags',
+        // Die Tags werden nicht als Array verarbeitet, da Array in einer Form kompliziert sind
+        value: media.get("tags"),
         toLowerCase: true,
-        // legend: `${lang.getPhrase('tags')} (${lang.getPhrase('commaSeparated')})`,
         legend: `${lang.getPhrase('tags')}`,
         valueIsArray: true,
-        isInForm: true,
+        onInput: (value) => {
+            media.set('tags', value);
+            validate();
+        }
     })
 
     let inpImage = CompInputFile({
@@ -138,6 +145,9 @@ const selectAndUpload = () => {
 const overview = () => {
 
     let payload = [];
+    let allImages = [];
+    let allTags = [];
+    let activeTags = [];
 
     if (containerOverview) containerOverview.remove();
 
@@ -147,25 +157,43 @@ const overview = () => {
     })
 
     // Filter
-    const inputFilter = CompInput({
+    const filterImages = (value) => {
+        allImages.forEach(item => {
+            let hide = true;
+
+            let hasFittingTag = item.image.tags.some(tag => {
+                return activeTags.includes(tag)
+            })
+
+            if (
+                activeTags.length === 0 ||
+                (activeTags.length && hasFittingTag)) {
+
+                if (item.image.title.toLowerCase().includes(value.toLowerCase())) {
+                    hide = false;
+                }
+
+                if (item.image.description.toLowerCase().includes(value.toLowerCase())) {
+                    hide = false;
+                }
+
+            }
+
+            hide
+                ? item.elImage.classList.add('hidden')
+                : item.elImage.classList.remove('hidden');
+        })
+    }
+
+    const elFilter = CompInput({
         parent: containerOverview,
         legend: lang.getPhrase('filter'),
 
         onInput(value) {
-            // console.log('Input', value, allImages);
-            allImages.forEach(item => {
-                let hide = true;
-                if (item.image.title.toLowerCase().includes(value.toLowerCase())) {
-                    hide = false;
-                }
-                if (item.image.description.toLowerCase().includes(value.toLowerCase())) {
-                    hide = false;
-                }
-                hide
-                    ? item.elImage.classList.add('hidden')
-                    : item.elImage.classList.remove('hidden');
-
-            })
+            filterImages(value);
+        },
+        onClear() {
+            filterImages('');
         }
     })
 
@@ -206,12 +234,47 @@ const overview = () => {
         }
     })
 
+    // Tags
+    const containerTags = dom.create({
+        tagName: 'div',
+        cssClassName: 'filter-by-tags',
+        parent: containerOverview,
+    });
+
+    const renderFilterByTags = () => {
+        console.log('Input', allTags);
+
+        allTags.forEach(tag => {
+
+
+            const elTag = CompTag({
+                parent: containerTags,
+                content: tag,
+                isInteractive: true,
+                onClick(){
+                    if (activeTags.includes(tag)) {
+                        activeTags = activeTags.filter(t => t !== tag);
+                        elTag.el.classList.remove('active');
+                    } else {
+                        activeTags.push(tag);
+                        elTag.el.classList.add('active');
+                    }
+                    // console.log('activeTags', activeTags);
+
+                    filterImages(elFilter.get() || '');
+                }
+            })
+        })
+    }
+
+    // Content
     const containerContent = dom.create({
         tagName: 'div',
         parent: containerOverview,
     })
 
     const render = () => {
+        allTags = [];
         containerContent.innerHTML = '';
 
         const colsNarrow = [
@@ -230,7 +293,7 @@ const overview = () => {
         ];
 
         let slot = 0;
-        let allImages = payload.map((image, index) => {
+        allImages = payload.map((image, index) => {
             let elImage = ImageInOverview({
                 image,
                 parent: colsNarrow[slot],
@@ -241,11 +304,18 @@ const overview = () => {
             });
             slot = (slot + 1) % 3;
 
+            // Tags erweitern
+            allTags = new Set([...allTags, ...image.tags]);
+            allTags = [...allTags];
+
             return {
                 image,
                 elImage,
             }
         })
+
+        renderFilterByTags();
+
         return {
             clear() {
                 containerOverview.innerHTML = '';

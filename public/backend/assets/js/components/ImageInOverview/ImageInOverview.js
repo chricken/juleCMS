@@ -20,7 +20,7 @@ const ImageInOverview = ({
 
     dom.create({
         tagName: 'h2',
-        content: image.title,
+        content: `${image.title}`,
         parent: container,
     })
 
@@ -30,13 +30,22 @@ const ImageInOverview = ({
         parent: container,
     })
 
-
     dom.create({
         tagName: 'p',
         content: `${lang.getPhrase('changedAt')} : ${new Date(image.chDate).toLocaleString()}`,
         cssClassName: 'chDate smallInfo',
         parent: container,
     })
+
+    if(image.altName){
+    dom.create({
+        tagName: 'p',
+        content: `Alternativ: ${image.altName}`,
+        cssClassName: 'chDate smallInfo',
+        parent: container,
+    })
+
+    }
     // console.log(image);
 
     // kleinstes Bild finden

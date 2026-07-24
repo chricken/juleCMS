@@ -8,7 +8,11 @@ import compDetailsPage from "../Page/Page.js";
 
 let activeMenuLink = null;
 
-const CompNavPage = ({page, index, parent}) => {
+const CompNavPage = ({
+                         page = data.pages.find(page => page.id === 'root'),
+                         index = 0,
+                         parent = elements.pages
+                     } = {}) => {
 
     const container = dom.create({
         cssClasses: ['page', 'page-single'],
@@ -89,28 +93,27 @@ const CompNavPage = ({page, index, parent}) => {
             });
         })
     }
-/*
-    // Element, um Seiten zu droppen
-    dom.create({
-        cssClassName: 'dropperPage dropperPage-after',
-        content: `Drop after ${page.title}`,
-        parent: container,
-        listeners: {
-            dragenter(evt) {
-                evt.preventDefault();
-                container.classList.add('drag-over');
-            },
-            dragleave(evt) {
-                evt.preventDefault();
-                container.classList.remove('drag-leave');
-            },
-            drop(evt) {
+    /*
+        // Element, um Seiten zu droppen
+        dom.create({
+            cssClassName: 'dropperPage dropperPage-after',
+            content: `Drop after ${page.title}`,
+            parent: container,
+            listeners: {
+                dragenter(evt) {
+                    evt.preventDefault();
+                    container.classList.add('drag-over');
+                },
+                dragleave(evt) {
+                    evt.preventDefault();
+                    container.classList.remove('drag-leave');
+                },
+                drop(evt) {
+                }
             }
-        }
-    })
-    */
+        })
+        */
 }
-
 
 
 export default CompNavPage;

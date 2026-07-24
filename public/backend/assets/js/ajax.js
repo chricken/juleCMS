@@ -2,7 +2,7 @@
 
 import data from "./data.js";
 import compPage from "./components/Page/Page.js";
-// import compPages from "./components/Pages/Pages.js";
+import compPages from "./components/NavPage/NavPage.js";
 import elements from "./elements.js";
 
 const ajax = {
@@ -10,7 +10,9 @@ const ajax = {
         // console.log(url);
         return fetch(url).then(res => res.json());
     },
+
     saveContent(data) {
+        console.log('save content', data);
 
         fetch('/api/saveContent', {
             method: 'POST',
@@ -24,6 +26,7 @@ const ajax = {
             console.warn
         )
     },
+
     saveMedia(formData) {
         // console.log('save media', formData);
         return fetch('/api/saveMedia', {
@@ -39,11 +42,13 @@ const ajax = {
             }
         )
     },
+
     loadMediaOverview() {
         return fetch('/api/loadMediaOverview').then(
             res => res.json()
         )
     },
+
     createContent(pageID, index) {
         console.log('create content');
         return fetch('/api/createContent', {
@@ -62,6 +67,7 @@ const ajax = {
             }
         )
     },
+
     removeContent(contentID) {
         return fetch('/api/removeContent', {
             method: 'POST',
@@ -75,6 +81,7 @@ const ajax = {
             }
         )
     },
+
     moveContent() {
         console.log(data);
         return fetch('/api/moveContent', {
@@ -97,6 +104,7 @@ const ajax = {
             }
         )
     },
+
     savePage(data) {
         console.log('Save Page', data);
         fetch('/api/savePage', {
@@ -108,6 +116,8 @@ const ajax = {
         ).then(
             result => {
                 data.pages = result.payload;
+
+                elements.pages.innerHTML = '';
                 compPages()
             }
         ).catch(
@@ -115,6 +125,7 @@ const ajax = {
         )
 
     },
+
     newPageAfter(page) {
         fetch('/api/newPageAfter', {
             method: 'POST',
@@ -134,6 +145,7 @@ const ajax = {
         )
 
     },
+
     newPageIn(page) {
         fetch('/api/newPageIn', {
             method: 'POST',
@@ -153,6 +165,7 @@ const ajax = {
         )
 
     },
+
     removePage(page) {
         fetch('/api/removePage', {
             method: 'POST',
@@ -170,6 +183,7 @@ const ajax = {
             console.warn
         )
     },
+
     deleteMedia(image) {
         return fetch('/api/deleteMedia', {
             method: 'POST',

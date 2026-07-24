@@ -39,7 +39,7 @@ router.get('/content/:contentID', (req, response) => {
 
 router.post('/saveContent', (req, res) => {
 
-    // console.log('save Content', req.body);
+    console.log('save Content', req.body);
 
     manageContents.saveContent(req.body).then(
         () => res.json({

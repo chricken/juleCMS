@@ -1,7 +1,7 @@
 /* Input Stile */
 .container-input {
     position: relative;
-
+    width: 720px;
 
     .legendInput {
         display: inline-block;
@@ -11,13 +11,12 @@
         vertical-align: top;
     }
 
-
     .input {
         display: inline-block;
         padding: 0.5rem;
         border: 1px solid #ddd;
         border-radius: var(--border-radius);
-        min-width: 600px;
+        width: 570px;
         transition: var(--transition);
         vertical-align: top;
     }
@@ -32,11 +31,17 @@
         border-color: var(--accent-color);
     }
 
-    .clear-button {
+    .buttons {
         position: absolute;
-        right: 0;
-        bottom: 12px;
+        right: 36px;
+        top: 8px;
+    }
+
+    .clear-button {
+        position: relative;
+        display: inline-block;
         padding: 0;
+        margin: 0;
         width: 23px;
         height: 22px;
         background-color: transparent;
@@ -70,7 +75,7 @@
 .column-left {
     .container-input {
         .input {
-            min-width: 330px;
+            width: 230px;
         }
     }
 }

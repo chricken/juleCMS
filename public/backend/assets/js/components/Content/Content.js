@@ -5,6 +5,8 @@ import CompInput from "../Input/Input.js";
 import elements from "../../elements.js";
 import settings from "../../data.js";
 import lang from "../../lang.js";
+import helpers from "../../helpers.js";
+import ajax from "../../ajax.js";
 
 const Content = ({
                      data = {},
@@ -17,13 +19,13 @@ const Content = ({
                      onDragEnd = () => {
                      },
                  } = {}) => {
+    console.log('Content Data', data);
+
+    const saveContent = helpers.debouncer(ajax.saveContent, 1000)
 
     const container = dom.create({
         parent,
         cssClassName: 'container content edit transit',
-        attr: {
-            // draggable: true,
-        },
         listeners: {
             click(evt) {
                 evt.stopPropagation();
@@ -101,27 +103,45 @@ const Content = ({
     // Inhalte
     CompInput({
         parent: elInner,
-        key: 'title',
-        data,
-        nextToIndex: true,
+        legend: lang.getPhrase('title'),
+        value: data.title,
+        // nextToIndex: true,
+        onInput(value) {
+            console.log('Neuer Titel: ', value);
+            data.title = value;
+            saveContent(data);
+        }
     })
 
+
     // Text
+    let content = data.content;
+    content = content.replaceAll('\r\n', '<br>');
+    content = content.replaceAll('\n', '<br>');
+
     CompInput({
         parent: elInner,
-        legend: 'Text',
-        key: 'content',
-        data,
+        legend: lang.getPhrase('text'),
+        value: content,
         multiline: true,
+        onInput(value) {
+            console.log('Neuer Text: ', value);
+            data.content = value;
+            saveContent(data);
+        }
     })
 
     // Tags
     CompInput({
         parent: elInner,
-        legend: 'Tags',
-        key: 'tags',
-        data,
+        legend: lang.getPhrase('tags'),
+        value: data.tags,
         valueIsArray: true,
+        onInput(value) {
+            console.log('Neue Tags: ', value);
+            data.tags = value;
+            saveContent(data);
+        }
     })
 
 

@@ -14,7 +14,7 @@
     padding-left: 30px;
     position: relative;
     overflow: hidden;
-    height: 50px;
+    height: 55px;
     overscroll-behavior: none;
 }
 
@@ -22,28 +22,24 @@
     /*height: auto;*/
 
     .content-opener {
-        transform: rotate(90deg) scale(60%) translateY(40px);
-        color: #fff;
+        transform: rotate(90deg);
     }
 
     .dragger {
-        /*top: 52px;*/
     }
 
     .index {
-        color: #fff;
-        top: 35px;
-        /*border-right-color:  #003;*/
-        /*border-bottom-color:  #003;*/
     }
 }
 
 .content-opener {
+    transform: rotate(0deg);
+    color: #fff;
     position: absolute;
     cursor: pointer;
-    left: 16px;
-    font-size: 40px;
-    top: -15px;
+    left: -4px;
+    font-size: 28px;
+    top: -10px;
     z-index: 1000;
 }
 
@@ -51,7 +47,7 @@
 .dragger {
     position: absolute;
     left: 0;
-    top: 0px;
+    top: 0;
     background: var(--dark-color);
     width: 20px;
     bottom: 0;
@@ -63,11 +59,11 @@
     color: #fff;
     width: 20px;
     height: 40px;
+    top: 20px;
+    left: 0;
     border-right: 1px solid transparent;
     border-bottom: 1px solid transparent;
     border-radius: 0 0 10px;
-    left: 0;
-    top: 0;
     font-size: 0.8rem;
     text-align: center;
     padding-top: 7px;

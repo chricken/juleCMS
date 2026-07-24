@@ -10,25 +10,29 @@ const input = ({
                    legend = null,
                    value = '',
                    multiline = false,
-                   valueIsArray = false,
-                   nextToIndex = false,
-                   isInForm = false,
+                   // valueIsArray = false,
+                   // nextToIndex = false,
                    toLowerCase = false,
                    hasClearButton = true,
                    onInput = () => {
                    },
+                   onClear = () => {
+                   }
                }) => {
 
-    value = valueIsArray ? value.map(el => el.trim()).join(',') : value;
+    // console.log(legend, value);
+
 
     const container = dom.create({
         parent,
-        cssClassName: `container-input ${nextToIndex ? 'nextToIndex' : ''}`,
+        // cssClassName: `container-input ${nextToIndex ? 'nextToIndex' : ''}`,
+        cssClassName: `container-input`,
     })
 
     dom.create({
         parent: container,
-        cssClassName: `legendInput ${nextToIndex ? 'nextToIndex' : ''}`,
+        // cssClassName: `legendInput ${nextToIndex ? 'nextToIndex' : ''}`,
+        cssClassName: `legendInput`,
         content: legend,
         tagName: 'span',
     })
@@ -52,7 +56,7 @@ const input = ({
 
             keyup(evt) {
                 evt.stopPropagation();
-
+                /*
                 if (valueIsArray) {
                     value = evt.target.innerText
                         .split(',')
@@ -62,10 +66,11 @@ const input = ({
                             : el
                         )
                 } else {
-                    value = toLowerCase
-                        ? evt.target.innerText.toLowerCase()
-                        : evt.target.innerText;
-                }
+                */
+                value = toLowerCase
+                    ? evt.target.innerText.toLowerCase()
+                    : evt.target.innerText;
+                // }
 
                 onInput(value);
             },
@@ -77,16 +82,21 @@ const input = ({
         }
     })
 
+    const elButtons = dom.create({
+        parent: container,
+        cssClassName: 'buttons',
+    })
     if (hasClearButton) {
         dom.create({
             tagName: 'button',
             content: 'X',
-            parent: container,
+            parent: elButtons,
             cssClassName: 'clear-button',
             listeners: {
                 click() {
                     elInput.innerText = '';
                     elInput.focus();
+                    onClear();
                 }
             }
         })

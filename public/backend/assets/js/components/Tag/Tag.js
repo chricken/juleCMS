@@ -5,14 +5,24 @@ import dom from "../../dom.js";
 const Tag = ({
                  parent = null,
                  content = '',
+                 isInteractive = false,
+                 onClick = () => {
+                 },
              }) => {
 
-    dom.create({
+    const elTag = dom.create({
         tagName: 'span',
         content,
-        cssClassName: 'tag',
+        cssClassName: `tag ${isInteractive ? 'interactive' : ''}`,
         parent,
+        listeners: {
+            click(evt) {
+                evt.stopPropagation();
+                onClick();
+            }
+        }
     })
+
 
     let path = new URL(import.meta.url).pathname;
     path = `${path.substring(0, path.lastIndexOf('/') + 1)}Tag.css`;
@@ -25,6 +35,10 @@ const Tag = ({
         },
         parent
     })
+
+    return {
+        el: elTag
+    }
 
 }
 

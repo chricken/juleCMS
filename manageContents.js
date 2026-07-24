@@ -63,6 +63,8 @@ const manageContents = {
     },
 
     saveContent(data) {
+        console.log('manage save content', data);
+
         return fs.writeFile(
             `./contents/items/${data.id}.json`,
             JSON.stringify(data)

@@ -5,6 +5,7 @@
 @import './pages.css';
 @import './column.css';
 @import './card.css';
+@import './media.css';
 
 :root {
     --primary-color: #2c3e50; /* Dunkles Blau für Professionalität */

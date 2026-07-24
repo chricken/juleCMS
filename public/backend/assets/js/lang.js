@@ -40,6 +40,10 @@ const lang = {
           de: 'Titel',
           en: 'Title',
         },
+        text:{
+            de: 'Text',
+            en: 'Text',
+        },
         desc:{
           de: 'Beschreibung',
           en: 'Description',
@@ -87,6 +91,10 @@ const lang = {
         description:{
             de: 'Beschreibung',
             en: 'Description',
+        },
+        slugline:{
+            de: 'Slugline',
+            en: 'Slugline',
         },
         image:{
             de: 'Bild',

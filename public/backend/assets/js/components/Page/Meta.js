@@ -15,6 +15,7 @@ const Meta = ({
                   parent = null
               }) => {
 
+    const savePage = helpers.debouncer(ajax.savePage, 1000);
 
     const container = dom.create({
         cssClassName: 'meta container collapsable transit',
@@ -47,12 +48,10 @@ const Meta = ({
         listeners: {
             click(evt) {
                 evt.stopPropagation();
-                // container.classList.toggle('open');
                 collapse(container, inner);
             }
         }
     })
-
 
     const inner = dom.create({
         parent: containerInner,
@@ -61,31 +60,39 @@ const Meta = ({
 
     compInput({
         parent: inner,
-        legend: 'Titel',
-        key: 'metaTitle',
-        data,
-        callback:ajax.savePage
+        legend: lang.getPhrase('title'),
+        value: data.metaTitle,
+        onInput(value) {
+            console.log('metaTitel', value);
+            data.metaTitle = value;
+            savePage(data);
+        }
     })
 
     compInput({
         parent: inner,
         legend: 'Beschreibung',
-        key: 'metaDescription',
-        data,
-        callback:ajax.savePage
+        value: data.metaDescription,
+        onInput(value) {
+            console.log('metaDescription', value);
+            data.metaDescription = value;
+            savePage(data);
+        }
     })
 
     compInput({
         parent: inner,
         legend: 'Schlüsselwörter',
-        key: 'metaKeywords',
-        data,
+        value: data.metaKeywords,
         valueIsArray: true,
-        callback:ajax.savePage
+        onInput(value) {
+            console.log('metaKeywords', value);
+            data.metaKeywords = value;
+            savePage(data);
+        }
     })
 
 }
-
 
 
 export default Meta;

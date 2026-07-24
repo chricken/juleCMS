@@ -71,10 +71,13 @@ const Base = ({
 
     compInput({
         parent: inner,
-        legend: 'Slug',
-        key: 'slug',
-        data,
-        callback: ajax.savePage
+        legend: lang.getPhrase('slugline'),
+        value: data.slugline,
+        onInput(value) {
+            console.log('slugline', value);
+            data.slugline = value;
+            saveDebounced(data);
+        }
     })
 
     dom.create({
