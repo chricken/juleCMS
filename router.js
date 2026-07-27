@@ -156,8 +156,19 @@ router.post('/deleteMedia', (req, response) => {
 
 router.get('/getImg/:filename', (req, response) => {
     let filename = req.params.filename;
+    console.log('getImg', filename);
+    fs.access(`./contents/media/${filename}`).then(
+        () => {
+            console.log('gefunden', filename);
+            response.sendFile(filename, {root: './contents/media'})
+        }
+    ).catch(
+        () => {
+            console.log('nicht gefunden', filename);
+            response.sendFile('404.jpg', {root: './contents/media/errors'})
+        }
+    )
 
-    response.sendFile(filename, {root: './contents/media'});
 })
 
 router.get('/loadMediaOverview', (req, response) => {

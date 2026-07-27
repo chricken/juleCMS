@@ -14,3 +14,7 @@
     display: none;
 
 }
+
+.card-image:hover {
+    outline: 2px solid var(--accent-color);
+}

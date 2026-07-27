@@ -195,7 +195,17 @@ const manageContents = {
         ).then(
             () => {
                 return {
+                    status: 'success',
                     filesDeleted: count
+                }
+            }
+        ).catch(
+            err => {
+                console.log('err 204', err);
+                return {
+                    status: 'err',
+                    filesDeleted: 0,
+                    msg: err
                 }
             }
         )

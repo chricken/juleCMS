@@ -242,16 +242,13 @@ const overview = () => {
     });
 
     const renderFilterByTags = () => {
-        console.log('Input', allTags);
-
+        containerTags.innerHTML = '';
         allTags.forEach(tag => {
-
-
             const elTag = CompTag({
                 parent: containerTags,
                 content: tag,
                 isInteractive: true,
-                onClick(){
+                onClick() {
                     if (activeTags.includes(tag)) {
                         activeTags = activeTags.filter(t => t !== tag);
                         elTag.el.classList.remove('active');
@@ -259,13 +256,16 @@ const overview = () => {
                         activeTags.push(tag);
                         elTag.el.classList.add('active');
                     }
-                    // console.log('activeTags', activeTags);
-
                     filterImages(elFilter.get() || '');
                 }
             })
         })
     }
+
+    dom.create({
+        tagName: 'hr',
+        parent: containerOverview,
+    })
 
     // Content
     const containerContent = dom.create({

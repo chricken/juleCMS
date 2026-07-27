@@ -1,0 +1,44 @@
+.modalBG {
+    position: fixed;
+    background-color: rgba(255,255,255,.8);
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    backdrop-filter: blur(8px);
+
+    .modal {
+        position: relative;
+        width: 800px;
+        min-height: 300px;
+        margin-left: auto;
+        margin-right: auto;
+        top: 50px;
+        background: var(--white);
+        border: 2px solid var(--dark-color);
+        padding: var(--padding-default);
+        border-radius: 10px;
+        box-shadow: 2px 2px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .btn-close {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding-right:5px;
+        padding-left:10px;
+        padding-bottom:5px;
+        font-size: 20px;
+        cursor: pointer;
+        color: var(--dark-color);
+        border-left: 1px solid var(--dark-color);
+        border-bottom: 1px solid var(--dark-color);
+        border-radius: 0 10px 0 10px;
+    }
+    .btn-close:hover {
+        background-color: var(--light-color);
+        color: var(--accent-color);
+
+    }
+}
+

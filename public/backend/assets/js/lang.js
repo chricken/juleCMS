@@ -127,6 +127,10 @@ const lang = {
         sortBy:{
             de: 'Sortieren nach',
             en: 'Sort by',
+        },
+        editImage:{
+            de: 'Bild bearbeiten',
+            en: 'Edit Image',
         }
     }
 }

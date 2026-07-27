@@ -6,6 +6,8 @@ import lang from "../../lang.js";
 import ajax from "../../ajax.js";
 
 import CompTag from "../Tag/Tag.js";
+import Modal from "../../modal/modal.js";
+import ModalEditImage from '../../modal/EditImage/EditImage.js';
 
 const ImageInOverview = ({
                              image = null,
@@ -15,7 +17,7 @@ const ImageInOverview = ({
                          }) => {
     const container = dom.create({
         parent,
-        cssClassName: 'card card-image',
+        cssClassName: 'card card-image transit',
     })
 
     dom.create({
@@ -74,6 +76,18 @@ const ImageInOverview = ({
         tagName: 'button',
         content: lang.getPhrase('edit'),
         parent: container,
+        listeners:{
+            click(evt){
+                evt.preventDefault();
+                evt.stopPropagation();
+
+                ModalEditImage({
+                    legend: lang.getPhrase('editImage'),
+    image: image,
+                })
+            }
+        }
+
     })
 
     dom.create({
