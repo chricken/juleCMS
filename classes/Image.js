@@ -25,8 +25,8 @@ class Image {
         });
 
         this.id = id || helpers.createID();
-        this.crDate = crDate || Date.now();
-        this.chDate = chDate || Date.now();
+        this.crDate = crDate ? +crDate : Date.now();
+        this.chDate = chDate ? +chDate : Date.now();
     }
 
 }

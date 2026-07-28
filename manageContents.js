@@ -148,7 +148,6 @@ const manageContents = {
         return manageContents.convertImage({
             path: './contents/media/',
             filename: payload.filename,
-            id: payload.id,
         }).then(
             res => payload.resized = res
         ).then(
@@ -161,6 +160,40 @@ const manageContents = {
             saveMediaFileDebounce
         )
 
+    },
+
+    updateMedia(payload) {
+        const content = manageContents.media[payload.id];
+        // console.log('payload', payload);
+
+        // Daten an das gespeicherte Objekt übertragen (auch die Bild-ID)
+        Object.entries(payload).forEach(([key, value]) => {
+            content[key] = value;
+        })
+        // console.log('content after', content);
+
+        if (payload.filename) {
+            content.resized = [];
+            return manageContents.convertImage({
+                path: './contents/media/',
+                filename: payload.filename,
+            }).then(
+                (res) => {
+                    content.resized = res
+                    console.log('content after resize', content);
+                    // console.log(res);
+
+                    // Der Speichervorgang soll noch eine Sekunde warten, bevor er startet
+                    return saveMediaFileDebounce()
+                }
+            ).catch(
+                console.warn
+            )
+        } else {
+            return new Promise(resolve => {
+                resolve()
+            })
+        }
     },
 
     deleteMedia(payload) {
@@ -220,6 +253,10 @@ const manageContents = {
                 fs.writeFile(
                     `./contents/media.json`,
                     JSON.stringify(manageContents.media)
+                ).then(
+                    () => console.log('Media saved')
+                ).catch(
+                    () => console.log('Media could not be saved')
                 )
             }, 1000);
         }
@@ -228,8 +265,11 @@ const manageContents = {
     convertImage({
                      path = './',
                      filename = null,
-                     id = null,
                  }) {
+        // Die ID wird aus dem Bildnamen gezogen. So kann jedes Bild unabhängig von der
+        // ID des Mutter-Datensatzes konvertiert werden
+        const id = filename.split('.')[0];
+
         // Diese Funktion scheint mir kein Promise zu sein.
         let defRes = settings.get('defaultResolutions');
         return Jimp.read(`${path}${filename}`).then(

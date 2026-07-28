@@ -48,7 +48,11 @@ const inputFile = ({
             name: key,
         },
         listeners: {
+            click(evt) {
+                evt.stopPropagation();
+            },
             change(evt) {
+                evt.stopPropagation();
                 let tempFileData = new FormData(tempForm);
                 elPreview.innerHTML = '';
                 // console.log(tempFileData);

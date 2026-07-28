@@ -42,6 +42,21 @@ const ajax = {
             }
         )
     },
+    updateMedia(formData) {
+        console.log('update media', formData);
+        return fetch('/api/updateMedia', {
+            method: 'POST',
+            body: formData
+        }).then(
+            res => res.json()
+        ).then(
+            payload => {
+                // Debug Ausgabe und Weiterleitung
+                // console.log(payload);
+                return payload;
+            }
+        )
+    },
 
     loadMediaOverview() {
         return fetch('/api/loadMediaOverview').then(

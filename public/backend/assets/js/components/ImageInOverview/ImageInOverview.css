@@ -3,11 +3,6 @@
     img {
         width:260px;
     }
-    .smallInfo {
-        font-size: .8em;
-        color: var(--accent-color);
-    }
-
 }
 
 .card-image.hidden {

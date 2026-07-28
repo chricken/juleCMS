@@ -20,6 +20,10 @@ const lang = {
             de: 'Seite Speichern',
             en: 'Save Page',
         },
+        saveChanges:{
+            de: 'Änderungen Speichern',
+            en: 'Save Changes',
+        },
         removePage: {
             de: 'Seite Entfernen',
             en: 'Remove Page',

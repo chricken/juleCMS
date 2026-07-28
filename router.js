@@ -138,6 +138,64 @@ router.post('/saveMedia', (req, response) => {
     })
 })
 
+router.post('/updateMedia', (req, response) => {
+    console.log('Update Media', req.body);
+
+    const form = formidable({
+        multiples: true,
+        uploadDir: './contents/media',
+        keepExtensions: true,
+        minFileSize: 0,
+        allowEmptyFiles: true,
+    });
+
+    form.parse(req, (err, fields, files) => {
+        if (err) {
+            console.log('err', err);
+            response.json({
+                status: 'error',
+                payload: err
+            })
+        } else {
+
+            Object.entries(fields).forEach(([key, value]) => {
+                fields[key] = value[0];
+            })
+
+            fields.tags = fields.tags.replaceAll(' ', ',');
+            fields.tags = fields.tags.replaceAll(',,', ',');
+            fields.tags = fields.tags.split(',');
+            fields.tags = fields.tags.filter(tag => (tag !== '') && (tag !== ' '));
+            fields.tags = fields.tags.map(tag => tag.toLowerCase());
+
+            fields.crDate = +fields.crDate;
+            fields.chDate = +fields.chDate;
+
+            // Neu hochgeladene Bilder haben eine andere ID als Das Media-Objekt.
+            // Ggf vorhandene Verknüpfungen und die alten (überschriebenen) Bilder
+            // bleiben dadurch erhalten.
+            if (files['image[0]']) {
+                // console.log(files);
+                fields.filename = Object.values(files)[0][0].newFilename;
+            }
+
+            manageContents.updateMedia(fields).then(
+                payload => response.json({
+                    status: 'success',
+                    payload
+                })
+            ).catch(
+                err => response.status(500).json({
+                    status: 'error',
+                    payload: err
+                })
+            )
+        }
+    })
+
+
+})
+
 router.post('/deleteMedia', (req, response) => {
 
     manageContents.deleteMedia(req.body).then(
@@ -156,15 +214,15 @@ router.post('/deleteMedia', (req, response) => {
 
 router.get('/getImg/:filename', (req, response) => {
     let filename = req.params.filename;
-    console.log('getImg', filename);
+    // console.log('getImg', filename);
     fs.access(`./contents/media/${filename}`).then(
         () => {
-            console.log('gefunden', filename);
+            // console.log('gefunden', filename);
             response.sendFile(filename, {root: './contents/media'})
         }
     ).catch(
         () => {
-            console.log('nicht gefunden', filename);
+            // console.log('nicht gefunden', filename);
             response.sendFile('404.jpg', {root: './contents/media/errors'})
         }
     )

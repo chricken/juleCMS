@@ -92,7 +92,6 @@ const selectAndUpload = () => {
         value: media.get("tags"),
         toLowerCase: true,
         legend: `${lang.getPhrase('tags')}`,
-        valueIsArray: true,
         onInput: (value) => {
             media.set('tags', value);
             validate();
@@ -300,6 +299,9 @@ const overview = () => {
                 onDeleted: () => {
                     containerOverview.remove();
                     overview();
+                },
+                onEdited: () => {
+                    viewMedia();
                 }
             });
             slot = (slot + 1) % 3;

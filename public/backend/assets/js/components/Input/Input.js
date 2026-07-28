@@ -10,8 +10,6 @@ const input = ({
                    legend = null,
                    value = '',
                    multiline = false,
-                   // valueIsArray = false,
-                   // nextToIndex = false,
                    toLowerCase = false,
                    hasClearButton = true,
                    onInput = () => {

@@ -14,9 +14,19 @@ const Modal = ({
         cssClassName: 'modalBG transit',
         parent: document.body,
         listeners: {
+            mouseup(evt) {
+                evt.stopPropagation();
+            },
+            mousedown(evt) {
+                evt.stopPropagation();
+                elBG.mouseDown = true;
+            },
             click(evt) {
                 evt.stopPropagation();
-                elBG.remove();
+                console.log(elBG.mouseDown);
+
+                if (elBG.mouseDown) elBG.remove();
+                elBG.mouseDown = false;
                 onClose();
             }
         }
@@ -28,6 +38,14 @@ const Modal = ({
     const elModal = dom.create({
         cssClassName: 'modal transit',
         parent: elBG,
+        listeners: {
+            mousedown(evt) {
+                evt.stopPropagation();
+            },
+            click(evt){
+                evt.stopPropagation();
+            }
+        }
     })
 
     const elInner = dom.create({
@@ -55,7 +73,7 @@ const Modal = ({
     })
 
     dom.create({
-        tagName: 'h2',
+        tagName: 'h4',
         parent: elInner,
         content: legend,
     })

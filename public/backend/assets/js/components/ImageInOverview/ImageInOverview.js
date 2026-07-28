@@ -14,6 +14,8 @@ const ImageInOverview = ({
                              parent = null,
                              onDeleted = () => {
                              },
+                             onEdited = () => {
+                             }
                          }) => {
     const container = dom.create({
         parent,
@@ -39,20 +41,26 @@ const ImageInOverview = ({
         parent: container,
     })
 
-    if(image.altName){
-    dom.create({
-        tagName: 'p',
-        content: `Alternativ: ${image.altName}`,
-        cssClassName: 'chDate smallInfo',
-        parent: container,
-    })
+    if (image.altName) {
+        dom.create({
+            tagName: 'p',
+            content: `Alternativ: ${image.altName}`,
+            cssClassName: 'chDate smallInfo',
+            parent: container,
+        })
 
     }
     // console.log(image);
 
     // kleinstes Bild finden
     let min = Math.min(...image.resized.map(el => el.width))
-    let filename = image.resized.find(el => el.width === min).filename;
+
+    console.log(image);
+
+    let filename = image.resized.length
+        ? image.resized.find(el => el.width === min).filename
+        : image.filename;
+
     let elImg = dom.create({
         tagName: 'img',
         parent: container,
@@ -76,14 +84,17 @@ const ImageInOverview = ({
         tagName: 'button',
         content: lang.getPhrase('edit'),
         parent: container,
-        listeners:{
-            click(evt){
+        listeners: {
+            click(evt) {
                 evt.preventDefault();
                 evt.stopPropagation();
 
                 ModalEditImage({
                     legend: lang.getPhrase('editImage'),
-    image: image,
+                    image: image,
+                    onSaved() {
+                        onEdited()
+                    }
                 })
             }
         }
