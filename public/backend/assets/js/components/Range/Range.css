@@ -1,0 +1,32 @@
+/* Input Stile */
+.container-range {
+    position: relative;
+    width: 720px;
+
+    .legendInput {
+        display: inline-block;
+        width: 120px;
+        font-weight: 600;
+        color: var(--primary-color);
+        vertical-align: top;
+    }
+
+    .slider-rail {
+        position: relative;
+        border: 1px solid var(--border-color);
+        background-color: var(--light-color);
+        display: inline-block;
+        width: 226px;
+        height: 20px;
+        border-radius: 10px;
+    }
+
+    .slider-thumb {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background-color: var(--accent-color);
+        cursor: pointer;
+    }
+}

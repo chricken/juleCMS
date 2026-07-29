@@ -22,14 +22,36 @@ const ImageInOverview = ({
         cssClassName: 'card card-image transit',
     })
 
-    dom.create({
+    const elTitle = dom.create({
         tagName: 'h2',
         content: `${image.title}`,
         parent: container,
+        cssClassName: 'transit',
+        listeners: {
+            click(evt) {
+                evt.stopPropagation();
+                container.classList.toggle('open');
+            }
+        }
+    })
+
+    dom.create({
+        tagName: 'span',
+        parent: elTitle,
+        content: '⯈',
+        insert: 'prepend',
+        cssClassName:'openIndicator transit',
+        listeners: {
+            click(evt) {
+                evt.stopPropagation();
+                container.classList.toggle('open');
+            }
+        }
     })
 
     dom.create({
         tagName: 'p',
+        cssClassName: 'visibleInOpen',
         content: image.description.replaceAll('\r\n', '<br>'),
         parent: container,
     })
@@ -37,7 +59,7 @@ const ImageInOverview = ({
     dom.create({
         tagName: 'p',
         content: `${lang.getPhrase('changedAt')} : ${new Date(image.chDate).toLocaleString()}`,
-        cssClassName: 'chDate smallInfo',
+        cssClassName: 'chDate smallInfo visibleInOpen',
         parent: container,
     })
 
@@ -45,7 +67,7 @@ const ImageInOverview = ({
         dom.create({
             tagName: 'p',
             content: `Alternativ: ${image.altName}`,
-            cssClassName: 'chDate smallInfo',
+            cssClassName: 'chDate smallInfo visibleInOpen',
             parent: container,
         })
 
@@ -70,7 +92,7 @@ const ImageInOverview = ({
     // Tags
     const elTags = dom.create({
         parent: container,
-        cssClassName: 'tags',
+        cssClassName: 'tags visibleInOpen',
     })
     image.tags.forEach(tag => {
         CompTag({
@@ -84,6 +106,7 @@ const ImageInOverview = ({
         tagName: 'button',
         content: lang.getPhrase('edit'),
         parent: container,
+        cssClassName: 'visibleInOpen',
         listeners: {
             click(evt) {
                 evt.preventDefault();
@@ -104,6 +127,7 @@ const ImageInOverview = ({
     dom.create({
         tagName: 'button',
         content: lang.getPhrase('delete'),
+        cssClassName: 'visibleInOpen',
         parent: container,
         listeners: {
             click(evt) {

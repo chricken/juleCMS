@@ -151,6 +151,10 @@ const Content = ({
 
     }
 
+    // Auswahl der Mediendaten
+    // Ein Button öffnet die Auswahl
+    // der Media-View in einem Modal
+
     // Type
     dom.create({
         parent: elInner,

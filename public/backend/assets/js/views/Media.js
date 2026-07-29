@@ -17,6 +17,8 @@ let containerOverview = null;
 
 const selectAndUpload = () => {
 
+    // Muss auch einen oder mehrere Watermarks wählen können
+
     // Der File-Input verlangt ein FormData-Objekt
     let media = new FormData();
     media.set('title', '');
@@ -50,7 +52,7 @@ const selectAndUpload = () => {
 
     dom.create({
         tagName: 'h1',
-        content: 'Upload Media',
+        content: lang.getPhrase('uploadMedia'),
         parent: containerUpload,
     })
 
@@ -242,7 +244,9 @@ const overview = () => {
 
     const renderFilterByTags = () => {
         containerTags.innerHTML = '';
-        allTags.forEach(tag => {
+        allTags.toSorted(
+            (a, b) => a.toLowerCase().localeCompare(b.toLowerCase())
+        ).forEach(tag => {
             const elTag = CompTag({
                 parent: containerTags,
                 content: tag,
@@ -335,6 +339,8 @@ const overview = () => {
 }
 
 const viewMedia = () => {
+
+
 
     elements.main.innerHTML = '';
     selectAndUpload();

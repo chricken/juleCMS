@@ -13,8 +13,11 @@
     --accent-color: #3498db; /* Helles Blau für Interaktionen */
     --light-color: #ecf0f1; /* Hellgrau für Hintergrund */
     --dark-color: #264a65; /* Dunkelgrau für Text */
+    --border-color: #ccc; /* Grau für Rahmen */
     --success-color: #27ae60; /* Grün für Erfolg */
     --warning-color: #f39c12; /* Orange für Warnungen */
+    --checked-color: #73aa81; /* Orange für Warnungen */
+    --unchecked-color: #aa7373; /* Orange für Warnungen */
     --border-radius: 4px;
     --box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     --transition: all 0.3s ease;

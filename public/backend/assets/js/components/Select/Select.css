@@ -1,0 +1,34 @@
+/* Input Stile */
+.container-select {
+    position: relative;
+    width: 720px;
+
+    .legendInput {
+        display: inline-block;
+        width: 120px;
+        font-weight: 600;
+        color: var(--primary-color);
+        vertical-align: top;
+    }
+
+    select {
+        display: inline-block;
+        padding: 10px;
+        border: 1px solid var(--border-color);
+        border-radius: var(--border-radius);
+        width: 230px;
+        transition: var(--transition);
+        vertical-align: top;
+        background-color: var(--white);
+    }
+
+    select:focus {
+        outline: none;
+        border-color: var(--accent-color);
+        box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+    }
+
+    select:hover {
+        border-color: var(--accent-color);
+    }
+}

@@ -42,6 +42,23 @@ const ajax = {
             }
         )
     },
+
+    saveWatermark(formData) {
+        console.log('save Watermark', formData);
+        return fetch('/api/saveWatermark', {
+            method: 'POST',
+            body: formData
+        }).then(
+            res => res.json()
+        ).then(
+            payload => {
+                // Debug Ausgabe und Weiterleitung
+                // console.log(payload);
+                return payload;
+            }
+        )
+    },
+
     updateMedia(formData) {
         console.log('update media', formData);
         return fetch('/api/updateMedia', {

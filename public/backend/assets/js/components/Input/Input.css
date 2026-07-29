@@ -14,7 +14,7 @@
     .input {
         display: inline-block;
         padding: 0.5rem;
-        border: 1px solid #ddd;
+        border: 1px solid var(--border-color);
         border-radius: var(--border-radius);
         width: 570px;
         transition: var(--transition);
@@ -64,24 +64,10 @@
     }
 }
 
-.column {
-    .container-input {
-        width:350px;
-    }
-    .input {
-        /*width: 350px;*/
-        width: calc(100% - 120px);
-    }
-    .buttons {
-        right: 5px;
-    }
-}
+.column-left .container-input {
+    width: 380px;
 
-/* Input Stile */
-.column-left {
-    .container-input {
-        .input {
-            width: 230px;
-        }
+    .input {
+        width: 230px;
     }
 }

@@ -70,6 +70,7 @@ const Contents = ({
     })
     console.log(page);
 
+    // Inhalte
     page.content.forEach((contentID, index) => {
 
         const placeholder = dom.create({

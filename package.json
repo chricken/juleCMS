@@ -5,7 +5,8 @@
   "main": "cmsServer.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node cmsServer.js"
+    "start": "node cmsServer.js",
+    "serve": "node cmsServer.js"
   },
   "keywords": [],
   "author": "",

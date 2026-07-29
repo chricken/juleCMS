@@ -20,7 +20,7 @@ const lang = {
             de: 'Seite Speichern',
             en: 'Save Page',
         },
-        saveChanges:{
+        saveChanges: {
             de: 'Änderungen Speichern',
             en: 'Save Changes',
         },
@@ -40,19 +40,19 @@ const lang = {
             de: 'Grundlagen',
             en: 'Base Data',
         },
-        title:{
-          de: 'Titel',
-          en: 'Title',
+        title: {
+            de: 'Titel',
+            en: 'Title',
         },
-        text:{
+        text: {
             de: 'Text',
             en: 'Text',
         },
-        desc:{
-          de: 'Beschreibung',
-          en: 'Description',
+        desc: {
+            de: 'Beschreibung',
+            en: 'Description',
         },
-        selectFile:{
+        selectFile: {
             de: 'Datei auswählen',
             en: 'Select File',
         },
@@ -64,77 +64,121 @@ const lang = {
             de: 'Geändert',
             en: 'Changed',
         },
-        sureDeletePage:{
+        sureDeletePage: {
             de: 'Wollen Sie diese Seite wirklich löschen?',
             en: 'Are you sure you want to delete this page?',
         },
-        settings:{
+        settings: {
             de: 'Einstellungen',
             en: 'Settings',
         },
-        media:{
+        media: {
             de: 'Medien',
             en: 'Media',
         },
-        pages:{
+        pages: {
             de: 'Seiten',
             en: 'Pages',
         },
-        watermark:{
+        watermark: {
             de: 'Wasserzeichen',
             en: 'Watermark',
         },
-        theme:{
+        theme: {
             de: 'Theme',
             en: 'Theme',
         },
-        tags:{
+        tags: {
             de: 'Tags',
             en: 'Tags',
         },
-        description:{
+        description: {
             de: 'Beschreibung',
             en: 'Description',
         },
-        slugline:{
+        slugline: {
             de: 'Slugline',
             en: 'Slugline',
         },
-        image:{
+        image: {
             de: 'Bild',
             en: 'Image',
         },
-        commaSeparated:{
+        commaSeparated: {
             de: 'Komma getrennt',
             en: 'Comma separated',
         },
-        alternativeName:{
+        alternativeName: {
             de: 'Alternative',
             en: 'Alternative',
         },
-        delete:{
+        delete: {
             de: 'Löschen',
             en: 'Delete',
         },
-        edit:{
+        edit: {
             de: 'Bearbeiten',
             en: 'Edit',
         },
-        sureDeleteImage:{
+        sureDeleteImage: {
             de: 'Sind Sie sicher, dass Sie dieses Bild löschen möchten?',
             en: 'Are you sure you want to delete this image?',
         },
-        filter:{
+        filter: {
             de: 'Filter',
             en: 'Filter',
         },
-        sortBy:{
+        sortBy: {
             de: 'Sortieren nach',
             en: 'Sort by',
         },
-        editImage:{
+        editImage: {
             de: 'Bild bearbeiten',
             en: 'Edit Image',
+        },
+        uploadMedia: {
+            de: 'Medien hochladen',
+            en: 'Upload Media',
+        },
+        uploadWatermark: {
+            de: 'Wasserz. hochladen',
+            en: 'Upload Watermark',
+        },
+        size:{
+            de: 'Größe',
+            en: 'Size',
+        },
+        sizePercent:{
+            de: 'Größe in %',
+            en: 'Size (%)',
+        },
+        position: {
+            de: 'Position',
+            en: 'Position',
+        },
+        tiling: {
+            de: 'Kachelung',
+            en: 'Tiling',
+        },
+        topLeft: {
+            de: 'Oben links',
+            en: 'Top Left',
+        },
+        topRight: {
+            de: 'Oben rechts',
+            en: 'Top Right',
+        },
+        bottomLeft: {
+            de: 'Unten links',
+            en: 'Bottom Left',
+        },
+        bottomRight: {
+            de: 'Unten rechts',
+            en: 'Bottom Right',
+        },
+        centerCenter: {
+            de: 'Zentriert',
+            en: 'Centered',
         }
     }
 }
