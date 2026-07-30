@@ -41,6 +41,24 @@ const range = ({
     const elSliderRail = dom.create({
         parent: container,
         cssClassName: 'slider-rail',
+        listeners: {
+            mousedown(evt) {
+
+                let rect = elSliderRail.getBoundingClientRect();
+                evt.stopPropagation();
+                isDragging = true;
+                elSliderThumb.style.left = `${evt.clientX - rect.left - 10}px`;
+
+                startXMouse = evt.clientX;
+                startXThumb = elSliderThumb.offsetLeft;
+
+                handleMove(evt)
+
+                document.addEventListener('mousemove', handleMove);
+                document.addEventListener('mouseup', handleUp);
+                console.log('mousedown', handleMove)
+            }
+        }
     })
 
     const handleMove = (evt) => {
@@ -54,15 +72,13 @@ const range = ({
         let value = currentX / (rect.width - elSliderThumb.offsetWidth) * (max - min) + min;
         value = roundValue ? Math.round(value) : value;
 
-        elLegend.innerText = `${legend} (${value})`;
-        onInput(value);
-
-        elSliderThumb.style.left = `${currentX}px`;
+        setValue(value);
     }
 
     const handleUp = (evt) => {
         evt.stopPropagation();
         isDragging = false;
+        console.log('mouseup');
 
         document.removeEventListener('mousemove', handleMove);
         document.removeEventListener('mouseup', handleUp);
@@ -84,6 +100,9 @@ const range = ({
 
                 document.addEventListener('mousemove', handleMove);
                 document.addEventListener('mouseup', handleUp);
+
+                console.log('thumb down', handleUp, document);
+
             },
 
         }
@@ -102,6 +121,8 @@ const range = ({
     })
 
     const setValue = (updateValue = 0) => {
+        // console.log('updateValue', updateValue);
+
         value = updateValue;
         let rect = elSliderRail.getBoundingClientRect();
         let currentX = (rect.width - elSliderThumb.offsetWidth) / max * value;

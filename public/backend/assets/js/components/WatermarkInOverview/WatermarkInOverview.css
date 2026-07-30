@@ -1,0 +1,59 @@
+.card-image {
+    h2 {
+        font-size: 1.2rem;
+        color: var(--primary-color);
+        cursor: pointer;
+        margin-bottom: 0.5rem;
+    }
+
+    h2:hover {
+        color: var(--accent-color);
+    }
+
+    .openIndicator {
+        display: inline-block;
+        transform: rotate(0);
+        cursor: pointer;
+    }
+
+    .visibleInOpen {
+        display: none;
+    }
+
+    .info.is-tiled,
+    .info.size,
+    .info.position {
+        color: var(--dark-color);
+        font-weight: bold;
+    }
+
+    img {
+        width: 260px;
+    }
+}
+
+.card-image.open {
+    h2 {
+        margin-bottom: 2rem;
+    }
+
+    .openIndicator {
+        transform: rotate(90deg);
+    }
+
+    .visibleInOpen {
+        display: block;
+    }
+
+    button.visibleInOpen {
+        display: inline-block;
+    }
+}
+
+.card-image.hidden {
+    display: none;
+}
+
+.card-image:hover {
+    outline: 2px solid var(--accent-color);
+}

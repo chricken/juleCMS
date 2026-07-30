@@ -2,28 +2,33 @@ import Modal from '../modal.js';
 import dom from "../../dom.js";
 import lang from "../../lang.js";
 import CompInput from "../../components/Input/Input.js";
+import CompCheckbox from "../../components/Checkbox/Checkbox.js";
 import CompInputFile from "../../components/InputFile/InputFile.js";
+import CompRange from "../../components/Range/Range.js";
+import CompSelect from "../../components/Select/Select.js";
 import ajax from "../../ajax.js";
 
-const ModalEditImage = ({
-                            image = null,
-                            legend = '',
-                            onSaved = () => {
-                            }
-                        } = {}) => {
+const ModalEditWatermark = ({
+                                image = null,
+                                legend = '',
+                                onSaved = () => {
+                                }
+                            } = {}) => {
     // Modalfenster anlegen
     const elModal = Modal();
 
-    let media = new FormData();
-    media.set('title', image.title);
-    media.set('description', image.description);
-    media.set('altName', image.altName);
-    media.set('tags', image.tags.join(','));
-    media.set('crDate', image.crDate);
-    media.set('chDate', Date.now());
-    media.set('id', image.id);
+    let watermark = new FormData();
 
-    console.log('image', image, media);
+    watermark.set('title', image.title);
+    watermark.set('description', image.description);
+    watermark.set('size', image.size);
+    watermark.set('position', image.position);
+    watermark.set('tiling', image.tiling);
+    watermark.set('crDate', image.crDate);
+    watermark.set('chDate', Date.now());
+    watermark.set('id', image.id);
+
+    console.log('image', image, watermark);
 
     const validate = () => {
         let valid = true;
@@ -47,44 +52,61 @@ const ModalEditImage = ({
     // Eingaben
     let inpTitle = CompInput({
         parent: container,
-        value: media.get("title"),
+        value: watermark.get("title"),
         legend: lang.getPhrase('title'),
         onInput: (value) => {
-            media.set('title', value);
+            watermark.set('title', value);
             validate();
         }
     })
 
     let inpDescription = CompInput({
         parent: container,
-        value: media.get("description").replaceAll('\r\n', '<br>').replaceAll('\n', '<br>'),
+        value: watermark.get("description").replaceAll('\r\n', '<br>').replaceAll('\n', '<br>'),
         legend: lang.getPhrase('description'),
         multiline: true,
         onInput: (value) => {
-            media.set('description', value);
+            watermark.set('description', value);
             validate();
         }
     })
 
-    let inpAltName = CompInput({
+    let inpTiling = CompCheckbox({
         parent: container,
-        value: media.altName,
-        legend: lang.getPhrase('alternativeName'),
-        onInput: (value) => {
-            media.set('altName', value);
+        value: watermark.get("tiling") === 'true',
+        legend: lang.getPhrase('tiling'),
+        onChanged: (value) => {
+            console.log('tiling', value);
+
+            watermark.set('tiling', value);
             validate();
         }
     })
 
-    let inpTags = CompInput({
+    let inpSize = CompRange({
         parent: container,
-        // Die Tags werden nicht als Array verarbeitet, da Array in einer Form kompliziert sind
-        value: media.get("tags").replaceAll(',', ', '),
-        toLowerCase: true,
-        legend: `${lang.getPhrase('tags')}`,
+        value: +watermark.get("size"),
+        legend: lang.getPhrase('size'),
         onInput: (value) => {
-            media.set('tags', value);
-            validate();
+            watermark.set('size', value);
+        }
+    })
+
+    let inpPosition = CompSelect({
+        parent: container,
+        legend: lang.getPhrase('position'),
+        value: watermark.get("position"),
+        options: [
+            {value: 'topLeft', label: lang.getPhrase('topLeft')},
+            {value: 'topRight', label: lang.getPhrase('topRight')},
+            {value: 'bottomLeft', label: lang.getPhrase('bottomLeft')},
+            {value: 'bottomRight', label: lang.getPhrase('bottomRight')},
+            {value: 'centerCenter', label: lang.getPhrase('centerCenter')},
+        ],
+        onSelected: (value) => {
+            console.log('position', value);
+
+            watermark.set('position', value);
         }
     })
 
@@ -92,7 +114,7 @@ const ModalEditImage = ({
         parent: container,
         legend: lang.getPhrase('image'),
         key: 'image',
-        formData: media,
+        formData: watermark,
         // multiple: true,
         onChange: () => {
             validate();
@@ -114,9 +136,10 @@ const ModalEditImage = ({
         listeners: {
             click(evt) {
                 evt.stopPropagation();
-                console.log(media);
+                console.log(watermark);
 
-                ajax.updateMedia(media).then(
+                /*
+                ajax.updateMedia(watermark).then(
                     res => {
                         console.log(res);
                     }
@@ -125,6 +148,7 @@ const ModalEditImage = ({
                 ).then(
                     () => onSaved()
                 )
+                */
             }
         }
     })
@@ -135,15 +159,14 @@ const ModalEditImage = ({
         parent: container,
         cssClassName: 'modal-edit-image__image',
         tagName: 'img',
-        src: `/api/getImg/media/${image.filename}`,
+        src: `/api/getImg/watermarks/${image.filename}`,
     })
-
 
     // Dateiname der JS-Datei durch den Namen der CSS-Datei ersetzen
     let localURL = new URL(import.meta.url).pathname;
     let indexLastSlash = localURL.lastIndexOf('/');
     localURL = localURL.substring(0, indexLastSlash + 1);
-    localURL += 'EditImage.css';
+    localURL += 'EditWatermark.css';
 
     dom.create({
         tagName: 'link',
@@ -159,4 +182,4 @@ const ModalEditImage = ({
     return elModal;
 };
 
-export default ModalEditImage;
+export default ModalEditWatermark;

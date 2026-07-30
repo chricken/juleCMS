@@ -7,9 +7,10 @@ import ajax from "../../ajax.js";
 
 import CompTag from "../Tag/Tag.js";
 import Modal from "../../modal/modal.js";
-import ModalEditImage from '../../modal/EditImage/EditImage.js';
+// import ModalEditImage from '../../modal/EditImage/EditImage.js';
+import ModalEditWatermark from '../../modal/EditWatermark/EditWatermark.js';
 
-const ImageInOverview = ({
+const WatermarkInOverview = ({
                              image = null,
                              parent = null,
                              onDeleted = () => {
@@ -62,43 +63,41 @@ const ImageInOverview = ({
         cssClassName: 'chDate smallInfo visibleInOpen',
         parent: container,
     })
+    // console.log('image', image);
 
-    if (image.altName) {
-        dom.create({
-            tagName: 'p',
-            content: `Alternativ: ${image.altName}`,
-            cssClassName: 'chDate smallInfo visibleInOpen',
-            parent: container,
-        })
-
-    }
-    // console.log(image);
-
-    // kleinstes Bild finden
-    let min = Math.min(...image.resized.map(el => el.width))
-
-    console.log(image);
+    // kleinstes Bild finden, das größer oder gleich 260px ist
+    let min = Math.min(...image.resized
+        .map(el => el.width)
+        .filter(el => el >= 260))
 
     let filename = image.resized.length
         ? image.resized.find(el => el.width === min).filename
         : image.filename;
 
+    let elTiled = dom.create({
+        parent: container,
+        cssClassName: 'info is-tiled visibleInOpen',
+        content: image.tiling === 'true'
+            ? lang.getPhrase('tiling')
+            : lang.getPhrase('noTiling'),
+    })
+
+    let elPosition = dom.create({
+        parent: container,
+        cssClassName: 'info position visibleInOpen',
+        content: `${lang.getPhrase('position')}: ${lang.getPhrase(image.position)}`,
+    })
+
+    let elSize = dom.create({
+        parent: container,
+        cssClassName: 'info size visibleInOpen',
+        content: `${lang.getPhrase('size')}: ${lang.getPhrase(image.size)}%`,
+    })
+
     let elImg = dom.create({
         tagName: 'img',
         parent: container,
-        src: `/api/getImg/media/${filename}`
-    })
-
-    // Tags
-    const elTags = dom.create({
-        parent: container,
-        cssClassName: 'tags visibleInOpen',
-    })
-    image.tags.forEach(tag => {
-        CompTag({
-            parent: elTags,
-            content: tag,
-        })
+        src: `/api/getImg/watermarks/${filename}`
     })
 
     // Buttons
@@ -112,9 +111,9 @@ const ImageInOverview = ({
                 evt.preventDefault();
                 evt.stopPropagation();
 
-                ModalEditImage({
-                    legend: lang.getPhrase('editImage'),
-                    image: image,
+                ModalEditWatermark({
+                    legend: lang.getPhrase('edit'),
+                    image,
                     onSaved() {
                         onEdited()
                     }
@@ -133,8 +132,8 @@ const ImageInOverview = ({
             click(evt) {
                 evt.stopPropagation();
                 if (confirm(lang.getPhrase('sureDeleteImage'))) {
-                    console.log('delete image', image);
-                    ajax.deleteMedia(image).then(
+                    console.log('delete Watermark', image);
+                    ajax.deleteWatermark(image).then(
                         (res) => {
                             console.log(`${image.title} deleted`, res.filesDeleted);
                             onDeleted(image);
@@ -146,7 +145,7 @@ const ImageInOverview = ({
     })
 
     let path = new URL(import.meta.url).pathname;
-    path = `${path.substring(0, path.lastIndexOf('/') + 1)}ImageInOverview.css`;
+    path = `${path.substring(0, path.lastIndexOf('/') + 1)}WatermarkInOverview.css`;
 
     dom.create({
         tagName: 'link',
@@ -160,4 +159,4 @@ const ImageInOverview = ({
     return container;
 }
 
-export default ImageInOverview;
+export default WatermarkInOverview;

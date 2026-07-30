@@ -5,7 +5,10 @@ const lang = {
     availableLanguages: ['de', 'en'],
     getPhrase(phrase) {
         // console.log(phrase);
-        return lang.translations[phrase][lang.currentLanguage];
+        if (lang.translations[phrase])
+            return lang.translations[phrase][lang.currentLanguage];
+        else
+            return phrase;
     },
     translations: {
         newPageAfter: {
@@ -136,6 +139,10 @@ const lang = {
             de: 'Bild bearbeiten',
             en: 'Edit Image',
         },
+        editWatermark:{
+            de: 'Wasserzeichen bearbeiten',
+            en: 'Edit Watermark',
+        },
         uploadMedia: {
             de: 'Medien hochladen',
             en: 'Upload Media',
@@ -144,11 +151,11 @@ const lang = {
             de: 'Wasserz. hochladen',
             en: 'Upload Watermark',
         },
-        size:{
+        size: {
             de: 'Größe',
             en: 'Size',
         },
-        sizePercent:{
+        sizePercent: {
             de: 'Größe in %',
             en: 'Size (%)',
         },
@@ -159,6 +166,10 @@ const lang = {
         tiling: {
             de: 'Kachelung',
             en: 'Tiling',
+        },
+        noTiling: {
+            de: 'Keine Kachelung',
+            en: 'No Tiling',
         },
         topLeft: {
             de: 'Oben links',

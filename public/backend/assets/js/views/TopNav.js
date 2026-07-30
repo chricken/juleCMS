@@ -6,7 +6,7 @@ import dom from "../dom.js";
 import data from "../data.js";
 import ViewPages from "./Pages.js";
 import ViewMedia from "./Media.js";
-import ViewWatermark from "./Watermark.js";
+import ViewWatermark from "./Watermarks.js";
 import ViewTheme from "./Theme.js";
 import ViewSettings from "./Settings.js";
 import lang from "../lang.js";

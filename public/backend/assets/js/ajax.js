@@ -81,6 +81,12 @@ const ajax = {
         )
     },
 
+    loadWatermarkOverview(){
+        return fetch('/api/loadWatermarkOverview').then(
+            res => res.json()
+        )
+    },
+
     createContent(pageID, index) {
         console.log('create content');
         return fetch('/api/createContent', {
@@ -229,6 +235,20 @@ const ajax = {
             console.warn
         )
     },
+
+    deleteWatermark(image){
+        return fetch('/api/deleteWatermark', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(image)
+        }).then(
+            res => res.json()
+        ).then(
+            res => res.payload
+        ).catch(
+            console.warn
+        )
+    }
 }
 
 export default ajax;

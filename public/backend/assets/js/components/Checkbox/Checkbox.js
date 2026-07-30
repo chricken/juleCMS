@@ -13,6 +13,8 @@ const checkbox = ({
                       },
                   }) => {
 
+    const defaultValue = value;
+
     const container = dom.create({
         parent,
         cssClassName: `container-checkbox`,
@@ -69,7 +71,12 @@ const checkbox = ({
     })
 
     return {
-
+        clear() {
+            value = defaultValue;
+            if (value) elChecker.classList.add('checked');
+            else elChecker.classList.remove('checked');
+            onChanged(value);
+        },
         focus() {
             elInput.focus();
         },

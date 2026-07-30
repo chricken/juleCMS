@@ -109,7 +109,6 @@ const Contents = ({
                         }
                     });
 
-
                     CompDropContent({
                         parent: placeholder,
                         index: index + 1,

@@ -340,8 +340,6 @@ const overview = () => {
 
 const viewMedia = () => {
 
-
-
     elements.main.innerHTML = '';
     selectAndUpload();
     overview();

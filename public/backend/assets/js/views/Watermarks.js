@@ -10,8 +10,92 @@ import CompSelect from "../components/Select/Select.js";
 import CompCheckbox from "../components/Checkbox/Checkbox.js";
 import CompRange from "../components/Range/Range.js";
 import ajax from "../ajax.js";
+// import ImageInOverview from "../components/ImageInOverview/ImageInOverview.js";
+import WatermarkInOverview from "../components/WatermarkInOverview/WatermarkInOverview.js";
+import viewMedia from "./Media.js";
 
 let containerOverview = null;
+
+
+const overview = () => {
+
+    let payload = [];
+    let allImages = [];
+
+    if (containerOverview) containerOverview.remove();
+
+    containerOverview = dom.create({
+        cssClassName: 'column column-right',
+        parent: elements.main,
+    })
+
+    // Content
+    const containerContent = dom.create({
+        tagName: 'div',
+        parent: containerOverview,
+    })
+
+
+    const render = () => {
+
+        // console.log('loaded and render', payload);
+
+        containerContent.innerHTML = '';
+
+        const colsNarrow = [
+            dom.create({
+                cssClassName: 'colNarrow',
+                parent: containerContent,
+            }),
+            dom.create({
+                cssClassName: 'colNarrow',
+                parent: containerContent,
+            }),
+            dom.create({
+                cssClassName: 'colNarrow',
+                parent: containerContent,
+            }),
+        ];
+
+        let slot = 0;
+        allImages = payload.map((image, index) => {
+            let elImage = WatermarkInOverview({
+                image,
+                parent: colsNarrow[slot],
+                onDeleted: () => {
+                    containerOverview.remove();
+                    overview();
+                },
+                onEdited: () => {
+                    viewMedia();
+                }
+            });
+            slot = (slot + 1) % 3;
+
+            return {
+                image,
+                elImage,
+            }
+        })
+
+        return {
+            clear() {
+                containerOverview.innerHTML = '';
+            }
+        }
+    }
+
+    ajax.loadWatermarkOverview().then(res => {
+        // console.log('loaded and render', res);
+
+        payload = Object.values(res);
+        payload.sort((a, b) => b.chDate - a.chDate);
+        return render();
+
+    })
+
+
+}
 
 const selectAndUpload = () => {
 
@@ -21,7 +105,7 @@ const selectAndUpload = () => {
     let watermark = new FormData();
     watermark.set('title', '');
     watermark.set('description', '');
-    watermark.set('position', 'top-left');
+    watermark.set('position', 'bottom-right');
     watermark.set('tiling', 'false');
     watermark.set('size', '20');
 
@@ -82,11 +166,11 @@ const selectAndUpload = () => {
         legend: lang.getPhrase('position'),
         value: watermark.get("position"),
         options: [
-            {value: 'top-left', label: lang.getPhrase('topLeft')},
-            {value: 'top-right', label: lang.getPhrase('topRight')},
-            {value: 'bottom-left', label: lang.getPhrase('bottomLeft')},
-            {value: 'bottom-right', label: lang.getPhrase('bottomRight')},
-            {value: 'center-center', label: lang.getPhrase('centerCenter')},
+            {value: 'topLeft', label: lang.getPhrase('topLeft')},
+            {value: 'topRight', label: lang.getPhrase('topRight')},
+            {value: 'bottomLeft', label: lang.getPhrase('bottomLeft')},
+            {value: 'bottomRight', label: lang.getPhrase('bottomRight')},
+            {value: 'centerCenter', label: lang.getPhrase('centerCenter')},
         ],
         onSelected: (value) => {
             watermark.set('position', value);
@@ -140,8 +224,9 @@ const selectAndUpload = () => {
                         inpImage.clear();
                         inpTitle.clear();
                         inpDescription.clear();
-                        inpAltName.clear();
-                        inpTags.clear();
+                        selPosition.clear();
+                        cbTiling.clear();
+                        rngSize.clear();
                         inpTitle.focus();
                         // console.log('res', res);
                         containerOverview.remove();
@@ -156,13 +241,15 @@ const selectAndUpload = () => {
     elButton.setAttribute('disabled', true);
 
 }
-const viewWatermark = () => {
+
+const viewWatermarks = () => {
 
     elements.main.innerHTML = '';
 
     selectAndUpload();
+    overview();
 
     elements.allTopNavs['watermark']?.highlight()
 }
 
-export default viewWatermark;
+export default viewWatermarks;

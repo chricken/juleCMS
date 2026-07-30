@@ -7,7 +7,8 @@
     .preview {
         margin-top: 1rem;
         border: 1px dashed var(--primary-color);
-        min-height:20px;
+        min-height: 20px;
+        width: 350px;
 
         .preview-img {
             position: relative;

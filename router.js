@@ -133,9 +133,69 @@ router.post('/saveMedia', (req, response) => {
                         status: 'success',
                         payload: res
                     })
+            ).catch(
+                err => {
+                    console.warn(err);
+                    response.status(500).json({
+                        status: 'error',
+                        payload: err
+                    })
+                }
             )
         }
     })
+})
+
+router.post('/saveWatermark', (req, response) => {
+
+    const form = formidable({
+        multiples: true,
+        uploadDir: './contents/watermarks',
+        keepExtensions: true,
+    });
+
+    form.parse(req, (err, fields, files) => {
+        if (err) {
+            console.warn(err)
+            response.json({
+                status: 'error',
+                payload: err
+            })
+        } else {
+            console.log('save Watermark', fields, files);
+
+            Object.entries(fields).forEach(([key, value]) => {
+                fields[key] = value[0];
+            })
+            // Die AddMedia-Oberfläche soll nur ein Bild übertragen, daher genügt dieser Ansatz
+            fields.filename = Object.values(files)[0][0].newFilename;
+            fields.crDate = Date.now();
+            fields.chDate = Date.now();
+            fields.id = fields.filename.split('.')[0];
+
+            console.log('save Watermark', fields, files);
+            manageContents.saveWatermark(fields).then(
+                res =>
+                    response.json({
+                        status: 'success',
+                        payload: res
+                    })
+            ).catch(
+                err => {
+                    console.warn(err);
+                    response.status(500).json({
+                        status: 'error',
+                        payload: err
+                    })
+                }
+            )
+
+            // response.json({
+            //     status: 'success',
+            // })
+        }
+    })
+
 })
 
 router.post('/updateMedia', (req, response) => {
@@ -212,13 +272,30 @@ router.post('/deleteMedia', (req, response) => {
 
 })
 
-router.get('/getImg/:filename', (req, response) => {
+router.post('/deleteWatermark', (req, response) => {
+
+    manageContents.deleteWatermark(req.body).then(
+        res => {
+            console.log(Object.keys(manageContents.watermarks));
+            response.json({
+                status: 'success',
+                payload: res
+            })
+        }
+    ).catch(
+        console.warn
+    )
+
+})
+
+router.get('/getImg/:folder/:filename', (req, response) => {
     let filename = req.params.filename;
-    // console.log('getImg', filename);
-    fs.access(`./contents/media/${filename}`).then(
+    let folder = req.params.folder;
+    console.log('getImg', folder, filename);
+    fs.access(`./contents/${folder}/${filename}`).then(
         () => {
             // console.log('gefunden', filename);
-            response.sendFile(filename, {root: './contents/media'})
+            response.sendFile(filename, {root: `./contents/${folder}`})
         }
     ).catch(
         () => {
@@ -231,6 +308,12 @@ router.get('/getImg/:filename', (req, response) => {
 
 router.get('/loadMediaOverview', (req, response) => {
     response.json(manageContents.media);
+})
+
+router.get('/loadWatermarkOverview', (req, response) => {
+    console.log('router 297', manageContents.watermarks);
+
+    response.json(manageContents.watermarks);
 })
 
 router.post('/newPageAfter', (req, res) => {

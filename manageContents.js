@@ -3,9 +3,11 @@
 import {promises as fs} from 'fs';
 import structure from './contents/structure.json' with {type: 'json'};
 import media from './contents/media.json' with {type: 'json'};
+import watermarks from './contents/watermarks.json' with {type: 'json'};
 import helpers from "./helpers.js";
 import Item from "./classes/Item.js";
 import Image from "./classes/Image.js";
+import Watermark from "./classes/Watermark.js";
 import settings from "./settings.js";
 import {Jimp} from "jimp";
 
@@ -14,6 +16,8 @@ const necessaryContentFolders = ['items', 'pages', 'media', 'watermarks'];
 const manageContents = {
     pages: null,
     media: null,
+    watermarks: null,
+
     init() {
         return Promise.all(necessaryContentFolders.map(foldername =>
             fs.mkdir(`./contents/${foldername}`, {recursive: true})
@@ -21,6 +25,8 @@ const manageContents = {
             () => manageContents.pages = structure.pages
         ).then(
             () => manageContents.media = media
+        ).then(
+            () => manageContents.watermarks = watermarks
         )
 
     },
@@ -142,24 +148,42 @@ const manageContents = {
     },
 
     saveMedia(payload) {
-        // console.log('save media', payload);
-
         // Größe anpassen
         return manageContents.convertImage({
             path: './contents/media/',
             filename: payload.filename,
+            defRes: settings.get('defaultResolutions')
         }).then(
             res => payload.resized = res
         ).then(
             () => {
-                console.log('converted', payload);
                 manageContents.media[payload.id] = new Image(payload);
             }
         ).then(
             // Der Speichervorgang soll noch eine Sekunde warten, bevor er startet
-            saveMediaFileDebounce
+            () => saveMediaFileDebouncer({
+                payload: manageContents.media,
+            })
         )
+    },
 
+    saveWatermark(payload) {
+        return manageContents.convertImage({
+            path: './contents/watermarks/',
+            filename: payload.filename,
+            defRes: settings.get('watermarkResolutions')
+        }).then(
+            res => payload.resized = res
+        ).then(
+            () => {
+                manageContents.watermarks[payload.id] = new Watermark(payload);
+            }
+        ).then(
+            // Der Speichervorgang soll noch eine Sekunde warten, bevor er startet
+            () => saveWatermarksFileDebouncer({
+                payload: manageContents.watermarks
+            })
+        )
     },
 
     updateMedia(payload) {
@@ -184,7 +208,9 @@ const manageContents = {
                     // console.log(res);
 
                     // Der Speichervorgang soll noch eine Sekunde warten, bevor er startet
-                    return saveMediaFileDebounce()
+                    return saveMediaFileDebouncer({
+                        payload:manageContents.media
+                    })
                 }
             ).catch(
                 console.warn
@@ -206,7 +232,7 @@ const manageContents = {
                 delete manageContents.media[payload.id]
             }
         ).then(
-            manageContents.saveMediaFileDebounce
+            () => saveMediaFileDebouncer({payload: manageContents.media})
         ).then(
             () => {
                 if (payload.filename) {
@@ -234,7 +260,7 @@ const manageContents = {
             }
         ).catch(
             err => {
-                console.log('err 204', err);
+                console.log('err 404', err);
                 return {
                     status: 'err',
                     filesDeleted: 0,
@@ -244,34 +270,88 @@ const manageContents = {
         )
     },
 
-    saveMediaFileDebounce() {
+    deleteWatermark(payload) {
+        let count = 0;
+
+        return new Promise(resolve => {
+            resolve()
+        }).then(
+            () => {
+                delete manageContents.watermarks[payload.id]
+            }
+        ).then(
+            () => saveWatermarksFileDebouncer({payload: manageContents.watermarks})
+        ).then(
+            () => {
+                if (payload.filename) {
+                    count++;
+                    return fs.unlink(`./contents/watermarks/${payload.filename}`)
+                }
+            }
+        ).then(
+            () => {
+                if (payload.resized.length) {
+                    count += payload.resized.length;
+                    return Promise.all(
+                        payload.resized.map(
+                            file => fs.unlink(`./contents/watermarks/${file.filename}`)
+                        )
+                    )
+                }
+            }
+        ).then(
+            () => {
+                return {
+                    status: 'success',
+                    filesDeleted: count
+                }
+            }
+        ).catch(
+            err => {
+                console.log('err 404', err);
+                return {
+                    status: 'err',
+                    filesDeleted: 0,
+                    msg: err
+                }
+            }
+        )
+    },
+
+    // IIFE Function für jeden einzelnen Debouncer
+    // Der Rückgabewert ist die Funktion mit dem fertigen Scope
+    saveFileDebouncer: ({fileURL = null,}) => {
         let timerID = null;
 
-        return () => {
+        return ({
+                    payload = null,
+                }) => {
+
             if (timerID) clearTimeout(timerID);
             timerID = setTimeout(() => {
                 fs.writeFile(
-                    `./contents/media.json`,
-                    JSON.stringify(manageContents.media)
+                    fileURL,
+                    JSON.stringify(payload)
                 ).then(
-                    () => console.log('Media saved')
+                    () => console.log('File saved')
                 ).catch(
-                    () => console.log('Media could not be saved')
+                    err => console.log(`file "${fileURL}" could not be saved`, err)
                 )
-            }, 1000);
+            }, settings.get('delayDebouncersFileSave'));
         }
     },
 
     convertImage({
                      path = './',
                      filename = null,
+                     defRes = []
                  }) {
         // Die ID wird aus dem Bildnamen gezogen. So kann jedes Bild unabhängig von der
         // ID des Mutter-Datensatzes konvertiert werden
         const id = filename.split('.')[0];
 
         // Diese Funktion scheint mir kein Promise zu sein.
-        let defRes = settings.get('defaultResolutions');
+
         return Jimp.read(`${path}${filename}`).then(
             // Daher bin ich nicht ganz sicher, ob das Timing später Probleme bereitet
             image => {
@@ -280,6 +360,7 @@ const manageContents = {
                 let filenames = []
                 return Promise.all(
                     defRes
+                        // Das Bild soll nicht vergrößert werden
                         .filter(val => val <= w)
                         .map(res => {
                             // console.log(`${path}${id}_${res}.png`);
@@ -308,11 +389,13 @@ const manageContents = {
             }
         )
     }
-
-
 }
 
-
-let saveMediaFileDebounce = manageContents.saveMediaFileDebounce();
+let saveMediaFileDebouncer = manageContents.saveFileDebouncer({
+    fileURL: './contents/media.json',
+});
+let saveWatermarksFileDebouncer = manageContents.saveFileDebouncer({
+    fileURL: './contents/watermarks.json',
+});
 
 export default manageContents;
