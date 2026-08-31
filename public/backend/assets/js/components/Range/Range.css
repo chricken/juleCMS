@@ -3,6 +3,19 @@
     position: relative;
     width: 720px;
 
+    .interact {
+        position: relative;
+
+    }
+    .interact.is-interacting {
+        position: fixed;
+        left:0;
+        top:0;
+        bottom:0;
+        right:0;
+        background-color:hsla(0, 20%, 80%, 0.5);
+    }
+
     .legendInput {
         display: inline-block;
         width: 120px;
