@@ -20,9 +20,31 @@ const range = ({
     // console.log(legend, value);
     let defaultValue = value;
 
-    let isDragging = false;
+    // let isDragging = false;
     let startXMouse = 0;
     let startXThumb = 0;
+
+
+    const handleMove = (evt) => {
+        evt.stopPropagation();
+        console.log('evt Move', parent);
+
+        let rect = elSliderRail.getBoundingClientRect();
+        let currentX = evt.clientX - startXMouse;
+        currentX = startXThumb + currentX;
+        currentX = Math.min(Math.max(currentX, 0), rect.width - elSliderThumb.offsetWidth);
+
+        let value = currentX / (rect.width - elSliderThumb.offsetWidth) * (max - min) + min;
+        value = roundValue ? Math.round(value) : value;
+
+        setValue(value);
+    }
+
+    const handleUp = (evt, parent) => {
+        evt.stopPropagation();
+        console.log('mouseup', parent);
+        elInteract.classList.remove('is-interacting');
+    }
 
     const container = dom.create({
         parent,
@@ -34,12 +56,8 @@ const range = ({
         parent: container,
         cssClassName: 'interact',
         listeners: {
-            mousemove(evt) {
-                console.log('click', evt);
-            },
-            mouseup(evt) {
-
-            }
+            mousemove: handleMove,
+            mouseup: handleUp,
         }
     })
 
@@ -57,29 +75,6 @@ const range = ({
 
     })
 
-    const handleMove = (evt, parent) => {
-        evt.stopPropagation();
-        console.log('evt Move', parent);
-
-        let rect = elSliderRail.getBoundingClientRect();
-        let currentX = evt.clientX - startXMouse;
-        currentX = startXThumb + currentX;
-        currentX = Math.min(Math.max(currentX, 0), rect.width - elSliderThumb.offsetWidth);
-
-        let value = currentX / (rect.width - elSliderThumb.offsetWidth) * (max - min) + min;
-        value = roundValue ? Math.round(value) : value;
-
-        setValue(value);
-    }
-
-    const handleUp = (evt, parent) => {
-        evt.stopPropagation();
-        isDragging = false;
-        console.log('mouseup', parent);
-
-        parent.removeEventListener('mousemove', handleMove);
-        parent.removeEventListener('mouseup', handleUp);
-    }
 
     const elSliderThumb = dom.create({
         parent: elSliderRail,
@@ -90,18 +85,9 @@ const range = ({
         listeners: {
             mousedown(evt) {
                 evt.stopPropagation();
-                isDragging = true;
-
                 startXMouse = evt.clientX;
                 startXThumb = elSliderThumb.offsetLeft;
-
                 elInteract.classList.add('is-interacting');
-
-                elInteract.addEventListener('mousemove', handleMove);
-                elInteract.addEventListener('mouseup', handleUp);
-
-                let parent = evt.target.closest('.modalBG') || document;
-                console.log('thumb down', parent);
             },
         }
     })

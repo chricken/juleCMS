@@ -14,12 +14,13 @@ class Image {
                     type = 'default',
                     visible = true,
                     crDate = null,
-                    chDate = null
+                    chDate = null,
+                    watermark = '',
                 } = {}) {
 
         Object.assign(this, {
             title, type, visible,
-            tags, filename,
+            tags, filename, watermark,
             description, altName,
             resized
         });

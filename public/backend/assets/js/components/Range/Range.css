@@ -4,16 +4,17 @@
     width: 720px;
 
     .interact {
-        position: relative;
-
-    }
-    .interact.is-interacting {
+        display: none;
         position: fixed;
         left:0;
         top:0;
         bottom:0;
         right:0;
-        background-color:hsla(0, 20%, 80%, 0.5);
+        /*background-color:hsla(0, 20%, 80%, 0.5);*/
+        z-index: 10000;
+    }
+    .interact.is-interacting {
+        display: block;
     }
 
     .legendInput {

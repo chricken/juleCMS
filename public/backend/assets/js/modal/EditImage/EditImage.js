@@ -4,6 +4,7 @@ import lang from "../../lang.js";
 import CompInput from "../../components/Input/Input.js";
 import CompInputFile from "../../components/InputFile/InputFile.js";
 import ajax from "../../ajax.js";
+import CompSelect from "../../components/Select/Select.js";
 
 const ModalEditImage = ({
                             image = null,
@@ -19,11 +20,12 @@ const ModalEditImage = ({
     media.set('description', image.description);
     media.set('altName', image.altName);
     media.set('tags', image.tags.join(','));
+    media.set('watermark', image.watermark);
     media.set('crDate', image.crDate);
     media.set('chDate', Date.now());
     media.set('id', image.id);
 
-    console.log('image', image, media);
+    console.log('image', image);
 
     const validate = () => {
         let valid = true;
@@ -74,6 +76,42 @@ const ModalEditImage = ({
             media.set('altName', value);
             validate();
         }
+    })
+
+
+    let placeholderWatermark = dom.create({
+        // content: 'Placeholder for Watermarks',
+        parent: container,
+    })
+
+    ajax.loadWatermarkOverview().then(res => {
+        let payload = Object.values(res);
+        payload.sort((a, b) => b.chDate - a.chDate);
+        console.log('got watermark',media.get('watermark') );
+
+        CompSelect({
+            parent: placeholderWatermark,
+            legend: lang.getPhrase('watermark'),
+            options: [
+                {
+                    value: 0,
+                    label: lang.getPhrase('noWatermark')
+                },
+                ...payload.map(watermark => {
+                    return {
+                        value: watermark.id,
+                        label: watermark.title
+                    }
+                })],
+            value: media.get('watermark'),
+            onSelected: (value) => {
+                media.set('watermark', value);
+                console.log('media', media);
+                validate();
+            }
+        })
+
+
     })
 
     let inpTags = CompInput({

@@ -17,7 +17,7 @@ const init = () => {
     ).then(
         viewTopNav
     ).then(
-        viewWatermarks
+        viewMedia
     ).catch(
         console.warn
     )

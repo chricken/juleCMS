@@ -190,6 +190,10 @@ const lang = {
         centerCenter: {
             de: 'Zentriert',
             en: 'Centered',
+        },
+        noWatermark: {
+            de: 'Kein Wasserzeichen',
+            en: 'No Watermark',
         }
     }
 }

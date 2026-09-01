@@ -75,6 +75,20 @@ const ajax = {
         )
     },
 
+    updateWatermark(formData) {
+        console.log('update Watermark', formData);
+        return fetch('/api/updateWatermark', {
+            method: 'POST',
+            body: formData
+        }).then(
+            res => res.json()
+        ).then(
+            payload => {
+                return payload;
+            }
+        )
+    },
+
     loadMediaOverview() {
         return fetch('/api/loadMediaOverview').then(
             res => res.json()

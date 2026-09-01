@@ -256,6 +256,61 @@ router.post('/updateMedia', (req, response) => {
 
 })
 
+router.post('/updateWatermark', (req, response) => {
+    console.log('Update Media', req.body);
+
+    const form = formidable({
+        multiples: true,
+        uploadDir: './contents/watermarks',
+        keepExtensions: true,
+        minFileSize: 0,
+        allowEmptyFiles: true,
+    });
+
+    form.parse(req, (err, fields, files) => {
+        if (err) {
+            console.log('err', err);
+            response.json({
+                status: 'error',
+                payload: err
+            })
+        } else {
+
+            Object.entries(fields).forEach(([key, value]) => {
+                fields[key] = value[0];
+            })
+
+            fields.crDate = +fields.crDate;
+            fields.chDate = +fields.chDate;
+
+            // Neu hochgeladene Bilder haben eine andere ID als Das Media-Objekt.
+            // Ggf vorhandene Verknüpfungen und die alten (überschriebenen) Bilder
+            // bleiben dadurch erhalten.
+            if (files['image[0]']) {
+                // console.log(files);
+                fields.filename = Object.values(files)[0][0].newFilename;
+            }
+
+            console.log(fields);
+            manageContents.updateWatermark(fields).then(
+                payload => response.json({
+                    status: 'success',
+                    payload
+                })
+            ).catch(
+                err => response.status(500).json({
+                    status: 'error',
+                    payload: err
+                })
+            )
+
+
+        }
+    })
+
+
+})
+
 router.post('/deleteMedia', (req, response) => {
 
     manageContents.deleteMedia(req.body).then(

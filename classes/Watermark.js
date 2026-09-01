@@ -12,12 +12,15 @@ class Watermark {
                     tiling = false,
                     size = 10,
                     position = 'bottom-right',
+                    opacity = 80,
+                    blendMode = 'normal',
                     crDate = null,
                     chDate = null
                 } = {}) {
 
         Object.assign(this, {
             title, filename, description,
+            opacity, blendMode,
             tiling, size, position, resized
         });
 

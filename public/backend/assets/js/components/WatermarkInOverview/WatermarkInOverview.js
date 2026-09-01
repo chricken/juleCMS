@@ -22,6 +22,7 @@ const WatermarkInOverview = ({
         parent,
         cssClassName: 'card card-image transit',
     })
+    console.log('Watermark',image );
 
     const elTitle = dom.create({
         tagName: 'h2',

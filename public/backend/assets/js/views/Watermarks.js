@@ -105,9 +105,11 @@ const selectAndUpload = () => {
     let watermark = new FormData();
     watermark.set('title', '');
     watermark.set('description', '');
-    watermark.set('position', 'bottom-right');
+    watermark.set('position', 'bottomRight');
     watermark.set('tiling', 'false');
     watermark.set('size', '20');
+    watermark.set('opacity', '80');     // Deckung in Prozent
+    watermark.set('blendmode', 'normal');   // Deckungsmodus (normal, multiply, screen, darken, lighten)
 
     const validate = () => {
         let valid = true;
@@ -176,6 +178,7 @@ const selectAndUpload = () => {
             watermark.set('position', value);
         }
     })
+
 
     // Tiling
     const cbTiling = CompCheckbox({

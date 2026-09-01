@@ -33,7 +33,6 @@ const select = ({
     let elSelect = dom.create({
         parent: container,
         tagName: 'select',
-        value,
         size,
         listeners: {
             click(evt) {
@@ -54,6 +53,8 @@ const select = ({
             content: option.label,
         })
     })
+
+    elSelect.value = value;
 
     let path = new URL(import.meta.url).pathname;
     path = `${path.substring(0, path.lastIndexOf('/') + 1)}Select.css`;

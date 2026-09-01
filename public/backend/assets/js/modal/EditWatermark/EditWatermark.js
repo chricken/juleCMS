@@ -138,17 +138,16 @@ const ModalEditWatermark = ({
                 evt.stopPropagation();
                 console.log(watermark);
 
-                /*
-                ajax.updateMedia(watermark).then(
+                ajax.updateWatermark(watermark).then(
                     res => {
-                        console.log(res);
+                        console.log('updated', res);
                     }
                 ).then(
                     () => elModal.closeModal()
                 ).then(
                     () => onSaved()
                 )
-                */
+
             }
         }
     })

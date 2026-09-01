@@ -217,6 +217,49 @@ const manageContents = {
             )
         } else {
             return new Promise(resolve => {
+                saveMediaFileDebouncer({
+                    payload:manageContents.media
+                })
+                resolve()
+            })
+        }
+    },
+
+    updateWatermark(payload) {
+        const content = manageContents.watermarks[payload.id];
+        // console.log('payload', payload);
+
+        // Daten an das gespeicherte Objekt übertragen (auch die Bild-ID)
+        Object.entries(payload).forEach(([key, value]) => {
+            content[key] = value;
+        })
+        // console.log('content after', content);
+
+        if (payload.filename) {
+            content.resized = [];
+            return manageContents.convertImage({
+                path: './contents/watermarks/',
+                filename: payload.filename,
+            }).then(
+                (res) => {
+                    content.resized = res
+                    console.log('Watermark content after resize', content);
+                    // console.log(res);
+
+                    // Der Speichervorgang soll noch eine Sekunde warten, bevor er startet
+                    return saveWatermarksFileDebouncer({
+                        payload:manageContents.watermarks
+                    })
+                }
+            ).catch(
+                console.warn
+            )
+        } else {
+            // Damit die Funktion einen Promise zurückgibt, auch wenn wir nicht mir Dateien arbeiten.
+            return new Promise(resolve => {
+                saveWatermarksFileDebouncer({
+                    payload:manageContents.watermarks
+                })
                 resolve()
             })
         }

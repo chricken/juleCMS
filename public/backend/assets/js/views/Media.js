@@ -4,14 +4,17 @@ import elements from "../elements.js";
 import dom from "../dom.js";
 import data from "../data.js";
 import lang from "../lang.js";
+import ajax from "../ajax.js";
+
+import ImageInOverview from "../components/ImageInOverview/ImageInOverview.js";
+
 import CompInput from "../components/Input/Input.js";
 // import CompInputForm from "../components/Input/Input.js";
 import CompInputFile from "../components/InputFile/InputFile.js";
 import CompImageInOverview from "../components/ImageInOverview/ImageInOverview.js";
 import CompBtnSort from "../components/BtnSort/BtnSort.js";
-import ajax from "../ajax.js";
-import ImageInOverview from "../components/ImageInOverview/ImageInOverview.js";
 import CompTag from "../components/Tag/Tag.js";
+import CompSelect from "../components/Select/Select.js";
 
 let containerOverview = null;
 
@@ -25,6 +28,7 @@ const selectAndUpload = () => {
     media.set('description', '');
     media.set('altName', '');
     media.set('tags', '');
+    media.set('watermark', '');
 
     const validate = () => {
         let valid = true;
@@ -86,6 +90,40 @@ const selectAndUpload = () => {
             media.set('altName', value);
             validate();
         }
+    })
+
+    let placeholderWatermark = dom.create({
+        // content: 'Placeholder for Watermarks',
+        parent: containerUpload,
+    })
+
+    ajax.loadWatermarkOverview().then(res => {
+         let payload = Object.values(res);
+        payload.sort((a, b) => b.chDate - a.chDate);
+
+        CompSelect({
+            parent: placeholderWatermark,
+            legend: lang.getPhrase('watermark'),
+            options: [
+                {
+                    value: 0,
+                    label: lang.getPhrase('noWatermark')
+                },
+                ...payload.map(watermark => {
+                return {
+                    value: watermark.id,
+                    label: watermark.title
+                }
+            })],
+            value: media.get('watermark'),
+            onSelected: (value) => {
+                media.set('watermark', value);
+                console.log('media', media);
+                validate();
+            }
+        })
+
+
     })
 
     let inpTags = CompInput({
