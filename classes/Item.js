@@ -10,12 +10,13 @@ class Item {
                     content = '',
                     images = [],
                     tags = [],
+                    links = [],
                     visible = true,
                     crDate = null,
                     chDate = null
                 } = {}) {
         Object.assign(this, {
-            title, type, content, visible,
+            title, type, content, links, visible,
             images, tags,
         });
 

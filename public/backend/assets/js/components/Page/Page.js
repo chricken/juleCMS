@@ -35,7 +35,7 @@ const Page = (page) => {
             }
         }
     })
-    console.log('page', page);
+    // console.log('page', page);
 
     if (page.id !== 'root') {
         Contents({page, parent: elements.page});

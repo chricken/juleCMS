@@ -17,7 +17,7 @@ const init = () => {
     ).then(
         viewTopNav
     ).then(
-        viewMedia
+        viewPages
     ).catch(
         console.warn
     )

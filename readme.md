@@ -33,15 +33,43 @@ Die wirklichen Nutzdaten aber befinden sich als JSON-Dateien in den Unterordnern
 - - Inhalt
 - - Sichtbar
 - - Zusätzlicher Kommentar / Notiz
-- Jede Komponente hat eine eigen CSS-Struktur, die direlkt in die Komponente eingebunden wird.
-Dadurch hat man zwar die selbe CSS-Datei mehrfach geladen, aber keine CSS, die nicht gebraucht werden.
+- Typen
+- - Im Backend werden grundsätzlich alle Eingaben gerendert aber je nach ausgewähltem Typen werden die Eingaben ein- und ausgeblendet. 
+- - Text: Reiner Text ohne Bilder
+- - Text mit Bild 
+- - - Es können mehrere Bilder ausgewählt werden
+- - - Die Bilder können in der Reihenfolge verschoben werden
+- - - Die Bilder können einzeln mit einem Link versehen werden
+- - - Die Bilder können einzeln mit einem Text versehen werden
+- - - Position der Bilder kann bestimmt werden (rechts, Links, Oben, Unten)
+- - - Slider oder Galerie
+- - - Wie viel der Breite sollen die Bilder einnehmen
+- - Text mit Bild alternativ
+- - Linksammlung
+- - Bild
+- - Bildraster
+- - Trailer (Bildslider)
+- - Störer
+- Jede Komponente hat eine eigene CSS-Struktur, die direkt in die Komponente eingebunden wird.
+Dadurch hat man zwar die selbe CSS-Datei mehrfach geladen, aber kein CSS-Code, der nicht gebraucht wird.
+- Bildauswahl
+- - Bildern kann ein Link zugewiesen werden
 - Bilder:
 - - Bilder werden grundsätzlich als canvas eingebunden.
 - - Bilder erhalten im Backend eine checkbox, die aussagt, ob das Bild eine Wassermarke erhalten soll und welche
 - - Optional Großdarstellung bei Klick
+- - Bildeffekte (CSS)
+- - - Runder Rahmen 
+- - - Schatten nach außen
+- - - Schatten nach innen
+- - - Weichgezeichnet
+- - - Graustufen
+- - - Rotation 
+- - - Spiegelung
 - Im Frontend optional ein kleines Icon, um Metadaten (crdate, chdate, Autor, etc) darzustellen.
 - Komponenten;
 - - Text mit Überschrift
+- 
 
 ### Routing
 History

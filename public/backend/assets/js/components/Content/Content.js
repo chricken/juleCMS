@@ -2,6 +2,7 @@
 
 import dom from "../../dom.js";
 import CompInput from "../Input/Input.js";
+import CompSelect from "../Select/Select.js";
 import elements from "../../elements.js";
 import settings from "../../data.js";
 import lang from "../../lang.js";
@@ -25,6 +26,7 @@ const Content = ({
 
     const container = dom.create({
         parent,
+        // content: 'Contentelement',
         cssClassName: 'container content edit transit',
         listeners: {
             click(evt) {
@@ -131,6 +133,126 @@ const Content = ({
         }
     })
 
+    // Links
+
+    if (data.links) {
+
+        let containerLinks = dom.create({
+            parent: elInner,
+            cssClassName: 'container container-inner'
+        })
+
+        const renderLinks = () => {
+            // Links entfernen
+            if (containerLinks) containerLinks.innerHTML = '';
+
+            dom.create({
+                cssClassName:'indicatorOpen',
+                parent:containerLinks,
+                content:'⯈'
+            })
+
+            // Links neu rendern
+            dom.create({
+                parent: containerLinks,
+                tagName: 'h3',
+                content: lang.getPhrase('links'),
+                cssClassName: 'container-inner-title'
+            })
+
+            data.links.forEach(link => {
+
+                const containerLink = dom.create({
+                    parent: containerLinks,
+                    cssClassName: 'container-link'
+                })
+
+                CompInput({
+                    parent: containerLink,
+                    legend: lang.getPhrase('legend'),
+                    value: link.legend,
+                    onInput(value) {
+                        link.legend = value;
+                        saveContent(data);
+                    }
+                })
+
+                CompInput({
+                    parent: containerLink,
+                    legend: lang.getPhrase('url'),
+                    value: link.url,
+                    onInput(value) {
+                        link.url = value;
+                        saveContent(data);
+                    }
+                })
+
+                CompSelect({
+                    parent: containerLink,
+                    legend: lang.getPhrase('target'),
+                    value: link.target,
+                    options: [
+                        {value: '_blank', label: lang.getPhrase('newWindow')},
+                        {value: '_self', label: lang.getPhrase('sameWindow')}
+                    ],
+                    onSelected(value) {
+                        link.target = value;
+                        saveContent(data);
+                    }
+                })
+
+                dom.create({
+                    parent: containerLink,
+                    tagName: 'button',
+                    content: lang.getPhrase('delete'),
+                    cssClassName: 'button button-small',
+                    listeners: {
+                        click: () => {
+                            data.links = data.links.filter(l => l !== link);
+                            saveContent(data);
+                            renderLinks();
+                            container.style.height = elInner.getBoundingClientRect().height + 30 + 'px';
+                        }
+                    }
+                })
+
+                // Abstand
+                dom.create({
+                    parent: containerLink,
+                    tagName: 'br'
+                })
+                dom.create({
+                    parent: containerLink,
+                    tagName: 'br'
+                })
+
+            })
+
+            // Button, um einen neuen Link hinzuzufügen
+            dom.create({
+                parent: containerLinks,
+                tagName: 'button',
+                content: lang.getPhrase('addLink'),
+                cssClassName: 'button button-small',
+                listeners: {
+                    click: () => {
+                        data.links.push({
+                            legend: '',
+                            url: '',
+                            target: '_blank'
+                        })
+                        console.log(data);
+
+                        saveContent(data);
+                        renderLinks();
+                        container.style.height = elInner.getBoundingClientRect().height + 30 + 'px';
+                    }
+                }
+            })
+        }
+
+        renderLinks();
+    }
     // Tags
     CompInput({
         parent: elInner,

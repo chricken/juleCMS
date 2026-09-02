@@ -139,7 +139,7 @@ const lang = {
             de: 'Bild bearbeiten',
             en: 'Edit Image',
         },
-        editWatermark:{
+        editWatermark: {
             de: 'Wasserzeichen bearbeiten',
             en: 'Edit Watermark',
         },
@@ -194,6 +194,34 @@ const lang = {
         noWatermark: {
             de: 'Kein Wasserzeichen',
             en: 'No Watermark',
+        },
+        links: {
+            de: 'Links',
+            en: 'Links'
+        },
+        addLink: {
+            de: 'Link hinzufügen',
+            en: 'Add Link'
+        },
+        legend: {
+            de: 'Beschriftung',
+            en: 'Legend'
+        },
+        url: {
+            de: 'URL',
+            en: 'URL'
+        },
+        target: {
+            de: 'Ziel',
+            en: 'Target'
+        },
+        newWindow: {
+            de: 'Neues Fenster',
+            en: 'New Window'
+        },
+        sameWindow: {
+            de: 'Gleiches Fenster',
+            en: 'Same Window'
         }
     }
 }

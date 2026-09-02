@@ -68,7 +68,7 @@ const Contents = ({
         index: 0,
         page
     })
-    console.log(page);
+    // console.log(page);
 
     // Inhalte
     page.content.forEach((contentID, index) => {

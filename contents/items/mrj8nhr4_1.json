@@ -1,1 +1,18 @@
-{"title":"Ich bin ein Contentljasj","type":"default","content":"xyvcjbdfvb\n\naphpduhvpuiwe\navsdpcjiusdncwqhecqn","visible":true,"images":[],"tags":[],"id":"mrj8nhr4_1","crDate":1783948123552,"chDate":1783948123552}
+{
+  "title": "Ich bin ein Content",
+  "type": "default",
+  "content": "xyvcjbdfvb\n\naphpduhvpuiwe\navsdpcjiusdncwqhecqn",
+  "visible": true,
+  "images": [],
+  "tags": [],
+  "links": [
+    {
+      "legend": "",
+      "url": "",
+      "target": "_blenk"
+    }
+  ],
+  "id": "mrj8nhr4_1",
+  "crDate": 1783948123552,
+  "chDate": 1783948123552
+}

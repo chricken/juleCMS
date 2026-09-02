@@ -8,6 +8,28 @@
     margin-bottom: 1rem;
     background-color: #f9f9f9;
 
+    .container-inner {
+        background-color: transparent;
+        margin-top: var(--padding-default);
+        box-shadow: none;
+        border: 1px solid var(--border-color);
+        padding: var(--padding);
+        padding-left: var(--padding-default);
+
+        .indicatorOpen {
+            color: var(--dark-color);
+        }
+
+        h3 {
+            color: var(--dark-color);
+            font-weight: normal;
+        }
+
+        h3:hover {
+            color: var(--dark-color);
+        }
+    }
+
 }
 
 .content.edit {
