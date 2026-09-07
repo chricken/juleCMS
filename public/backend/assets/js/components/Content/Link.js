@@ -11,6 +11,8 @@ const Link = ({
                   saveContent, // darf keinen Default haben, damit es beim Aufruf eine Fehlermeldung gibt
                   renderLinks, // darf keinen Default haben, damit es beim Aufruf eine Fehlermeldung gibt
                   removeLink, // darf keinen Default haben, damit es beim Aufruf eine Fehlermeldung gibt
+    moveUp,
+    moveDown,
               }) => {
 
     const containerLink = dom.create({
@@ -67,6 +69,26 @@ const Link = ({
         }
     })
 
+    dom.create({
+        parent: containerLink,
+        tagName: 'button',
+        content: lang.getPhrase('moveUp'),
+        cssClassName: 'button button-small',
+        listeners: {
+            click:moveUp
+        }
+    })
+
+    dom.create({
+        parent: containerLink,
+        tagName: 'button',
+        content: lang.getPhrase('moveDown'),
+        cssClassName: 'button button-small',
+        listeners: {
+            click: moveDown
+        }
+    })
+
     // Abstand
     dom.create({
         parent: containerLink,
@@ -74,7 +96,7 @@ const Link = ({
     })
     dom.create({
         parent: containerLink,
-        tagName: 'br'
+        tagName: 'hr'
     })
 
 }

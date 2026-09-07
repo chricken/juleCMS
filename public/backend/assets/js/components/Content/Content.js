@@ -137,87 +137,188 @@ const Content = ({
         }
     })
 
-    // Links
+    // Images
+    let containerImages = dom.create({
+        parent: elInner,
+        cssClassName: 'container container-inner container-collapsable'
+    })
 
-    if (data.links) {
+    const renderImages = () => {
+        if (containerImages) containerImages.innerHTML = '';
 
-        let containerLinks = dom.create({
-            parent: elInner,
-            cssClassName: 'container container-inner container-collapsable'
+
+        dom.create({
+            cssClassName: 'indicatorOpen-links',
+            parent: containerImages,
+            content: '⯈',
+            listeners: {
+                click() {
+                    console.log('click Pfeil')
+                    containerImages.classList.toggle('open');
+                    container.style.height = elInner.getBoundingClientRect().height + 30 + 'px';
+                }
+            }
         })
 
-        const renderLinks = () => {
-            // Links entfernen
-            if (containerLinks) containerLinks.innerHTML = '';
-
-            dom.create({
-                cssClassName: 'indicatorOpen-links',
-                parent: containerLinks,
-                content: '⯈',
-                listeners: {
-                    click() {
-                        console.log('click Pfeil')
-                        containerLinks.classList.toggle('open');
-                        container.style.height = elInner.getBoundingClientRect().height + 30 + 'px';
-                    }
-                }
-            })
-
-            // Links neu rendern
-            dom.create({
-                parent: containerLinks,
-                tagName: 'h3',
-                content: lang.getPhrase('links'),
-                cssClassName: 'container-inner-title',
-                listeners: {
-                    click() {
-                        console.log('click Header')
-                        containerLinks.classList.toggle('open');
-                        container.style.height = elInner.getBoundingClientRect().height + 30 + 'px';
-                    }
-                }
-            })
-
-            data.links.forEach(link => CompLink({
-                link,
-                parent: containerLinks,
-                saveContent: () => {
-                    saveContent(data);
-                },
-                renderLinks: () => {
-                    renderLinks();
+        // Links neu rendern
+        dom.create({
+            parent: containerImages,
+            tagName: 'h3',
+            content: lang.getPhrase('images'),
+            cssClassName: 'container-inner-title',
+            listeners: {
+                click() {
+                    console.log('click Header')
+                    containerImages.classList.toggle('open');
                     container.style.height = elInner.getBoundingClientRect().height + 30 + 'px';
-                },
-                removeLink: () => {
-                    data.links = data.links.filter(l => l !== link);
                 }
-            }))
+            }
+        })
 
-            // Button, um einen neuen Link hinzuzufügen
+        data.images.forEach(image => {
+
+            CompImage({
+                // Bild darstellen
+            })
+
             dom.create({
-                parent: containerLinks,
+                parent: containerImages,
                 tagName: 'button',
-                content: lang.getPhrase('addLink'),
+                content: lang.getPhrase('moveUp'),
                 cssClassName: 'button button-small',
                 listeners: {
                     click: () => {
-                        data.links.push({
-                            legend: '',
-                            url: '',
-                            target: '_blank'
-                        })
-                        console.log(data);
-
-                        saveContent(data);
-                        renderLinks();
-                        container.style.height = elInner.getBoundingClientRect().height + 30 + 'px';
                     }
                 }
             })
-        }
 
-        renderLinks();
+            dom.create({
+                parent: containerImages,
+                tagName: 'button',
+                content: lang.getPhrase('moveDown'),
+                cssClassName: 'button button-small',
+                listeners: {
+                    click: () => {
+                    }
+                }
+            })
+        })
+
+        dom.create({
+            parent: containerImages,
+            tagName: 'button',
+            content: lang.getPhrase('addImage'),
+            cssClassName: 'button button-small',
+            listeners: {
+                click: () => {
+                    /*
+                    data.links.push({
+                        legend: '',
+                        url: '',
+                        target: '_blank'
+                    })
+                    console.log(data);
+
+                    saveContent(data);
+                    renderLinks();
+                    container.style.height = elInner.getBoundingClientRect().height + 30 + 'px';
+
+                    */
+                }
+            }
+        })
+
+
     }
+
+    renderImages();
+
+    // Links
+
+    let containerLinks = dom.create({
+        parent: elInner,
+        cssClassName: 'container container-inner container-collapsable'
+    })
+
+    const renderLinks = () => {
+        // Links entfernen
+        if (containerLinks) containerLinks.innerHTML = '';
+
+        dom.create({
+            cssClassName: 'indicatorOpen-links',
+            parent: containerLinks,
+            content: '⯈',
+            listeners: {
+                click() {
+                    console.log('click Pfeil')
+                    containerLinks.classList.toggle('open');
+                    container.style.height = elInner.getBoundingClientRect().height + 30 + 'px';
+                }
+            }
+        })
+
+        // Links neu rendern
+        dom.create({
+            parent: containerLinks,
+            tagName: 'h3',
+            content: lang.getPhrase('links'),
+            cssClassName: 'container-inner-title',
+            listeners: {
+                click() {
+                    console.log('click Header')
+                    containerLinks.classList.toggle('open');
+                    container.style.height = elInner.getBoundingClientRect().height + 30 + 'px';
+                }
+            }
+        })
+
+        data.links.forEach(link => CompLink({
+            link,
+            parent: containerLinks,
+            saveContent: () => {
+                saveContent(data);
+            },
+            renderLinks: () => {
+                renderLinks();
+                container.style.height = elInner.getBoundingClientRect().height + 30 + 'px';
+            },
+            removeLink: () => {
+                data.links = data.links.filter(l => l !== link);
+            },
+            moveUp:()=>{
+
+            },
+            moveDown:()=>{
+
+            }
+        }))
+
+        // Button, um einen neuen Link hinzuzufügen
+        dom.create({
+            parent: containerLinks,
+            tagName: 'button',
+            content: lang.getPhrase('addLink'),
+            cssClassName: 'button button-small',
+            listeners: {
+                click: () => {
+                    data.links.push({
+                        legend: '',
+                        url: '',
+                        target: '_blank'
+                    })
+                    console.log(data);
+
+                    saveContent(data);
+                    renderLinks();
+                    container.style.height = elInner.getBoundingClientRect().height + 30 + 'px';
+                }
+            }
+        })
+    }
+
+    renderLinks();
+
+
     // Tags
     CompInput({
         parent: elInner,

@@ -203,6 +203,22 @@ const lang = {
             de: 'Link hinzufügen',
             en: 'Add Link'
         },
+        images:{
+            de: 'Bilder',
+            en: 'Images'
+        },
+        addImage: {
+            de: 'Bild hinzufügen',
+            en: 'Add Image'
+        },
+        moveUp:{
+            de: 'Nach oben',
+            en: 'Move Up'
+        },
+        moveDown:{
+            de: 'Nach unten',
+            en: 'Move Down'
+        },
         legend: {
             de: 'Beschriftung',
             en: 'Legend'
