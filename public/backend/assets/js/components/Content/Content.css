@@ -16,9 +16,6 @@
         padding: var(--padding);
         padding-left: var(--padding-default);
 
-        .indicatorOpen {
-            color: var(--dark-color);
-        }
 
         h3 {
             color: var(--dark-color);
@@ -30,13 +27,38 @@
         }
     }
 
+    .container-collapsable {
+        height: 45px;
+        padding-left:25px;
+        padding-bottom: 10px;
+        background-color: var(--slightly-shaded);
+
+
+        .indicatorOpen-links {
+            position: absolute;
+            left: 2px;
+            transform: rotate(0deg);
+            font-size: 25px;
+            color: var(--dark-color);
+        }
+    }
+
+    .container-collapsable.open {
+        height: auto;
+        border: 1px solid var(--dark-color);
+
+        .indicatorOpen-links {
+            transform: rotate(90deg);
+        }
+    }
+
 }
 
 .content.edit {
     padding-left: 30px;
     position: relative;
     overflow: hidden;
-    height: 55px;
+    height: 65px;
     overscroll-behavior: none;
 }
 
@@ -64,7 +86,6 @@
     top: -10px;
     z-index: 1000;
 }
-
 
 .dragger {
     position: absolute;

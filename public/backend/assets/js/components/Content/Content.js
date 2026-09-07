@@ -9,6 +9,9 @@ import lang from "../../lang.js";
 import helpers from "../../helpers.js";
 import ajax from "../../ajax.js";
 
+// Unterkomponenten
+import CompLink from './Link.js';
+
 const Content = ({
                      data = {},
                      parent = null,
@@ -52,13 +55,13 @@ const Content = ({
     const elInner = dom.create({
         parent: container,
     })
-
-    dom.create({
-        parent: elInner,
-        content: index.toString(),
-        cssClassName: 'index transit',
-    })
-
+    /*
+        dom.create({
+            parent: elInner,
+            content: index.toString(),
+            cssClassName: 'index transit',
+        })
+    */
     dom.create({
         content: '⯈',
         parent: elInner,
@@ -107,6 +110,7 @@ const Content = ({
         parent: elInner,
         legend: lang.getPhrase('title'),
         value: data.title,
+        isTitle: true,
         // nextToIndex: true,
         onInput(value) {
             console.log('Neuer Titel: ', value);
@@ -139,7 +143,7 @@ const Content = ({
 
         let containerLinks = dom.create({
             parent: elInner,
-            cssClassName: 'container container-inner'
+            cssClassName: 'container container-inner container-collapsable'
         })
 
         const renderLinks = () => {
@@ -147,9 +151,16 @@ const Content = ({
             if (containerLinks) containerLinks.innerHTML = '';
 
             dom.create({
-                cssClassName:'indicatorOpen',
-                parent:containerLinks,
-                content:'⯈'
+                cssClassName: 'indicatorOpen-links',
+                parent: containerLinks,
+                content: '⯈',
+                listeners: {
+                    click() {
+                        console.log('click Pfeil')
+                        containerLinks.classList.toggle('open');
+                        container.style.height = elInner.getBoundingClientRect().height + 30 + 'px';
+                    }
+                }
             })
 
             // Links neu rendern
@@ -157,76 +168,30 @@ const Content = ({
                 parent: containerLinks,
                 tagName: 'h3',
                 content: lang.getPhrase('links'),
-                cssClassName: 'container-inner-title'
+                cssClassName: 'container-inner-title',
+                listeners: {
+                    click() {
+                        console.log('click Header')
+                        containerLinks.classList.toggle('open');
+                        container.style.height = elInner.getBoundingClientRect().height + 30 + 'px';
+                    }
+                }
             })
 
-            data.links.forEach(link => {
-
-                const containerLink = dom.create({
-                    parent: containerLinks,
-                    cssClassName: 'container-link'
-                })
-
-                CompInput({
-                    parent: containerLink,
-                    legend: lang.getPhrase('legend'),
-                    value: link.legend,
-                    onInput(value) {
-                        link.legend = value;
-                        saveContent(data);
-                    }
-                })
-
-                CompInput({
-                    parent: containerLink,
-                    legend: lang.getPhrase('url'),
-                    value: link.url,
-                    onInput(value) {
-                        link.url = value;
-                        saveContent(data);
-                    }
-                })
-
-                CompSelect({
-                    parent: containerLink,
-                    legend: lang.getPhrase('target'),
-                    value: link.target,
-                    options: [
-                        {value: '_blank', label: lang.getPhrase('newWindow')},
-                        {value: '_self', label: lang.getPhrase('sameWindow')}
-                    ],
-                    onSelected(value) {
-                        link.target = value;
-                        saveContent(data);
-                    }
-                })
-
-                dom.create({
-                    parent: containerLink,
-                    tagName: 'button',
-                    content: lang.getPhrase('delete'),
-                    cssClassName: 'button button-small',
-                    listeners: {
-                        click: () => {
-                            data.links = data.links.filter(l => l !== link);
-                            saveContent(data);
-                            renderLinks();
-                            container.style.height = elInner.getBoundingClientRect().height + 30 + 'px';
-                        }
-                    }
-                })
-
-                // Abstand
-                dom.create({
-                    parent: containerLink,
-                    tagName: 'br'
-                })
-                dom.create({
-                    parent: containerLink,
-                    tagName: 'br'
-                })
-
-            })
+            data.links.forEach(link => CompLink({
+                link,
+                parent: containerLinks,
+                saveContent: () => {
+                    saveContent(data);
+                },
+                renderLinks: () => {
+                    renderLinks();
+                    container.style.height = elInner.getBoundingClientRect().height + 30 + 'px';
+                },
+                removeLink: () => {
+                    data.links = data.links.filter(l => l !== link);
+                }
+            }))
 
             // Button, um einen neuen Link hinzuzufügen
             dom.create({

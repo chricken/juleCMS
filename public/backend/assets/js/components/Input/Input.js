@@ -12,6 +12,7 @@ const input = ({
                    multiline = false,
                    toLowerCase = false,
                    hasClearButton = true,
+                   isTitle = false,
                    onInput = () => {
                    },
                    onClear = () => {
@@ -24,7 +25,7 @@ const input = ({
     const container = dom.create({
         parent,
         // cssClassName: `container-input ${nextToIndex ? 'nextToIndex' : ''}`,
-        cssClassName: `container-input`,
+        cssClassName: `container-input ${isTitle ? 'is-title' : ''}`,
     })
 
     dom.create({

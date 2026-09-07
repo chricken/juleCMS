@@ -56,6 +56,14 @@
     }
 }
 
+.container-input.is-title {
+    margin-bottom:10px;
+    .input {
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+}
+
 .container-input.nextToIndex {
     top: -5px;
 

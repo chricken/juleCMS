@@ -27,6 +27,7 @@
     --white: #ffffff;
     --box-shadow-hover: 0 0px 10px rgba(0, 0, 0, 0.2);
     --box-shadow-far: 0 4px 15px rgba(0, 0, 0, 0.2);
+    --slightly-shaded: hsla(0, 0%, 0%, 0.05);
 }
 
 /* Grundlegende Stile */
@@ -129,17 +130,18 @@ button {
     margin-right: 1rem;
 }
 .button-small {
-    padding: 0.5rem 1rem;
-    font-size: 0.9rem;
+    padding: .2rem .5rem;
+    font-size: 1rem;
     margin:0;
     background-color: transparent;
-    border: 2px solid var(--secondary-color);
-    color: var(--secondary-color);
+    border: 2px solid var(--accent-color);
+    color: var(--accent-color);
 
 }
 
 button:hover {
-    background-color: #c0392b;
+    background-color: var(--accent-color);
+    color: var(--white);
     transform: translateY(-1px);
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
