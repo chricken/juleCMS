@@ -5,14 +5,19 @@ import CompInput from "../Input/Input.js";
 import lang from "../../lang.js";
 import CompSelect from "../Select/Select.js";
 
+import CompModalLinkInternal from "../../modal/LinkInternal/LinkInternal.js";
+import data from "../../data.js";
+
 const Link = ({
                   link,
                   parent,
+                  index = 0,
+                  numGesamt = 0,
                   saveContent, // darf keinen Default haben, damit es beim Aufruf eine Fehlermeldung gibt
                   renderLinks, // darf keinen Default haben, damit es beim Aufruf eine Fehlermeldung gibt
                   removeLink, // darf keinen Default haben, damit es beim Aufruf eine Fehlermeldung gibt
-    moveUp,
-    moveDown,
+                  moveUp,
+                  moveDown,
               }) => {
 
     const containerLink = dom.create({
@@ -30,15 +35,72 @@ const Link = ({
         }
     })
 
-    CompInput({
+    const parentURL = dom.create({
         parent: containerLink,
-        legend: lang.getPhrase('url'),
-        value: link.url,
-        onInput(value) {
-            link.url = value;
-            saveContent();
+        cssClassName: 'container-input'
+    })
+
+    // Links
+    dom.create({
+        parent: parentURL,
+        tagName: 'span',
+        content: lang.getPhrase('url'),
+        cssClassName: 'legendInput'
+    })
+
+    console.log('pages', data.pages);
+
+    if(link.url){
+        console.log(link, data.pages?.find(page=> page.id === link.url));
+
+        let linkContent = data.pages?.find(page=> page.id === link.url)?.title || link.url;
+
+        dom.create({
+            parent: parentURL,
+            tagName: 'span',
+            content: linkContent,
+            cssClassName: 'legendDescription'
+        })
+    }else{
+        dom.create({
+            parent: parentURL,
+            tagName: 'span',
+            content: link.url,
+
+        })
+    }
+
+    dom.create({
+        parent: parentURL,
+        tagName: 'button',
+        content: lang.getPhrase('internalLink'),
+        cssClassName: 'button button-small',
+        listeners: {
+            click: () => {
+                CompModalLinkInternal({
+                    onSelected(id){
+                        console.log('selected prent', id);
+                        link.url = id;
+                        saveContent();
+                        renderLinks();
+                    }
+                })
+            }
         }
     })
+
+    dom.create({
+        parent: parentURL,
+        tagName: 'button',
+        content: lang.getPhrase('externalLink'),
+        cssClassName: 'button button-small',
+        listeners: {
+            click: () => {
+
+            }
+        }
+    })
+
 
     CompSelect({
         parent: containerLink,
@@ -54,11 +116,18 @@ const Link = ({
         }
     })
 
-    dom.create({
+
+    // Buttons zum Löschen und verschieben
+    const parentBtnInteractive = dom.create({
         parent: containerLink,
+        cssClassName: 'buttons-interactive'
+    })
+
+    dom.create({
+        parent: parentBtnInteractive,
         tagName: 'button',
         content: lang.getPhrase('delete'),
-        cssClassName: 'button button-small',
+        cssClassName: 'button button-no-border',
         listeners: {
             click: () => {
                 removeLink();
@@ -69,31 +138,32 @@ const Link = ({
         }
     })
 
-    dom.create({
-        parent: containerLink,
-        tagName: 'button',
-        content: lang.getPhrase('moveUp'),
-        cssClassName: 'button button-small',
-        listeners: {
-            click:moveUp
-        }
-    })
+    if (index > 0) {
+        dom.create({
+            parent: parentBtnInteractive,
+            tagName: 'button',
+            content: lang.getPhrase('moveUp'),
+            cssClassName: 'button button-no-border',
+            listeners: {
+                click: moveUp
+            }
+        })
+    }
 
-    dom.create({
-        parent: containerLink,
-        tagName: 'button',
-        content: lang.getPhrase('moveDown'),
-        cssClassName: 'button button-small',
-        listeners: {
-            click: moveDown
-        }
-    })
+    if (index < numGesamt - 1) {
+        dom.create({
+            parent: parentBtnInteractive,
+            tagName: 'button',
+            content: lang.getPhrase('moveDown'),
+            cssClassName: 'button button-no-border',
+            listeners: {
+                click: moveDown
+            }
+        })
+    }
+
 
     // Abstand
-    dom.create({
-        parent: containerLink,
-        tagName: 'br'
-    })
     dom.create({
         parent: containerLink,
         tagName: 'hr'

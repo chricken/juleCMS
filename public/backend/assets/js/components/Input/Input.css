@@ -2,13 +2,19 @@
 .container-input {
     position: relative;
     width: 720px;
+    min-height:45px;
 
-    .legendInput {
+    .legendInput, .legendDescription {
         display: inline-block;
         width: 120px;
         font-weight: 600;
         color: var(--primary-color);
         vertical-align: top;
+    }
+
+    .legendDescription {
+        width: auto;
+        margin-right:var(--padding-default);
     }
 
     .input {

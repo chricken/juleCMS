@@ -116,8 +116,10 @@ const lang = {
             en: 'Alternative',
         },
         delete: {
-            de: 'Löschen',
-            en: 'Delete',
+            de: '×',
+            en: '×',
+            // de: 'Löschen',
+            // en: 'Delete',
         },
         edit: {
             de: 'Bearbeiten',
@@ -212,12 +214,12 @@ const lang = {
             en: 'Add Image'
         },
         moveUp:{
-            de: 'Nach oben',
-            en: 'Move Up'
+            de: '⇑',
+            en: '⇑'
         },
         moveDown:{
-            de: 'Nach unten',
-            en: 'Move Down'
+            de: '⇓',
+            en: '⇓'
         },
         legend: {
             de: 'Beschriftung',
@@ -238,6 +240,18 @@ const lang = {
         sameWindow: {
             de: 'Gleiches Fenster',
             en: 'Same Window'
+        },
+        internalLink:{
+            de: 'Interner Link',
+            en: 'Internal Link'
+        },
+        externalLink: {
+            de: 'Externer Link',
+            en: 'External Link'
+        },
+        internalLinkDescription:{
+            de: 'Seite anklicken, um sie als Link zu verknüpfen.',
+            en: 'Click on the page to link to it.'
         }
     }
 }

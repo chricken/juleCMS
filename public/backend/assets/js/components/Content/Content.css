@@ -52,6 +52,10 @@
         }
     }
 
+    .container-link {
+        position: relative;
+        /*margin-bottom:var(--padding-far);*/
+    }
 }
 
 .content.edit {

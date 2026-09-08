@@ -1,11 +1,10 @@
 {
-  "title": "",
+  "title": "abc",
   "type": "default",
   "content": "",
   "links": [
-
     {
-      "legend": "",
+      "legend": "Ein Link",
       "url": "",
       "target": "_blank"
     }
@@ -13,7 +12,7 @@
   "visible": true,
   "images": [],
   "tags": [],
-  "id": "mtr6m9hx_0",
-  "crDate": 1788782001045,
-  "chDate": 1788782001045
+  "id": "mtsmh6r6_0",
+  "crDate": 1788869104242,
+  "chDate": 1788869104242
 }

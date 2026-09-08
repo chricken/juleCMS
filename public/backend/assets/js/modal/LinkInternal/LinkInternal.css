@@ -1,0 +1,15 @@
+.description {
+    position: relative;
+    display: block;
+    margin-top:var(--padding-default);
+    margin-bottom:var(--padding-default);
+}
+
+.link-internal-structured-page {
+    position: relative;
+    margin-left:var(--padding-far);
+    cursor: pointer;
+}
+.link-internal-structured-page:hover {
+    color:var(--accent-color);
+}

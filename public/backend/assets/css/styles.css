@@ -117,6 +117,11 @@ hr {
 }
 
 /* Button Stile */
+.buttons-interactive {
+    /*position: absolute;*/
+    /*right: 0px;*/
+    /*top: 0px;*/
+}
 button {
     background-color: var(--secondary-color);
     color: white;
@@ -130,13 +135,28 @@ button {
     margin-right: 1rem;
 }
 .button-small {
+    position: relative;
+    display: inline-block;
     padding: .2rem .5rem;
     font-size: 1rem;
     margin:0;
+    margin-top: 5px;
     background-color: transparent;
     border: 2px solid var(--accent-color);
     color: var(--accent-color);
-
+    vertical-align: middle;
+}
+.button-no-border {
+    position: relative;
+    display: inline-block;
+    padding: .1rem;
+    font-size: 2rem;
+    margin:0;
+    margin-top: 5px;
+    background-color: transparent;
+    border: 2px solid transparent;
+    color: var(--accent-color);
+    vertical-align: middle;
 }
 
 button:hover {

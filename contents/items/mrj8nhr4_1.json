@@ -1,11 +1,22 @@
 {
-  "title": "Ich bin ein Content",
+  "title": "Das ist ein Content",
   "type": "default",
   "content": "xyvcjbdfvb\n\naphpduhvpuiwe\navsdpcjiusdncwqhecqn",
   "visible": true,
   "images": [],
   "tags": [],
-  "links": [],
+  "links": [
+    {
+      "legend": "Eins",
+      "url": "m20938f5923mu023",
+      "target": "_blank"
+    },
+    {
+      "legend": "",
+      "url": "http://www.dummy.com",
+      "target": "_blank"
+    }
+  ],
   "id": "mrj8nhr4_1",
   "crDate": 1783948123552,
   "chDate": 1783948123552

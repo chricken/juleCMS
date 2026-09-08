@@ -272,8 +272,10 @@ const Content = ({
             }
         })
 
-        data.links.forEach(link => CompLink({
+        data.links.forEach((link, index) => CompLink({
             link,
+            index,
+            numGesamt: data.links.length,
             parent: containerLinks,
             saveContent: () => {
                 saveContent(data);
@@ -285,11 +287,15 @@ const Content = ({
             removeLink: () => {
                 data.links = data.links.filter(l => l !== link);
             },
-            moveUp:()=>{
-
+            moveUp: () => {
+                data.links.splice(index - 1, 0, data.links.splice(index, 1)[0]);
+                renderLinks();
+                container.style.height = elInner.getBoundingClientRect().height + 30 + 'px';
             },
-            moveDown:()=>{
-
+            moveDown: () => {
+                data.links.splice(index + 1, 0, data.links.splice(index, 1)[0]);
+                renderLinks();
+                container.style.height = elInner.getBoundingClientRect().height + 30 + 'px';
             }
         }))
 

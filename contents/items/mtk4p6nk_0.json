@@ -4,11 +4,6 @@
   "content": "",
   "links": [
     {
-      "legend": "Erster",
-      "url": "http://erster.de",
-      "target": "_blank"
-    },
-    {
       "legend": "",
       "url": "",
       "target": "_self"
