@@ -252,6 +252,10 @@ const lang = {
         internalLinkDescription:{
             de: 'Seite anklicken, um sie als Link zu verknüpfen.',
             en: 'Click on the page to link to it.'
+        },
+        externalLinkDescription:{
+            de: 'URL eintragen oder einkopieren, um sie als Link zu verknüpfen.',
+            en: 'Enter or paste the URL to link to it.'
         }
     }
 }

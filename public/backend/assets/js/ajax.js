@@ -12,7 +12,7 @@ const ajax = {
     },
 
     saveContent(data) {
-        console.log('save content', data);
+        // console.log('save content', data);
 
         fetch('/api/saveContent', {
             method: 'POST',

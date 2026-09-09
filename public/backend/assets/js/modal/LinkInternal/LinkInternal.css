@@ -10,6 +10,7 @@
     margin-left:var(--padding-far);
     cursor: pointer;
 }
-.link-internal-structured-page:hover {
+.link-internal-structured-page .legend:hover {
     color:var(--accent-color);
+    font-weight: bold;
 }

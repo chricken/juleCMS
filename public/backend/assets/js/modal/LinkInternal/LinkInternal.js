@@ -1,16 +1,9 @@
 import Modal from '../modal.js';
 import dom from "../../dom.js";
 import lang from "../../lang.js";
-import CompInput from "../../components/Input/Input.js";
-import CompCheckbox from "../../components/Checkbox/Checkbox.js";
-import CompInputFile from "../../components/InputFile/InputFile.js";
-import CompRange from "../../components/Range/Range.js";
-import CompSelect from "../../components/Select/Select.js";
 import ajax from "../../ajax.js";
-import data from "../../data.js";
 
 const ModalLinkInternal = ({
-                               legend = '',
                                onSelected = () => {
                                }
                            } = {}) => {
@@ -50,7 +43,6 @@ const ModalLinkInternal = ({
                 // DOM-Elements anlegen
                 structured[page.id] = dom.create({
                     tagName: 'div',
-                    content: `- ${page.title} (id: ${page.id})`,
                     cssClassName:'link-internal-structured-page',
                     parent: containerLinkInternal,
                     listeners: {
@@ -61,15 +53,26 @@ const ModalLinkInternal = ({
                         }
                     }
                 })
+
+                dom.create({
+                    cssClassName:'legend',
+                    content:`- ${page.title} (id: ${page.id})`,
+                    parent: structured[page.id],
+                })
+
+                dom.create({
+                    cssClassName: 'children',
+                    parent: structured[page.id]
+                })
+
             })
-
-
-            console.log('structured', structured);
 
             pages.forEach(page => {
                 if (page.children) {
                     page.children.forEach(child => {
-                        structured[page.id].append(structured[child])
+                        structured[page.id]
+                            .querySelector('.children')
+                            .append(structured[child])
                     })
                 }
             })

@@ -6,6 +6,7 @@ import lang from "../../lang.js";
 import CompSelect from "../Select/Select.js";
 
 import CompModalLinkInternal from "../../modal/LinkInternal/LinkInternal.js";
+import CompModalLinkExternal from "../../modal/LinkExternal/LinkExternal.js";
 import data from "../../data.js";
 
 const Link = ({
@@ -48,25 +49,16 @@ const Link = ({
         cssClassName: 'legendInput'
     })
 
-    console.log('pages', data.pages);
+    // console.log('pages', data.pages);
 
-    if(link.url){
-        console.log(link, data.pages?.find(page=> page.id === link.url));
-
-        let linkContent = data.pages?.find(page=> page.id === link.url)?.title || link.url;
+    if (link.url) {
+        let linkContent = data.pages?.find(page => page.id === link.url)?.title || link.url;
 
         dom.create({
             parent: parentURL,
             tagName: 'span',
             content: linkContent,
             cssClassName: 'legendDescription'
-        })
-    }else{
-        dom.create({
-            parent: parentURL,
-            tagName: 'span',
-            content: link.url,
-
         })
     }
 
@@ -78,7 +70,7 @@ const Link = ({
         listeners: {
             click: () => {
                 CompModalLinkInternal({
-                    onSelected(id){
+                    onSelected(id) {
                         console.log('selected prent', id);
                         link.url = id;
                         saveContent();
@@ -96,7 +88,16 @@ const Link = ({
         cssClassName: 'button button-small',
         listeners: {
             click: () => {
+                CompModalLinkExternal({
+                    url: link.url,
+                    onSelected(url) {
+                        link.url = url;
+                        // console.log('new URL', url, link);
 
+                        saveContent();
+                        renderLinks();
+                    }
+                })
             }
         }
     })

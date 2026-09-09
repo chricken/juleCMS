@@ -55,28 +55,16 @@ const input = ({
 
             keyup(evt) {
                 evt.stopPropagation();
-                /*
-                if (valueIsArray) {
-                    value = evt.target.innerText
-                        .split(',')
-                        .map(el => el.trim())
-                        .map(el => toLowerCase
-                            ? el.toLowerCase()
-                            : el
-                        )
-                } else {
-                */
+
                 value = toLowerCase
                     ? evt.target.innerText.toLowerCase()
                     : evt.target.innerText;
-                // }
 
                 onInput(value);
             },
 
             click(evt) {
                 evt.stopPropagation();
-
             }
         }
     })

@@ -9,6 +9,8 @@ import lang from "../../lang.js";
 import helpers from "../../helpers.js";
 import ajax from "../../ajax.js";
 
+import ModalAddImage from '../../modal/AddImage/AddImage.js';
+
 // Unterkomponenten
 import CompLink from './Link.js';
 
@@ -55,13 +57,7 @@ const Content = ({
     const elInner = dom.create({
         parent: container,
     })
-    /*
-        dom.create({
-            parent: elInner,
-            content: index.toString(),
-            cssClassName: 'index transit',
-        })
-    */
+
     dom.create({
         content: '⯈',
         parent: elInner,
@@ -119,7 +115,6 @@ const Content = ({
         }
     })
 
-
     // Text
     let content = data.content;
     content = content.replaceAll('\r\n', '<br>');
@@ -148,7 +143,7 @@ const Content = ({
 
 
         dom.create({
-            cssClassName: 'indicatorOpen-links',
+            cssClassName: 'indicatorOpen-links transit',
             parent: containerImages,
             content: '⯈',
             listeners: {
@@ -181,6 +176,8 @@ const Content = ({
                 // Bild darstellen
             })
 
+            /*
+
             dom.create({
                 parent: containerImages,
                 tagName: 'button',
@@ -202,6 +199,8 @@ const Content = ({
                     }
                 }
             })
+            */
+
         })
 
         dom.create({
@@ -211,19 +210,7 @@ const Content = ({
             cssClassName: 'button button-small',
             listeners: {
                 click: () => {
-                    /*
-                    data.links.push({
-                        legend: '',
-                        url: '',
-                        target: '_blank'
-                    })
-                    console.log(data);
-
-                    saveContent(data);
-                    renderLinks();
-                    container.style.height = elInner.getBoundingClientRect().height + 30 + 'px';
-
-                    */
+                    ModalAddImage()
                 }
             }
         })
@@ -245,7 +232,7 @@ const Content = ({
         if (containerLinks) containerLinks.innerHTML = '';
 
         dom.create({
-            cssClassName: 'indicatorOpen-links',
+            cssClassName: 'indicatorOpen-links transit',
             parent: containerLinks,
             content: '⯈',
             listeners: {
@@ -323,7 +310,6 @@ const Content = ({
     }
 
     renderLinks();
-
 
     // Tags
     CompInput({

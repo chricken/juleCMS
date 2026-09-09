@@ -346,6 +346,7 @@ router.post('/deleteWatermark', (req, response) => {
 router.get('/getImg/:folder/:filename', (req, response) => {
     let filename = req.params.filename;
     let folder = req.params.folder;
+
     console.log('getImg', folder, filename);
     fs.access(`./contents/${folder}/${filename}`).then(
         () => {
@@ -362,7 +363,11 @@ router.get('/getImg/:folder/:filename', (req, response) => {
 })
 
 router.get('/loadMediaOverview', (req, response) => {
+
+    console.log('load media overview', manageContents.media);
+
     response.json(manageContents.media);
+
 })
 
 router.get('/loadWatermarkOverview', (req, response) => {

@@ -1,0 +1,29 @@
+.description {
+    position: relative;
+    display: block;
+    margin-top: var(--padding-default);
+    margin-bottom: var(--padding-default);
+}
+
+.link-internal-structured-page {
+    position: relative;
+    margin-left: var(--padding-far);
+    cursor: pointer;
+}
+
+.link-internal-structured-page .legend:hover {
+    color: var(--accent-color);
+    font-weight: bold;
+}
+
+.add-image {
+    position: relative;
+    display: inline-block;
+
+    padding: var(--padding-default);
+    border: 2px solid var(--accent-color);
+
+    img {
+        height: 150px;
+    }
+}
