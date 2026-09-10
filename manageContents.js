@@ -2,7 +2,7 @@
 
 import {promises as fs} from 'fs';
 import structure from './contents/structure.json' with {type: 'json'};
-import media from './contents/media.json' with {type: 'json'};
+// import media from './contents/media.json' with {type: 'json'};
 import watermarks from './contents/watermarks.json' with {type: 'json'};
 import helpers from "./helpers.js";
 import Item from "./classes/Item.js";
@@ -24,7 +24,7 @@ const manageContents = {
         )).then(
             () => manageContents.pages = structure.pages
         ).then(
-            () => manageContents.media = media
+            // () => manageContents.media = media
         ).then(
             () => manageContents.watermarks = watermarks
         )
@@ -69,7 +69,7 @@ const manageContents = {
     },
 
     saveContent(data) {
-        console.log('manage save content', data);
+        // console.log('manage save content', data);
 
         return fs.writeFile(
             `./contents/items/${data.id}.json`,
@@ -157,13 +157,13 @@ const manageContents = {
             res => payload.resized = res
         ).then(
             () => {
-                manageContents.media[payload.id] = new Image(payload);
+                // manageContents.media[payload.id] = new Image(payload);
+                // console.log('Media Data', payload);
+                return fs.writeFile(
+                    `./contents/media/${payload.id}.json`,
+                    JSON.stringify(payload)
+                )
             }
-        ).then(
-            // Der Speichervorgang soll noch eine Sekunde warten, bevor er startet
-            () => saveMediaFileDebouncer({
-                payload: manageContents.media,
-            })
         )
     },
 
@@ -184,46 +184,58 @@ const manageContents = {
                 payload: manageContents.watermarks
             })
         )
-    },
+    }
+    ,
 
     updateMedia(payload) {
-        const content = manageContents.media[payload.id];
-        // console.log('payload', payload);
+        // console.log('Update Media', payload);
 
-        // Daten an das gespeicherte Objekt übertragen (auch die Bild-ID)
-        Object.entries(payload).forEach(([key, value]) => {
-            content[key] = value;
-        })
-        // console.log('content after', content);
-
-        if (payload.filename) {
-            content.resized = [];
-            return manageContents.convertImage({
-                path: './contents/media/',
-                filename: payload.filename,
-            }).then(
-                (res) => {
-                    content.resized = res
-                    console.log('content after resize', content);
-                    // console.log(res);
-
-                    // Der Speichervorgang soll noch eine Sekunde warten, bevor er startet
-                    return saveMediaFileDebouncer({
-                        payload:manageContents.media
-                    })
-                }
-            ).catch(
-                console.warn
-            )
-        } else {
-            return new Promise(resolve => {
-                saveMediaFileDebouncer({
-                    payload:manageContents.media
+        return fs.readFile(
+            `./contents/media/${payload.id}.json`
+        ).then(
+            content => JSON.parse(content.toString())
+        ).then(
+            content => {
+                Object.entries(payload).forEach(([key, value]) => {
+                    content[key] = value;
                 })
-                resolve()
-            })
-        }
-    },
+                // console.log('edited from file', content);
+                return content;
+            }
+        ).then(
+            content => {
+                if (payload.filename) {
+                    content.resized = [];
+                    return manageContents.convertImage({
+                        path: './contents/media/',
+                        filename: payload.filename,
+                        defRes: settings.get('defaultResolutions')
+                    }).then(
+                        (res) => {
+                            content.resized = res
+                            return content
+                        }
+                    ).catch(
+                        console.warn
+                    )
+                } else {
+                    return content
+                }
+            }
+        ).then(
+            content => {
+                // console.log('result after editing', content);
+                return fs.writeFile(
+                    `./contents/media/${payload.id}.json`,
+                    JSON.stringify(content)
+                )
+            }
+        ).then(
+            res => console.log(res)
+        )
+
+    }
+    ,
 
     updateWatermark(payload) {
         const content = manageContents.watermarks[payload.id];
@@ -248,7 +260,7 @@ const manageContents = {
 
                     // Der Speichervorgang soll noch eine Sekunde warten, bevor er startet
                     return saveWatermarksFileDebouncer({
-                        payload:manageContents.watermarks
+                        payload: manageContents.watermarks
                     })
                 }
             ).catch(
@@ -258,12 +270,13 @@ const manageContents = {
             // Damit die Funktion einen Promise zurückgibt, auch wenn wir nicht mir Dateien arbeiten.
             return new Promise(resolve => {
                 saveWatermarksFileDebouncer({
-                    payload:manageContents.watermarks
+                    payload: manageContents.watermarks
                 })
                 resolve()
             })
         }
-    },
+    }
+    ,
 
     deleteMedia(payload) {
         let count = 0;
@@ -311,7 +324,8 @@ const manageContents = {
                 }
             }
         )
-    },
+    }
+    ,
 
     deleteWatermark(payload) {
         let count = 0;
@@ -359,10 +373,11 @@ const manageContents = {
                 }
             }
         )
-    },
+    }
+    ,
 
-    // IIFE Function für jeden einzelnen Debouncer
-    // Der Rückgabewert ist die Funktion mit dem fertigen Scope
+// IIFE Function für jeden einzelnen Debouncer
+// Der Rückgabewert ist die Funktion mit dem fertigen Scope
     saveFileDebouncer: ({fileURL = null,}) => {
         let timerID = null;
 
@@ -392,6 +407,7 @@ const manageContents = {
         // Die ID wird aus dem Bildnamen gezogen. So kann jedes Bild unabhängig von der
         // ID des Mutter-Datensatzes konvertiert werden
         const id = filename.split('.')[0];
+        console.log('resize this: ', path, filename);
 
         // Diese Funktion scheint mir kein Promise zu sein.
 

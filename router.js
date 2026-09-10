@@ -39,7 +39,7 @@ router.get('/content/:contentID', (req, response) => {
 
 router.post('/saveContent', (req, res) => {
 
-    console.log('save Content', req.body);
+    // console.log('save Content', req.body);
 
     manageContents.saveContent(req.body).then(
         () => res.json({
@@ -120,6 +120,8 @@ router.post('/saveMedia', (req, response) => {
             fields.filename = Object.values(files)[0][0].newFilename;
 
             fields.id = fields.filename.split('.')[0];
+            fields.crDate = Date.now();
+            fields.chDate = Date.now();
 
             fields.tags = fields.tags.replaceAll(' ', ',');
             fields.tags = fields.tags.replaceAll(',,', ',');
@@ -199,7 +201,8 @@ router.post('/saveWatermark', (req, response) => {
 })
 
 router.post('/updateMedia', (req, response) => {
-    console.log('Update Media', req.body);
+    // Updatemedia braucht eine eigene Funktion, weil
+    // die Daten anders strukturiert sind
 
     const form = formidable({
         multiples: true,
@@ -228,7 +231,6 @@ router.post('/updateMedia', (req, response) => {
             fields.tags = fields.tags.filter(tag => (tag !== '') && (tag !== ' '));
             fields.tags = fields.tags.map(tag => tag.toLowerCase());
 
-            fields.crDate = +fields.crDate;
             fields.chDate = +fields.chDate;
 
             // Neu hochgeladene Bilder haben eine andere ID als Das Media-Objekt.
@@ -291,7 +293,6 @@ router.post('/updateWatermark', (req, response) => {
                 fields.filename = Object.values(files)[0][0].newFilename;
             }
 
-            console.log(fields);
             manageContents.updateWatermark(fields).then(
                 payload => response.json({
                     status: 'success',
@@ -347,7 +348,7 @@ router.get('/getImg/:folder/:filename', (req, response) => {
     let filename = req.params.filename;
     let folder = req.params.folder;
 
-    console.log('getImg', folder, filename);
+    // console.log('getImg', folder, filename);
     fs.access(`./contents/${folder}/${filename}`).then(
         () => {
             // console.log('gefunden', filename);
@@ -364,14 +365,34 @@ router.get('/getImg/:folder/:filename', (req, response) => {
 
 router.get('/loadMediaOverview', (req, response) => {
 
-    console.log('load media overview', manageContents.media);
-
-    response.json(manageContents.media);
+    // console.log('load media overview', manageContents.media);
+    // response.json(manageContents.media);
+    fs.readdir('./contents/media').then(
+        files => files.filter(file => file.endsWith('.json'))
+    ).then(
+        files => Promise.all(files.map(
+            file => fs.readFile(`./contents/media/${file}`, 'utf8')
+        ))
+    ).then(
+        media => media.map(media => JSON.parse(media))
+    ).then(
+        media => {
+            let mediaObj = {};
+            media.forEach(media => mediaObj[media.id] = media);
+            return mediaObj;
+        }
+    ).then(
+        media => {
+            // console.log('media', media);
+            response.json(media);
+        }
+    ).catch(
+        console.warn
+    )
 
 })
 
 router.get('/loadWatermarkOverview', (req, response) => {
-    console.log('router 297', manageContents.watermarks);
 
     response.json(manageContents.watermarks);
 })

@@ -19,11 +19,47 @@
 .add-image {
     position: relative;
     display: inline-block;
-
-    padding: var(--padding-default);
+    width: 180px;
+    padding: var(--padding-far);
+    margin: var(--padding);
     border: 2px solid var(--accent-color);
+    border-radius: var(--padding-far);
+    background-color: var(--white);
 
-    img {
-        height: 150px;
+    cursor: pointer;
+
+    h3 {
+        text-align: center;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        font-size: 16px;
+        margin-bottom: var(--padding-far);
+    }
+
+    .img {
+        height: 130px;
+        width: 160px;
+        position: relative;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: var(--padding-far);
+        background-size: cover;
+        background-position: center center;
+        border-radius: var(--padding-far);
+    }
+}
+
+.add-image:hover {
+    width: 200px;
+    background-color: var(--accent-color);
+
+    h3 {
+        color: var(--white);
+    }
+
+    .img {
+        width: 180px;
     }
 }

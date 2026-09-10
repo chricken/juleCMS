@@ -1,13 +1,15 @@
 'use strict';
 
 import dom from "../../dom.js";
-import CompInput from "../Input/Input.js";
-import CompSelect from "../Select/Select.js";
 import elements from "../../elements.js";
 import settings from "../../data.js";
 import lang from "../../lang.js";
 import helpers from "../../helpers.js";
 import ajax from "../../ajax.js";
+
+import CompSelect from "../Select/Select.js";
+import CompInput from "../Input/Input.js";
+import CompImage from "./Image.js";
 
 import ModalAddImage from '../../modal/AddImage/AddImage.js';
 
@@ -172,34 +174,16 @@ const Content = ({
 
         data.images.forEach(image => {
 
+            dom.create({
+                parent: containerImages,
+                tagName: 'div',
+                cssClassName: 'image-container',
+                content: image
+            })
+
             CompImage({
                 // Bild darstellen
             })
-
-            /*
-
-            dom.create({
-                parent: containerImages,
-                tagName: 'button',
-                content: lang.getPhrase('moveUp'),
-                cssClassName: 'button button-small',
-                listeners: {
-                    click: () => {
-                    }
-                }
-            })
-
-            dom.create({
-                parent: containerImages,
-                tagName: 'button',
-                content: lang.getPhrase('moveDown'),
-                cssClassName: 'button button-small',
-                listeners: {
-                    click: () => {
-                    }
-                }
-            })
-            */
 
         })
 
@@ -210,7 +194,14 @@ const Content = ({
             cssClassName: 'button button-small',
             listeners: {
                 click: () => {
-                    ModalAddImage()
+                    ModalAddImage({
+                        onSelected(id) {
+                            console.log('Bild', id);
+                            data.images.push(id);
+                            renderImages();
+                            saveContent(data);
+                        }
+                    })
                 }
             }
         })

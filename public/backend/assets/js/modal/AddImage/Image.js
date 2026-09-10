@@ -3,8 +3,10 @@
 import dom from '../../dom.js';
 
 const CompImage = ({
-    parent=null,
+                       parent = null,
                        img,
+                       onSelected = () => {
+                       }
                    }) => {
     // console.log(res);
     // kleinstes Bild >400px suchen
@@ -13,15 +15,27 @@ const CompImage = ({
 
     const container = dom.create({
         parent,
-        cssClassName: 'add-image'
+        cssClassName: 'add-image transit',
+        listeners:{
+            click(){
+                onSelected(img.id)
+            }
+        }
     })
 
     dom.create({
-        tagName: 'img',
         parent: container,
-        attr: {
-            src: `/api/getImg/media/${gt400.filename}`,
-            alt: img.title,
+        tagName: 'h3',
+        cssClassName: 'transit',
+        content: img.title
+    })
+
+    dom.create({
+        tagName: 'div',
+        parent: container,
+        cssClassName: 'img transit',
+        styles: {
+            backgroundImage: `url(/api/getImg/media/${gt400.filename})`
         },
     })
 

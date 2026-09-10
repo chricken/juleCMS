@@ -1,7 +1,6 @@
 import Modal from '../modal.js';
 import dom from "../../dom.js";
 import lang from "../../lang.js";
-import ajax from "../../ajax.js";
 
 import CompImage from "./Image.js";
 
@@ -29,11 +28,15 @@ const AddImage = ({
         res => res.json()
     ).then(
         res => {
-
             Object.entries(res).forEach(([key, value]) => {
                 CompImage({
                     parent: container,
-                    img : value
+                    img: value,
+                    onSelected(value) {
+                        onSelected(value);
+                        elModal.closeModal();
+                    },
+
                 })
             })
         }

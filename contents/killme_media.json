@@ -1,0 +1,64 @@
+{
+  "dz1sljijvyswj0bjbdtr2m7w1": {
+    "title": "Höhle",
+    "type": "default",
+    "visible": true,
+    "tags": [],
+    "filename": "dz1sljijvyswj0bjbdtr2m7w1.jpg",
+    "watermark": "mso93yp2zsj6oy6x469c4uqrh",
+    "description": "Heller Eingang. Sicher und dunkel",
+    "altName": "",
+    "resized": [
+      {
+        "filename": "dz1sljijvyswj0bjbdtr2m7w1_960.png",
+        "width": 960
+      },
+      {
+        "filename": "dz1sljijvyswj0bjbdtr2m7w1_600.png",
+        "width": 600
+      },
+      {
+        "filename": "dz1sljijvyswj0bjbdtr2m7w1_350.png",
+        "width": 350
+      },
+      {
+        "filename": "dz1sljijvyswj0bjbdtr2m7w1_160.png",
+        "width": 160
+      }
+    ],
+    "id": "dz1sljijvyswj0bjbdtr2m7w1",
+    "crDate": 1789046808110,
+    "chDate": 1789046850287
+  },
+  "ty62w3emxflyiv6gi1ta5dyu4": {
+    "title": "svwe",
+    "type": "default",
+    "visible": true,
+    "tags": [],
+    "filename": "ty62w3emxflyiv6gi1ta5dyu4.jpg",
+    "watermark": "",
+    "description": "",
+    "altName": "",
+    "resized": [
+      {
+        "filename": "ty62w3emxflyiv6gi1ta5dyu4_960.png",
+        "width": 960
+      },
+      {
+        "filename": "ty62w3emxflyiv6gi1ta5dyu4_600.png",
+        "width": 600
+      },
+      {
+        "filename": "ty62w3emxflyiv6gi1ta5dyu4_350.png",
+        "width": 350
+      },
+      {
+        "filename": "ty62w3emxflyiv6gi1ta5dyu4_160.png",
+        "width": 160
+      }
+    ],
+    "id": "ty62w3emxflyiv6gi1ta5dyu4",
+    "crDate": 1789046989717,
+    "chDate": 1789046989717
+  }
+}
