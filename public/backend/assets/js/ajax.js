@@ -6,6 +6,7 @@ import compPages from "./components/NavPage/NavPage.js";
 import elements from "./elements.js";
 
 const ajax = {
+
     loadJSON(url) {
         // console.log(url);
         return fetch(url).then(res => res.json());
@@ -95,7 +96,26 @@ const ajax = {
         )
     },
 
-    loadWatermarkOverview(){
+    loadImageMetaData(id) {
+        console.log('load image meta data', id);
+        // /getImg/:folder/:filename',
+        return fetch(`/api/getImgMetaData/media/${id}`).then(
+            result => result.json()
+        ).then(
+            result => {
+                // console.log('Load Media', result);
+                if (result.status === 'error') throw result.error;
+                return result.payload;
+            }
+        ).catch(
+            err => {
+                console.log(err);
+                return {}
+            }
+        )
+    },
+
+    loadWatermarkOverview() {
         return fetch('/api/loadWatermarkOverview').then(
             res => res.json()
         )
@@ -250,7 +270,7 @@ const ajax = {
         )
     },
 
-    deleteWatermark(image){
+    deleteWatermark(image) {
         return fetch('/api/deleteWatermark', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},

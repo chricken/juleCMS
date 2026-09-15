@@ -128,7 +128,6 @@ const Content = ({
         value: content,
         multiline: true,
         onInput(value) {
-            console.log('Neuer Text: ', value);
             data.content = value;
             saveContent(data);
         }
@@ -137,12 +136,11 @@ const Content = ({
     // Images
     let containerImages = dom.create({
         parent: elInner,
-        cssClassName: 'container container-inner container-collapsable'
+        cssClassName: 'container container-inner container-collapsable container-images'
     })
 
     const renderImages = () => {
         if (containerImages) containerImages.innerHTML = '';
-
 
         dom.create({
             cssClassName: 'indicatorOpen-links transit',
@@ -157,7 +155,7 @@ const Content = ({
             }
         })
 
-        // Links neu rendern
+        // Images neu rendern
         dom.create({
             parent: containerImages,
             tagName: 'h3',
@@ -172,23 +170,20 @@ const Content = ({
             }
         })
 
-        data.images.forEach(image => {
-
-            dom.create({
-                parent: containerImages,
-                tagName: 'div',
-                cssClassName: 'image-container',
-                content: image
-            })
+        data.images.forEach(imageID => {
 
             CompImage({
-                // Bild darstellen
+                parent: containerImages,
+                imageID
             })
 
         })
+        const elButtons = dom.create({
+            parent: containerImages,
+        })
 
         dom.create({
-            parent: containerImages,
+            parent: elButtons,
             tagName: 'button',
             content: lang.getPhrase('addImage'),
             cssClassName: 'button button-small',

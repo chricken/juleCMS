@@ -72,6 +72,7 @@ const Page = (page) => {
     })
 
     if (page.id !== 'root') {
+        // Entfernen
         dom.create({
             tagName: 'button',
             content: lang.getPhrase('removePage'),
@@ -83,6 +84,20 @@ const Page = (page) => {
                         console.log('Remove Page', page);
                         ajax.removePage(page);
                     }
+                }
+            }
+        })
+
+        // Verschieben
+        dom.create({
+            tagName: 'button',
+            content: lang.getPhrase('movePageTo'),
+            parent: elements.page,
+            listeners: {
+                click(evt) {
+                    // Neues Modal öffnen mit einer Seitenübersicht.
+                    // Jede Seite hat drei buttons:
+                    // in, vor, hinter
                 }
             }
         })

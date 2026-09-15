@@ -348,18 +348,46 @@ router.get('/getImg/:folder/:filename', (req, response) => {
     let filename = req.params.filename;
     let folder = req.params.folder;
 
-    // console.log('getImg', folder, filename);
+    console.log('getImg', folder, filename);
+
     fs.access(`./contents/${folder}/${filename}`).then(
         () => {
-            // console.log('gefunden', filename);
+            console.log('gefunden', filename);
             response.sendFile(filename, {root: `./contents/${folder}`})
         }
     ).catch(
         () => {
-            // console.log('nicht gefunden', filename);
+            console.log('nicht gefunden', filename);
             response.sendFile('404.jpg', {root: './contents/media/errors'})
         }
     )
+
+})
+
+router.get('/getImgMetaData/:folder/:id', (req, response) => {
+    let filename = req.params.id + '.json';
+    let folder = req.params.folder;
+
+    fs.access(`./contents/${folder}/${filename}`).then(
+        () => fs.readFile(`./contents/${folder}/${filename}`, 'utf8')
+    ).then(
+        payload => JSON.parse(payload)
+    ).then(
+        payload => {
+            response.json({
+                status: 'success',
+                payload
+            })
+        }
+    ).catch(
+        err => {
+            response.json({
+                status: 'error',
+                payload: err
+            })
+        }
+    )
+
 
 })
 

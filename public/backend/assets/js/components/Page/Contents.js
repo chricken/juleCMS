@@ -11,6 +11,7 @@ import Page from "../Page/Page.js";
 import lang from "../../lang.js";
 import helpers, {collapse} from "../../helpers.js";
 import data from "../../data.js";
+import elements from "../../elements.js";
 
 const Contents = ({
                       page = {},
@@ -126,6 +127,17 @@ const Contents = ({
     })
 
 
+    let path = new URL(import.meta.url).pathname;
+    path = `${path.substring(0, path.lastIndexOf('/') + 1)}Content.css`;
+
+    dom.create({
+        tagName: 'link',
+        attr: {
+            href: path,
+            rel: 'stylesheet',
+        },
+        parent: container
+    })
 }
 
 

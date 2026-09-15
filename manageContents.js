@@ -2,9 +2,7 @@
 
 import {promises as fs} from 'fs';
 import structure from './contents/structure.json' with {type: 'json'};
-// import media from './contents/media.json' with {type: 'json'};
 import watermarks from './contents/watermarks.json' with {type: 'json'};
-import helpers from "./helpers.js";
 import Item from "./classes/Item.js";
 import Image from "./classes/Image.js";
 import Watermark from "./classes/Watermark.js";
@@ -148,6 +146,7 @@ const manageContents = {
     },
 
     saveMedia(payload) {
+        payload = new Image(payload);
         // Größe anpassen
         return manageContents.convertImage({
             path: './contents/media/',

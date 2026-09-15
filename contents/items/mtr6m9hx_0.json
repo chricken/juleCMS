@@ -2,16 +2,10 @@
   "title": "",
   "type": "default",
   "content": "",
-  "links": [
-
-    {
-      "legend": "",
-      "url": "",
-      "target": "_blank"
-    }
-  ],
+  "links": [],
   "visible": true,
-  "images": [],
+  "images": [
+  ],
   "tags": [],
   "id": "mtr6m9hx_0",
   "crDate": 1788782001045,

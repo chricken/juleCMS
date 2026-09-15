@@ -31,6 +31,10 @@ const lang = {
             de: 'Seite Entfernen',
             en: 'Remove Page',
         },
+        movePageTo:{
+            de: 'Verschieben',
+            en: 'Move Page',
+        },
         contents: {
             de: 'Inhalte',
             en: 'Contents',

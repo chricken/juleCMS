@@ -32,7 +32,7 @@
         padding-left:25px;
         padding-bottom: 10px;
         background-color: var(--slightly-shaded);
-
+        cursor: pointer;
 
         .indicatorOpen-links {
             position: absolute;
@@ -55,6 +55,17 @@
     .container-link {
         position: relative;
         /*margin-bottom:var(--padding-far);*/
+    }
+
+    .container-images {
+        .container-image {
+            position: relative;
+            border: 1px solid var(--accent-color);
+            display: inline-block;
+            padding: var(--padding);
+            margin-right: var(--padding);
+            margin-bottom: var(--padding);
+        }
     }
 }
 
