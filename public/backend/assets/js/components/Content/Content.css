@@ -1,4 +1,10 @@
 /* Content Stile */
+/*.container.content {
+    padding-left: 30px;
+}
+
+ */
+
 .content {
     outline: 2px solid var(--dark-color);
     border-right: 1px solid #ccc;
@@ -7,66 +13,137 @@
     padding-top: .5em;
     margin-bottom: 1rem;
     background-color: #f9f9f9;
+    height: 65px;
+}
 
-    .container-inner {
-        background-color: transparent;
-        margin-top: var(--padding-default);
-        box-shadow: none;
-        border: 1px solid var(--border-color);
-        padding: var(--padding);
-        padding-left: var(--padding-default);
+.container-inner {
+    background-color: transparent;
+    margin-top: var(--padding-default);
+    box-shadow: none;
+    border: 1px solid var(--border-color);
+    padding: var(--padding);
+    padding-left: var(--padding-default);
 
+
+    h3 {
+        color: var(--dark-color);
+        font-weight: normal;
+    }
+
+    h3:hover {
+        color: var(--dark-color);
+    }
+}
+
+.container-collapsable {
+    height: 45px;
+    padding-left: 25px;
+    padding-bottom: 10px;
+    background-color: var(--slightly-shaded);
+    cursor: pointer;
+
+    .indicatorOpen-links {
+        position: absolute;
+        left: 2px;
+        transform: rotate(0deg);
+        font-size: 25px;
+        color: var(--dark-color);
+    }
+}
+
+.container-collapsable.open {
+    height: auto;
+    border: 1px solid var(--dark-color);
+
+    .indicatorOpen-links {
+        transform: rotate(90deg);
+    }
+}
+
+.container-link {
+    position: relative;
+    /*margin-bottom:var(--padding-far);*/
+}
+
+.container-images {
+    .container-image {
+        position: relative;
+        display: inline-block;
+        /*padding: var(--padding);*/
+        margin-right: var(--padding);
+        margin-bottom: var(--padding);
+        vertical-align: top;
 
         h3 {
             color: var(--dark-color);
-            font-weight: normal;
-        }
-
-        h3:hover {
-            color: var(--dark-color);
-        }
-    }
-
-    .container-collapsable {
-        height: 45px;
-        padding-left:25px;
-        padding-bottom: 10px;
-        background-color: var(--slightly-shaded);
-        cursor: pointer;
-
-        .indicatorOpen-links {
-            position: absolute;
-            left: 2px;
-            transform: rotate(0deg);
-            font-size: 25px;
-            color: var(--dark-color);
-        }
-    }
-
-    .container-collapsable.open {
-        height: auto;
-        border: 1px solid var(--dark-color);
-
-        .indicatorOpen-links {
-            transform: rotate(90deg);
-        }
-    }
-
-    .container-link {
-        position: relative;
-        /*margin-bottom:var(--padding-far);*/
-    }
-
-    .container-images {
-        .container-image {
-            position: relative;
-            border: 1px solid var(--accent-color);
-            display: inline-block;
-            padding: var(--padding);
-            margin-right: var(--padding);
+            font-size: 16px;
+            text-align: center;
             margin-bottom: var(--padding);
         }
+
+        .container-image-inner {
+            position: relative;
+            display: block;
+            border: 1px solid var(--accent-color);
+            padding: var(--padding-close);
+            border-radius: var(--padding);
+
+            img {
+                position: relative;
+                display: block;
+                vertical-align: top;
+                border-radius: var(--padding);
+            }
+
+            .delete-image {
+                position: absolute;
+                top: 0;
+                right: 0;
+                background-color: var(--light-color);
+                color: var(--dark-color);
+                border-radius: 0 0 0 var(--padding-close);
+                cursor: pointer;
+                border: 1px solid var(--accent-color);
+                border-top: none;
+                border-right: none;
+                width: 25px;
+                height: 25px;
+                text-align: center;
+                opacity: .7;
+            }
+
+            .delete-image:hover {
+                opacity: 1;
+            }
+        }
     }
+
+    .dropper {
+        position: relative;
+        display: inline-block;
+        border: 1px solid transparent;
+        width: 20px;
+        margin-right:2px;
+        border-radius: var(--padding);
+        text-align: center;
+        top: 38px;
+        vertical-align: top;
+    }
+
+    .dropper.active {
+        border: 1px solid var(--accent-color);
+        background-color: var(--accent-color);
+        /*background-image: url('/assets/img/raster1.png');*/
+        cursor: pointer;
+        outline: 3px solid transparent;
+    }
+
+    .dropper.active.over {
+        border-color: var(--accent-color);
+        background-color: var(--dark-color);
+        outline: 3px solid var(--secondary-color);
+    }
+
 }
 
 .content.edit {

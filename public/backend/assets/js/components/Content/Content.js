@@ -27,7 +27,7 @@ const Content = ({
                      onDragEnd = () => {
                      },
                  } = {}) => {
-    console.log('Content Data', data);
+    // console.log('Content Data', data);
 
     const saveContent = helpers.debouncer(ajax.saveContent, 1000)
 
@@ -140,6 +140,8 @@ const Content = ({
     })
 
     const renderImages = () => {
+        console.log('rerender Images');
+
         if (containerImages) containerImages.innerHTML = '';
 
         dom.create({
@@ -170,14 +172,94 @@ const Content = ({
             }
         })
 
-        data.images.forEach(imageID => {
+        // Leeren, ohne die Referenz zu zerstören
+        const elementsDroppers = [];
+
+        // Ein Dropper vorneweg
+        /*
+            const elFirstDropper = dom.create({
+                parent: containerImages,
+                cssClassName: 'dropper transit',
+                listeners: {
+                    dragover: (e) => {
+                        e.preventDefault();
+                        elFirstDropper.classList.add('over')
+                    },
+                    dragleave: (e) => {
+                        e.preventDefault();
+                        elFirstDropper.classList.remove('over')
+                    },
+                    drop: (e) => {
+                        e.preventDefault();
+                        data.images = data.images.filter(id => id !== imageID);
+                        data.images.splice(0, 0, id);
+                        renderImages();
+                        saveContent(data);
+                    }
+                }
+            })
+            elementsDroppers.push(elFirstDropper)
+        */
+        data.images.forEach((imageID, index) => {
 
             CompImage({
                 parent: containerImages,
-                imageID
+                imageID,
+                onDelete: () => {
+                    data.images = data.images.filter(id => id !== imageID);
+                    renderImages();
+                    saveContent(data);
+                },
+                onStartDrag(id) {
+                    elementsDroppers.forEach(el => {
+                        el.classList.add('active')
+                    })
+                },
+                onEndDrag(id) {
+                    elementsDroppers.forEach(el => el.classList.remove('active'))
+                    elementsDroppers.forEach(el => {
+                        el.classList.remove('active')
+                    })
+                },
+                onImageLoaded(evt) {
+                    elDropper.style.height = evt.target.getBoundingClientRect().height + 'px';
+                    /*if (index === 0) {
+                        elFirstDropper.style.height = evt.target.getBoundingClientRect().height + 'px';
+                    }*/
+                }
             })
 
+            const elDropper = dom.create({
+                parent: containerImages,
+                cssClassName: 'dropper transit',
+                listeners: {
+                    dragover: (e) => {
+                        e.preventDefault();
+                        elDropper.classList.add('over')
+                    },
+                    dragleave: (e) => {
+                        e.preventDefault();
+                        elDropper.classList.remove('over')
+                    },
+                    drop: (e) => {
+                        e.preventDefault();
+                        console.log(data.images.join());
+                        data.images = data.images.filter(id => id !== imageID);
+                        data.images.splice(index, 0, imageID);
+                        console.log(data.images.join());
+                        console.log();
+
+                        renderImages();
+                        saveContent(data);
+                    }
+                }
+            })
+
+            elementsDroppers.push(elDropper)
+            // console.log(elementsDroppers);
+
         })
+
         const elButtons = dom.create({
             parent: containerImages,
         })

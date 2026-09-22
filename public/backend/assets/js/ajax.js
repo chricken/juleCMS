@@ -97,7 +97,7 @@ const ajax = {
     },
 
     loadImageMetaData(id) {
-        console.log('load image meta data', id);
+        // console.log('load image meta data', id);
         // /getImg/:folder/:filename',
         return fetch(`/api/getImgMetaData/media/${id}`).then(
             result => result.json()
