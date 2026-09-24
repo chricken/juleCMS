@@ -75,6 +75,10 @@ const lang = {
             de: 'Wollen Sie diese Seite wirklich löschen?',
             en: 'Are you sure you want to delete this page?',
         },
+        confirmDeleteImage:{
+            de: 'Wollen Sie dieses Bild wirklich löschen?',
+            en: 'Are you sure you want to delete this image?',
+        },
         settings: {
             de: 'Einstellungen',
             en: 'Settings',

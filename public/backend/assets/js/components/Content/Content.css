@@ -40,7 +40,10 @@
     padding-left: 25px;
     padding-bottom: 10px;
     background-color: var(--slightly-shaded);
-    cursor: pointer;
+
+    .container-inner-title {
+        cursor: pointer;
+    }
 
     .indicatorOpen-links {
         position: absolute;
@@ -73,6 +76,10 @@
         margin-right: var(--padding);
         margin-bottom: var(--padding);
         vertical-align: top;
+
+        .container-image-movable {
+            transform: translateX(0px);
+        }
 
         h3 {
             color: var(--dark-color);
@@ -118,12 +125,19 @@
         }
     }
 
+    .container-image.drag-over {
+
+        .container-image-movable {
+            transform: translateX(-50px);
+        }
+    }
+
     .dropper {
         position: relative;
         display: inline-block;
         border: 1px solid transparent;
         width: 20px;
-        margin-right:2px;
+        margin-right: 2px;
         border-radius: var(--padding);
         text-align: center;
         top: 38px;

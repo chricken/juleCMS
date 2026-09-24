@@ -145,7 +145,7 @@ const Content = ({
         if (containerImages) containerImages.innerHTML = '';
 
         dom.create({
-            cssClassName: 'indicatorOpen-links transit',
+            cssClassName: 'indicatorOpen-links',
             parent: containerImages,
             content: '⯈',
             listeners: {
@@ -162,7 +162,7 @@ const Content = ({
             parent: containerImages,
             tagName: 'h3',
             content: lang.getPhrase('images'),
-            cssClassName: 'container-inner-title',
+            cssClassName: 'container-inner-title transit',
             listeners: {
                 click() {
                     console.log('click Header')
@@ -173,90 +173,82 @@ const Content = ({
         })
 
         // Leeren, ohne die Referenz zu zerstören
-        const elementsDroppers = [];
+        const elementsDraggers = [];
+        let draggedElement = null;
 
-        // Ein Dropper vorneweg
-        /*
-            const elFirstDropper = dom.create({
-                parent: containerImages,
-                cssClassName: 'dropper transit',
-                listeners: {
-                    dragover: (e) => {
-                        e.preventDefault();
-                        elFirstDropper.classList.add('over')
-                    },
-                    dragleave: (e) => {
-                        e.preventDefault();
-                        elFirstDropper.classList.remove('over')
-                    },
-                    drop: (e) => {
-                        e.preventDefault();
-                        data.images = data.images.filter(id => id !== imageID);
-                        data.images.splice(0, 0, id);
-                        renderImages();
-                        saveContent(data);
-                    }
-                }
-            })
-            elementsDroppers.push(elFirstDropper)
-        */
         data.images.forEach((imageID, index) => {
 
-            CompImage({
+            const elImage = CompImage({
                 parent: containerImages,
                 imageID,
+                index,
+                draggable: true,
                 onDelete: () => {
-                    data.images = data.images.filter(id => id !== imageID);
+                    // data.images = data.images.filter(id => id !== imageID);
+                    data.images.splice(index, 1);
                     renderImages();
                     saveContent(data);
                 },
-                onStartDrag(id) {
-                    elementsDroppers.forEach(el => {
-                        el.classList.add('active')
+                onStartDrag(evt, elImg) {
+                    console.log('On Start Drag');
+
+                    // Erstelle ein temporäres Canvas oder nutze ein bestehendes Element als Vorschau
+                    const dragContainer = dom.create({
+                        parent: document.body,
+                        style: {
+                            background: 'white',
+                            padding: '10px',
+                            border: '1px solid #ccc',
+                            position: 'absolute',
+                            left: '-9999px',
+                        }
+                    })
+                    draggedElement = {
+                        imageID,
+                        index
+                    }
+                    const dragImage = elImg.cloneNode(true);
+                    dragImage.style.width = '100px';
+                    dragImage.style.height = 'auto';
+                    dragContainer.appendChild(dragImage);
+
+                    // Setze das Drag-Image
+                    evt.dataTransfer.setDragImage(dragContainer, 0, 0);
+
+                    // Entferne das temporäre Element nach einer kurzen Verzögerung
+                    setTimeout(() => document.body.removeChild(dragContainer), 50);
+                },
+                onDragOver(evt) {
+                    // console.log('Drag Over',evt.target);
+                    evt.currentTarget.classList.add('drag-over');
+                },
+                onDragLeave(evt) {
+                    // console.log('Drag Leave', evt.target);
+                    evt.currentTarget.classList.remove('drag-over');
+                },
+                onEndDrag(evt) {
+                    console.log('Drag End', evt.currentTarget, index)
+                    elementsDraggers.forEach(el => {
+                        el.classList.remove('drag-over')
                     })
                 },
-                onEndDrag(id) {
-                    elementsDroppers.forEach(el => el.classList.remove('active'))
-                    elementsDroppers.forEach(el => {
-                        el.classList.remove('active')
-                    })
+                onDrop(evt) {
+                    console.log(index, draggedElement);
+                    data.images.splice(draggedElement.index, 1);
+                    if (draggedElement.index < index) {
+                        data.images.splice(index , 0, draggedElement.imageID);
+                    } else {
+                        data.images.splice(index+1, 0, draggedElement.imageID);
+                    }
+                    saveContent(data);
+                    renderImages();
                 },
                 onImageLoaded(evt) {
-                    elDropper.style.height = evt.target.getBoundingClientRect().height + 'px';
-                    /*if (index === 0) {
-                        elFirstDropper.style.height = evt.target.getBoundingClientRect().height + 'px';
-                    }*/
+
                 }
             })
+            elementsDraggers.push(elImage)
 
-            const elDropper = dom.create({
-                parent: containerImages,
-                cssClassName: 'dropper transit',
-                listeners: {
-                    dragover: (e) => {
-                        e.preventDefault();
-                        elDropper.classList.add('over')
-                    },
-                    dragleave: (e) => {
-                        e.preventDefault();
-                        elDropper.classList.remove('over')
-                    },
-                    drop: (e) => {
-                        e.preventDefault();
-                        console.log(data.images.join());
-                        data.images = data.images.filter(id => id !== imageID);
-                        data.images.splice(index, 0, imageID);
-                        console.log(data.images.join());
-                        console.log();
-
-                        renderImages();
-                        saveContent(data);
-                    }
-                }
-            })
-
-            elementsDroppers.push(elDropper)
-            // console.log(elementsDroppers);
 
         })
 

@@ -6,7 +6,9 @@ import lang from "../../lang.js";
 
 const Image = ({
                    imageID = '',
+    index = 0,
                    parent = null,
+                   draggable = false,
                    onDelete = () => {
                    },
                    onStartDrag = () => {
@@ -15,40 +17,69 @@ const Image = ({
                    },
                    onImageLoaded = () => {
                    },
+                   onDragOver = () => {
+                   },
+                   onDragLeave = () => {
+                   },
+                   onDrop = () => {
+                   }
                }) => {
 
 
     const container = dom.create({
         parent: parent,
         tagName: 'div',
-        cssClassName: 'container-image',
-        attr: {
-            draggable: true
-        },
+        cssClassName: 'container-image transit',
         listeners: {
             dragstart(e) {
                 e.stopPropagation();
-                console.log('dragstart', e);
-                onStartDrag(imageID);
+                // e.preventDefault();
+                onStartDrag(e, elImage);
+            },
+            dragover(e) {
+                e.stopPropagation();
+                e.preventDefault();
+                onDragOver(e);
+            },
+            dragleave(e) {
+                e.stopPropagation();
+                // e.preventDefault();
+                onDragLeave(e);
             },
             dragend(e) {
-                onEndDrag()
+                e.stopPropagation();
+                // e.preventDefault();
+                onEndDrag(e)
             },
+            drop(e) {
+                // e.stopPropagation();
+                // e.preventDefault();
+
+                console.log('drop');
+                onDrop(e, index, imageID);
+            }
         }
     })
-
+    draggable && container.setAttribute('draggable', true);
     parent && parent.append(container);
+
+    const elMovable = dom.create({
+        parent: container,
+        cssClassName: 'container-image-movable transit'
+    })
+
+    let elImage;
 
     ajax.loadImageMetaData(imageID).then(
         payload => {
             dom.create({
-                parent: container,
+                parent: elMovable,
                 tagName: 'h3',
                 content: payload.title
             })
 
             const elInner = dom.create({
-                parent: container,
+                parent: elMovable,
                 cssClassName: 'container-image-inner',
 
             })
@@ -58,7 +89,7 @@ const Image = ({
             filename = filename[0].filename;
             // console.log('image filename', filename);
 
-            dom.create({
+            elImage = dom.create({
                 parent: elInner,
                 tagName: 'img',
                 src: `/api/getImg/media/${filename}`,
@@ -75,7 +106,7 @@ const Image = ({
                 cssClassName: 'delete-image transit',
                 listeners: {
                     click() {
-                        if (confirm(lang.getPhrase('deleteImage'))) {
+                        if (confirm(lang.getPhrase('confirmDeleteImage'))) {
                             onDelete();
                         }
                     }
