@@ -1,1 +1,0 @@
-Daten werden in [[JSON-Dateien]] gespeichert

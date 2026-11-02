@@ -1,202 +1,239 @@
-# MEMORY.md – JuleCMS Projektanalyse
+# MEMORY.md – Langzeitspeicher für den Agenten
 
-## Übersicht
-
-**JuleCMS** ist ein dateibasiertes Content Management System (CMS) ohne Datenbank. Alle Daten werden als JSON-Dateien gespeichert. Entwickelt von C. Heisch (2026), entstanden aus dem Wunsch nach einem einfachen, benutzerfreundlichen CMS ohne die Komplexität üblicher Anbieter (kein Headless, kein Release-Workflow, keine Benutzerverwaltung).
-
-- **Sprache:** JavaScript (ES Modules, `"type": "module"`)
-- **Backend:** Node.js + Express 5
-- **Frontend (Admin):** Vanilla JS, komponentenbasiert, kein Framework
-- **Frontend ( público):** Theme-basierte statische HTML-Dateien
-- **Datenbank:** Keine – alle Daten in JSON-Dateien unter `contents/`
-- **Port:** 80 (aus `settings.json`)
+> Letzte Aktualisierung nach Analyse von AGENTS.md + vollständigem Projekt-Scan.
 
 ---
 
-## Projektstruktur
+## Wer ich bin / Wie ich arbeite (aus AGENTS.md)
+
+- Ich bin der Assistent von C. Heisch und arbeite **nur nach Anweisung** – im Zweifel nachfragen, nicht selbstständig handeln.
+- Projektstruktur immer im Blick behalten – ist komplex, aber beherrschbar.
+- **Erkenntnisse, Notizen, Todos → `/MEMORY.md`** (diese Datei).
+- **Anleitung für Menschen → `/README.md`** (menschlich lesbar, nicht readme.md).
+
+---
+
+## Projekt: JuleCMS auf einen Blick
+
+| Aspekt | Detail |
+|--------|--------|
+| Was | Dateibasiertes CMS ohne Datenbank, für eine Illustratorin (Fokus Bildverarbeitung) |
+| Sprache | JavaScript ES Modules (`"type": "module"`), Vanilla JS + Vanilla CSS |
+| Backend-Server | Node.js + Express 5, Port 80 (`settings.json`) |
+| Admin-UI | `/public/backend` – komponentenbasiertes Vanilla JS, kein Framework |
+| Público-Frontend | Theme-basiert, Dateien aus `/themes/<name>/` nach `/public/` kopiert |
+| Datenspeicher | JSON-Dateien unter `/contents/` – beim Serverstart in RAM geladen |
+| Dependencies | express@5, formidable@3 (Upload), jimp@1 (Bild-Resize), better-opn@3 |
+
+---
+
+## Coding Guidelines (verbindlich aus AGENTS.md)
+
+- **Vanilla JS + Vanilla CSS** – keine Frameworks, keine Build-Tools
+- **DOM-Elemente als Components** – jede UI-Einheit ist eine Funktion, die DOM erstellt
+- **Seiteninhalte als Views** – Views rendern ganze Bereiche
+- Bevorzugte Techniken:
+  - Promises mit then-chaining (nicht async/await im Frontend!)
+  - Destructuring
+  - Spread
+  - Named Arguments (Objekt als Funktionsparameter)
+  - Arrow-Funktionen
+  - Template Literals
+  - Default-Parameter
+  - Lookup-Tables
+
+---
+
+## Projektstruktur (Dateibaum)
 
 ```
 juleCMS/
-├── cmsServer.js              # Express-Server, Einstiegspunkt (npm start)
-├── router.js                 # API-Routen unter /api/*
-├── manageContents.js         # Zentrale Datenverwaltung (Pages, Media, Watermarks, Items)
-├── settings.js / .json       # Konfiguration (Port, Theme, Auflösungen, Debounce-Delay)
-├── themes.js                 # Kopiert Theme-Dateien nach public/ beim Start
-├── helpers.js                # createID() – eindeutige IDs aus Zeitstempel + Counter
+├── AGENTS.md                 # Projektvorgaben (diese Regeln)
+├── MEMORY.md                 # Diese Datei – Langzeitspeicher
+├── readme.md                 # Projektbeschreibung (soll zu README.md werden)
+├── package.json              # express, formidable, jimp, better-opn
+├── cmsServer.js              # Einstieg: init() → contents laden → themes kopieren → listen → Browser öffnen
+├── router.js                 # Express Router, alle /api/* Endpunkte
+├── manageContents.js         # Zentrale Datenverwaltung (pages, media, watermarks, items, convertImage)
+├── settings.js / .json       # Port, Theme, Auflösungen, Debounce-Delay (1000ms)
+├── themes.js                 # Kopiert themes/<theme>/* nach public/*
+├── helpers.js                # createID(): Date.now().toString(36) + '_' + counter
 ├── classes/
-│   ├── Page.js               # Seiten-Objekt (title, slug, content[], children[], meta, og)
-│   ├── Item.js               # Content-Element (title, type, content, images[], links[], tags[])
-│   ├── Image.js              # Medien-Objekt (filename, resized[], tags, watermark, altName)
-│   └── Watermark.js          # Wasserzeichen (position, opacity, size, tiling, blendMode)
+│   ├── Page.js               # id, title, slug, visible, content[], children[], meta*, og*, crDate, chDate
+│   ├── Item.js               # id, title, type, content, images[], links[], tags[], visible
+│   ├── Image.js              # id, filename, resized[], tags, watermark, altName, description
+│   └── Watermark.js          # id, filename, position, opacity, size, tiling, blendMode, resized[]
 ├── contents/
-│   ├── structure.json        # Seitenbaum: pages[] mit children[] und content[] (IDs)
-│   ├── items/*.json          # Einzelne Content-Elemente (pro Datei eine ID)
-│   ├── media/                # Hochgeladene Bilder + JSON-Metadaten + auto-resized PNGs
-│   ├── watermarks/           # Wasserzeichen-Bilder + resized Versionen
-│   └── media.json / watermarks.json  # Aggregierte Übersichten (debounced gespeichert)
+│   ├── structure.json        # pages[] flaches Array, verknüpft über children[] + content[] (IDs)
+│   ├── watermarks.json       # Aggregierte Wasserzeichen-Übersicht (debounced)
+│   ├── items/<id>.json       # Einzelnes Content-Element pro Datei
+│   ├── pages/                # (reserviert, aktuell nicht genutzt)
+│   ├── media/                # <id>.jpg + <id>_<breite>.png (resized) + <id>.json (Metadaten)
+│   │   └── errors/404.jpg    # Fehlerbild
+│   └── watermarks/           # <id>.png + <id>_<breite>.png (resized)
 ├── public/
-│   ├── backend/              # Admin-Oberfläche (index.html + assets/js/components/, views/, modal/)
-│   └── assets/               # Vom Theme kopierte statische Dateien (css, js, img)
+│   ├── backend/              # Admin-Oberfläche
+│   │   ├── index.html        # Shell: header, nav, main, footer
+│   │   └── assets/js/
+│   │       ├── index.js      # Einstieg: loadJSON(/api/pages) → dom.mapping → viewTopNav → viewPages
+│   │       ├── ajax.js       # Alle fetch()-Calls zu /api/*
+│   │       ├── data.js       # Globaler State: pages, currentPage, dragID, dropIndex
+│   │       ├── dom.js        # dom.create({...}) – zentrales DOM-Erstellungs-Helper
+│   │       ├── elements.js   # Referenzen auf Haupt-DOM-Elemente
+│   │       ├── helpers.js    # debouncer(), collapse()
+│   │       ├── lang.js       # translations{phrase:{de,en}}, getPhrase(key), currentLanguage
+│   │       ├── components/   # UI-Komponenten (je .js + .css)
+│   │       │   ├── Content/Content.js   # Content-Editor: Titel, Text, Bilder(DnD), Links, Tags
+│   │       │   ├── Content/Image.js     # Bild in Content mit DnD-Sortierung
+│   │       │   ├── Content/Link.js      # Link-Editor
+│   │       │   ├── Page/Page.js         # Seiten-Detail: Base + Contents + Meta
+│   │       │   ├── Page/Base.js         # ID, Slugline, crDate, chDate
+│   │       │   ├── Page/Contents.js     # Content-Liste mit DnD
+│   │       │   ├── Page/Meta.js         # SEO-Metadaten
+│   │       │   ├── NavPage/NavPage.js   # Seitenbaum links
+│   │       │   ├── Input/, Select/, Checkbox/, Range/, Tag/, InputFile/, InputForm/
+│   │       │   ├── AddContent/, DropContent/
+│   │       │   ├── ImageInOverview/, WatermarkInOverview/
+│   │       │   └── ...
+│   │       ├── views/        # Ganze Bereiche: Pages.js, Media.js, Watermarks.js, TopNav.js, Settings.js, Theme.js
+│   │       └── modal/        # Modals: AddImage/, EditImage/, EditWatermark/, LinkExternal/, LinkInternal/
+│   └── assets/               # Vom Theme kopiert (css, js, img)
 ├── themes/
-│   └── default/              # Aktuell einziges Theme (index.html, css, js, favicon)
-├── notes/Jule CMS/           # Obsidian-Notizen (Konzept, Technik, Drag n Drop, JSON-Dateien)
-├── package.json              # express@5, formidable@3, jimp@1, better-opn@3
-└── readme.md                 # Ausführliche Projektbeschreibung auf Deutsch
+│   └── default/              # index.html (header/nav/main/footer), assets/css, assets/js, favicon
+└── TODO.md                   # Offene Aufgaben aus AGENTS.md
 ```
 
 ---
 
-## Architektur & Datenfluss
+## Datenmodell (aus AGENTS.md + Code)
 
-### Server-Start (`cmsServer.js`)
+### structure.json – Seitenbaum
+```json
+{
+  "pages": [
+    {
+      "id": "root",
+      "title": "Wurzel",
+      "children": ["pageId1", "pageId2"],
+      "content": ["itemId1"],
+      "slug": "",
+      "visible": true,
+      "metaTitle": "", "metaDescription": "", "metaKeywords": [],
+      "ogTitle": "", "ogDescription": "", "ogImage": "",
+      "crDate": 0, "chDate": 0
+    }
+  ]
+}
 ```
-init() → manageContents.init() → themes.init() → server.listen(port) → opn(/backend)
-```
-1. `manageContents.init()` lädt `structure.json` (Seiten) und `watermarks.json` in Speicher
-2. `themes.init()` kopiert alle Dateien aus `themes/<theme>/` nach `public/`
-3. Express serviert `public/` statisch (mit `.html`-Extension-Fallback) und `/api/*` über den Router
-4. Browser öffnet automatisch `http://localhost:<port>/backend`
-
-### Datenmodell
-
-**Seitenbaum** (`contents/structure.json`):
-- `pages[]` – flache Liste aller Seiten, verknüpft über `children[]` (IDs) und `content[]` (Item-IDs)
-- Jede Seite hat: `id`, `title`, `slug`, `visible`, `content[]`, `children[]`, Meta-Felder (`metaTitle`, `metaDescription`, `metaKeywords`), Open-Graph-Felder (`ogTitle`, `ogDescription`, `ogImage`), `crDate`, `chDate`
+- Flaches Array, Verknüpfung über `children[]` (Seiten-IDs) und `content[]` (Item-IDs)
 - Root-Seite hat `id: "root"`
+- **Wichtig:** Content-Items können auf mehreren Seiten referenziert werden
 
-**Content-Items** (`contents/items/<id>.json`):
-- Jedes Item: `id`, `title`, `type`, `content` (Text), `images[]` (Media-IDs), `links[]` (Objekte mit url/legend/target), `tags[]`, `visible`, `crDate`, `chDate`
+### Item (`contents/items/<id>.json`)
+```json
+{
+  "id": "mrj8nhr4_1",
+  "title": "...",
+  "type": "default",
+  "content": "Text...",
+  "images": ["mediaId1", "mediaId2"],
+  "links": [{"legend": "", "url": "...", "target": "_blank"}],
+  "tags": [],
+  "visible": true,
+  "crDate": 0, "chDate": 0
+}
+```
 
-**Medien** (`contents/media/<id>.json` + Bilddateien):
-- Upload via `formidable` → Jimp resized auf `defaultResolutions` (2200, 1600, 960, 600, 350, 160)
-- Nur kleinere Auflösungen als das Original werden erstellt (kein Upscaling)
-- Resized-Dateien: `<id>_<breite>.png`
-- Metadaten: `title`, `tags`, `description`, `altName`, `watermark` (ID), `resized[]`
+### Media (`contents/media/<id>.json` + Bilder)
+- Original: `<id>.jpg` (Upload-Format)
+- Resized: `<id>_<breite>.png` für jede Auflösung ≤ Originalbreite
+- Auflösungen aus `settings.json → defaultResolutions`: [2200, 1600, 960, 600, 350, 160]
+- Metadaten: title, tags, description, altName, watermark (ID), resized[]
 
-**Wasserzeichen** (`contents/watermarks/`):
-- Ähnlich wie Medien, mit zusätzlichen Feldern: `position`, `opacity`, `size`, `tiling`, `blendMode`
-- Resized auf `watermarkResolutions` (80, 150, 300, 600, 1200)
+### Watermark (`contents/watermarks/`)
+- Ähnlich Media, zusätzlich: position, opacity, size, tiling, blendMode
+- Auflösungen: [80, 150, 300, 600, 1200]
 
-### API-Endpunkte (`router.js` unter `/api/`)
+---
 
-| Methode | Pfad | Funktion |
-|---------|------|----------|
-| GET | `/pages` | Alle Seiten zurückgeben |
-| GET | `/content/:id` | Einzelnes Content-Item laden |
-| POST | `/saveContent` | Content-Item speichern |
-| POST | `/moveContent` | Content per Drag & Drop verschieben |
-| POST | `/createContent` | Neues Content-Element an Index einfügen |
-| POST | `/removeContent` | Content-Element löschen |
-| POST | `/savePage` | Seite aktualisieren + structure.json speichern |
-| POST | `/newPageAfter` | Neue Seite nach einer bestehenden einfügen |
-| POST | `/newPageIn` | Neue Unterseite erstellen |
+## API-Endpunkte (`/api/*` via router.js)
+
+| Methode | Pfad | Zweck |
+|---------|------|-------|
+| GET | `/pages` | Alle Seiten |
+| GET | `/content/:id` | Content-Item laden |
+| POST | `/saveContent` | Content speichern |
+| POST | `/moveContent` | Content per DnD verschieben `{currentPage, dropIndex, dragID}` |
+| POST | `/createContent` | Neues Item `{pageID, index}` |
+| POST | `/removeContent` | Item löschen `{contentID}` |
+| POST | `/savePage` | Seite speichern |
+| POST | `/newPageAfter` | Seite nach anderer einfügen |
+| POST | `/newPageIn` | Unterseite erstellen |
 | POST | `/removePage` | Seite + Kinder + Content rekursiv löschen |
-| POST | `/saveMedia` | Bild hochladen (formidable) + resizen + JSON speichern |
+| POST | `/saveMedia` | Upload (formidable) + Resize + JSON |
 | POST | `/updateMedia` | Metadaten/Bild aktualisieren |
-| POST | `/deleteMedia` | Bild + resized Dateien + JSON löschen |
-| POST | `/saveWatermark` | Wasserzeichen hochladen |
-| POST | `/updateWatermark` | Wasserzeichen aktualisieren |
-| POST | `/deleteWatermark` | Wasserzeichen löschen |
-| GET | `/loadMediaOverview` | Alle Media-JSONs lesen und als Objekt zurückgeben |
-| GET | `/loadWatermarkOverview` | Alle Wasserzeichen zurückgeben |
+| POST | `/deleteMedia` | Löschen inkl. Dateien |
+| POST | `/saveWatermark` / `/updateWatermark` / `/deleteWatermark` | Analog |
+| GET | `/loadMediaOverview` | Alle Media-JSONs als Objekt |
+| GET | `/loadWatermarkOverview` | Alle Wasserzeichen |
 | GET | `/getImg/:folder/:filename` | Bild ausliefern (404-Fallback) |
-| GET | `/getImgMetaData/:folder/:id` | Metadaten-JSON eines Bildes laden |
+| GET | `/getImgMetaData/:folder/:id` | Metadaten-JSON |
 
 ---
 
-## Frontend Admin (`public/backend/`)
+## Backend-Admin: Views & Komponenten
 
-Reines Vanilla JS, komponentenbasiert, ES Modules. Keine Build-Tools.
+### Views (`public/backend/assets/js/views/`)
+- **Pages.js** – Seitenbaum (links) + Detail (rechts). Lädt root-Seite, rendert NavPage + Page-Detail
+- **Media.js** – Medienverwaltung (Upload + Übersicht + Modal-Bearbeitung)
+- **Watermarks.js** – Wasserzeichen-Verwaltung
+- **TopNav.js** – Hauptnavigation zwischen Views
+- **Settings.js** – Einstellungen (rudimentär)
+- **Theme.js** – Theme-Auswahl (rudimentär)
 
-### Einstieg
-`index.html` → `assets/js/index.js`:
-1. Lädt `/api/pages` in `data.pages`
-2. `dom.mapping()` – DOM-Elemente referenzieren
-3. Rendert `viewTopNav()` und `viewPages()`
+### Wichtige Komponenten
+- **Content/Content.js** – Haupt-Editor für Content-Items. Enthält: Titel-Input, Text-Input (multiline), Bilder-Sektion (DnD-sortierbar, ModalAddImage), Links-Sektion, Tags-Input. Auto-Save via debouncer(ajax.saveContent, 1000)
+- **Content/Image.js** – Einzelbild in Content mit Drag-Events (onStartDrag, onDragOver, onDrop, onEndDrag)
+- **Page/Page.js** – Rendert Base + Contents + Meta für eine Seite
+- **dom.create({...})** – Zentrales Helper: `dom.create({tagName, parent, content, cssClassName, listeners, attr, styles, insert})` → erstellt Element, hängt es ein, gibt Referenz zurück
 
-### Views
-- **Pages** – Seitenbaum (links) + Detailansicht (rechts) mit Content-Elementen
-- **Media** – Medienübersicht mit Upload, Bearbeitung, Löschung
-- **Watermarks** – Wasserzeichen-Verwaltung
-- **TopNav** – Hauptnavigation zwischen den Views
-- **Settings / Theme** – noch rudimentär
-
-### Komponenten (`assets/js/components/`)
-Jede Komponente ist eine Funktion, die DOM-Elemente erstellt:
-- `Content/Content.js` – Content-Editor mit Titel, Text, Bildern (Drag & Drop), Links, Tags
-- `Content/Image.js` – Bildanzeige innerhalb Content mit Drag & Drop Sortierung
-- `Content/Link.js` – Link-Editor
-- `Page/Page.js`, `Page/Contents.js`, `Page/Base.js`, `Page/Meta.js` – Seiten-Detail
-- `NavPage/NavPage.js` – Seitenbaum-Navigation
-- `AddContent/`, `DropContent/` – Content hinzufügen/verschieben
-- `Input/`, `InputFile/`, `InputForm/`, `Select/`, `Checkbox/`, `Range/`, `Tag/` – Formularelemente
-- `ImageInOverview/`, `WatermarkInOverview/` – Medien-Vorschau
-
-### Modals (`assets/js/modal/`)
-- `AddImage/` – Bild aus Medienbibliothek auswählen
-- `EditImage/` – Bild-Metadaten bearbeiten
-- `EditWatermark/` – Wasserzeichen bearbeiten
-- `LinkExternal/`, `LinkInternal/` – Links konfigurieren
-
-### Zentrale JS-Module
-- `ajax.js` – Alle API-Calls (fetch-basiert)
-- `data.js` – Globaler State (`pages`, `currentPage`, `dragID`, `dropIndex`)
-- `dom.js` – DOM-Hilfsfunktionen (`create`, `mapping`)
-- `elements.js` – Referenzen auf Haupt-DOM-Elemente
-- `helpers.js` – `debouncer()` für Auto-Save
-- `lang.js` – Deutsche UI-Texte
+### Modal-System
+- Modal-Overlay (`modal.js`), Modals: AddImage, EditImage, EditWatermark, LinkExternal, LinkInternal
 
 ---
 
-## Wichtige Design-Entscheidungen
+## Frontend ( público) – Stand
 
-1. **Keine Datenbank** – Alle Daten in JSON-Dateien, beim Start in Variablen geladen. Annahme: nur ein Benutzer arbeitet gleichzeitig.
-2. **Debounced File Saves** – `saveFileDebouncer` mit 1000ms Delay (konfigurierbar in `settings.json`), um häufiges Schreiben zu vermeiden.
-3. **IDs aus Zeitstempel** – `helpers.createID()` = `Date.now().toString(36) + '_' + counter` – eindeutig und sortierbar.
-4. **Auto-Resize bei Upload** – Jimp erstellt mehrere Auflösungen, nur wenn kleiner als Original. Keine Vergrößerung.
-5. **Theme-Kopie beim Start** – Theme-Dateien werden 1:1 nach `public/` kopiert, kein Build-Schritt.
-6. **Komponenten-CSS** – Jede Frontend-Komponente lädt ihre eigene CSS-Datei dynamisch (`<link>` via JS), um ungenutztes CSS zu vermeiden.
-7. **Drag & Drop** – Sowohl für Seiten (in Baumstruktur) als auch für Content-Elemente und Bilder innerhalb von Content.
-8. **Eine Instanz = eine Webseite** – Das Theme wird in `settings.json` festgelegt.
+- `themes/default/index.html` ist eine einfache Shell mit `<header>`, `<nav>`, `<main>`, `<footer>`
+- `themes/default/assets/js/index.js` existiert, aber Routing/Menu-Aufbau aus structure.json **noch nicht implementiert**
+- Routing-Schema (aus AGENTS.md): `http(s)://baseURL/{slug||id}` mit History API
+- Theme-Komponenten (Page, Navigation, Content, Header, Footer) **noch nicht implementiert**
 
 ---
 
-## Tech-Stack Details
+## Wichtige Verhaltensregeln & Konventionen
 
-| Komponente | Technologie | Version |
-|------------|-------------|---------|
-| Runtime | Node.js | ES Modules |
-| Web-Framework | Express | ^5.2.1 |
-| Datei-Upload | formidable | ^3.5.4 |
-| Bildverarbeitung | jimp | ^1.6.1 |
-| Browser öffnen | better-opn | ^3.0.2 |
-| Frontend | Vanilla JS (ES Modules) | – |
-| Datenspeicher | JSON-Dateien | – |
-| CSS | Reines CSS, komponentenweise | – |
-
----
-
-## Bekannte Besonderheiten / Auffälligkeiten
-
-- `contents/structure.json` enthält noch alte Daten mit inkonsistenten Feldern (z.B. `childen` statt `children`, `slugline` statt `slug`) – Daten wurden manuell migriert.
-- `contents/killme_media.json` und `contents/media_backup_1.json` sind offensichtliche Test-/Backup-Dateien.
-- `manageContents.media` wird in `init()` auskommentiert – Medien werden stattdessen lazy über `/loadMediaOverview` geladen.
-- `Page.moveChild()` und `Page.moveContent()` sind leere Stub-Methoden (nicht implementiert).
-- `styles.css` im Root ist leer (0 Bytes).
-- `notes/Jule CMS/Technik.md`, `Drag n Drop.md`, `JSON-Dateien.md` sind leer – nur `Jule CMS.md` hat Inhalt.
-- Der Server läuft auf Port 80 (erfordert unter Windows evtl. Admin-Rechte).
-- `start.bat` enthält nur `npm start`.
+1. **Nie selbstständig handeln** – nur nach Anweisung, im Zweifel fragen
+2. **MEMORY.md** für eigene Notizen/Todos, **README.md** für Menschen
+3. **then-chaining** statt async/await im Frontend-Code (Promises)
+4. **Named Arguments** – Funktionen nehmen ein Objekt: `func({param1, param2})`
+5. **Default-Parameter** – `func({param = 'default'} = {})`
+6. **Jede Komponente lädt eigenes CSS** dynamisch via `<link>` (siehe Content.js Ende)
+7. **Debounced Saves** – `helpers.debouncer(func, delay)` für Auto-Save; serverseitig `saveFileDebouncer` mit `delayDebouncersFileSave` (1000ms)
+8. **IDs:** `Date.now().toString(36) + '_' + counter++` (helpers.js)
+9. **Bilder nie vergrößern** – `convertImage` filtert Auflösungen > Originalbreite heraus
+10. **Upload-Original bleibt erhalten** – neue Uploads bekommen neue ID, alte Verknüpfungen bleiben
+11. **Dateinamen-Schema:** `<id>_<breite>.png` für resized, `<id>.<ext>` für Original
+12. **404-Fallback:** `contents/media/errors/404.jpg`
 
 ---
 
-## Geplante Features (aus readme.md, noch nicht umgesetzt)
+## Bekannte Unstimmigkeiten / Offene Punkte
 
-- Blog-Komponente mit Kategorien, Tags, Sortierung, Suche
-- Newsletter (An-/Abmeldung, Versand bestehender Seiten als HTML-Mail)
-- Erweiterte Komponenten-Typen (Slider/Galerie, Bildraster, Trailer, Störer, Text mit Überschrift)
-- Bildeffekte (CSS: rund, Schatten, Graustufen, Rotation, Spiegelung, Weichzeichnung)
-- Mehrere Wasserzeichen (Copyright, Signatur)
-- 404-Seite als eigene Seite konfigurierbar
-- Media Queries in separate CSS-Dateien auslagern
-- Metadaten-Anzeige im Frontend (crdate, chdate, Autor)
-- Passwortschutz für Seiten (Feld existiert bereits in Page-Klasse)
+- `structure.json` enthält teils das alte Feld `childen` neben `children` – slugline-Attribute wurden entfernt
+- `contents/media.json` wird vom Debouncer in `manageContents.js:453` als Schreibziel verwendet, aber **nirgends gelesen** – `loadMediaOverview` liest stattdessen die einzelnen `.json`-Dateien aus `contents/media/`. Die Datei ist faktisch nutzlos.
+- `manageContents.media` in init() auskommentiert – Medien werden lazy über `/api/loadMediaOverview` geladen
+- `Page.moveChild()` / `Page.moveContent()` – leere Stubs
+- `styles.css` im Root ist leer
+- `notes/` wurde entfernt (war leer/obsolet)
+- Original-Bilder sind `.jpg` (bzw. jeweiliges Upload-Format), nicht `.png` – resized Versionen sind `.png`
