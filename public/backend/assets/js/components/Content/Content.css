@@ -249,3 +249,59 @@
     width: 40px;
     height: 40px;
 }
+/* Typ-Auswahl mit Icons */
+.type-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1rem;
+}
+
+.type-legend {
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: var(--dark-color);
+    white-space: nowrap;
+}
+
+.type-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 6px;
+    background-color: var(--slightly-shaded);
+    border-radius: var(--border-radius);
+}
+
+.type-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid transparent;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    color: var(--dark-color);
+    background-color: white;
+    transition: var(--transition);
+}
+
+.type-icon:hover {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+}
+
+.type-icon.selected {
+    border-color: var(--accent-color);
+    background-color: var(--accent-color);
+    color: white;
+    box-shadow: 0 0 6px var(--accent-color);
+}
+
+.type-icon img {
+    width: 24px;
+    height: 24px;
+    pointer-events: none;
+}
+

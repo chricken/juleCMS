@@ -22,19 +22,19 @@
 
 ## 3. Backend – Inhaltstypen (AGENTS.md: "Seiten → Inhalte → Typ")
 
-- [ ] **Nur Text** – Content ohne Bilder/Links
-- [ ] **Nur Titel (Störer)** – Überschrift ohne Text
-- [ ] **Text mit Bild** – Positionen: links, rechts, unten (wählbar)
-- [ ] **Text mit Slideshow** – Positionen: links, rechts, unten
-- [ ] **Bildergalerie** – mehrere Bilder in Raster/Grid
-- [ ] **Slideshow** – Vollbild-Slider/Trailer
-- [ ] Typ-Auswahl (Select) im Content-Editor – aktuell nur Anzeige des Typs als Text
+- [x] **Nur Text** – Content ohne Bilder/Links (Typ `textOnly` mit Icon wählbar)
+- [x] **Nur Titel (Störer)** – Überschrift ohne Text (Typ `titleOnly` mit Icon wählbar)
+- [x] **Text mit Bild** – Positionen: links, rechts, unten (Typen `textImageLeft/Right/Bottom` wählbar)
+- [ ] **Text mit Slideshow** – Positionen: links, rechts, unten (Typ `slideshow` existiert, Verhalten noch nicht implementiert)
+- [x] **Bildergalerie** – mehrere Bilder in Raster/Grid (Typ `gallery` wählbar)
+- [ ] **Slideshow** – Vollbild-Slider/Trailer (Typ existiert, Verhalten fehlt)
+- [x] **Typ-Auswahl (Select) im Content-Editor** – umgesetzt als Icon-Leiste mit SVG-Icons aus `/backend/assets/img/icons/`, selected hervorgehoben, Klick speichert via debounced saveContent
 
 ---
 
 ## 4. Backend – Seiten-Features
 
-- [ ] **Seiten per Drag & Drop in der Liste verschieben** (NavPage) – aktuell nur Content-DnD implementiert, kein Seiten-DnD im Baum
+- [x] **Seiten per Drag & Drop in der Liste verschieben** (NavPage) – umgesetzt: before/after/into mit Zirkelbezug-Prüfung, `POST /api/movePage`
 - [ ] **Grundlagen-Sektion** prüfen: ID, Slugline, crDate, chDate korrekt anzeigen/bearbeiten (Page/Base.js)
 - [ ] **Metadaten-Sektion** prüfen: SEO-Title, SEO-Description, SEO-Keywords (Page/Meta.js)
 - [ ] **Interne Links** – LinkInternal-Modal anbinden: Seite aus Baum auswählen statt URL eintragen
@@ -53,7 +53,7 @@
 
 - [ ] **Maximale Auflösung bei Upload** – aktuell statisch in settings.json, soll im Backend einstellbar sein
 - [ ] **Sprache umschaltbar** – `lang.js` hat `currentLanguage` + `availableLanguages`, aber keine UI zum Umschalten
-- [ ] **Passwort** – an Server übertragen, gehasht in `/credentials.json` speichern (nicht implementiert)
+- [x] **Passwort** – an Server übertragen, gehasht (PBKDF2-SHA256) in `/credentials.json` gespeichert. Zwei Felder mit Übereinstimmungs-Prüfung im Settings-View, Auge-Toggle für Klartext.
 - [ ] **Base-URL** – für Frontend-Links konfigurierbar (nicht implementiert)
 
 ---
@@ -111,3 +111,5 @@
 - [ ] Mehrere Wasserzeichen pro Bild (Copyright, Signatur)
 - [ ] Metadaten-Anzeige im Frontend (crdate, chdate, Autor)
 - [ ] Passwortschutz für Seiten (Feld existiert in Page-Klasse)
+
+- [x] **Login-System** – Session-basiert (router.js Map + Cookie), Middleware schützt /api/*, Frontend rendert ohne Auth nur Login-Formular (index.js → checkAuth → viewLogin)

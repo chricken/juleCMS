@@ -78,10 +78,15 @@ const checkbox = ({
             onChanged(value);
         },
         focus() {
-            elInput.focus();
+            elChecker.focus();
         },
         get() {
-            return elInput.value;
+            return value;
+        },
+        set(newValue) {
+            value = !!newValue;
+            if (value) elChecker.classList.add('checked');
+            else elChecker.classList.remove('checked');
         }
     }
 

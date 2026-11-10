@@ -15,7 +15,9 @@ const storeSettings = () => {
 // Settings sollen immutable sein
 export default {
     get(key) {
-        return JSON.parse(JSON.stringify(settings[key]))
+        const val = settings[key];
+        if (val === undefined) return undefined;
+        return JSON.parse(JSON.stringify(val));
     },
     set(key, value) {
         settings[key] = JSON.parse(JSON.stringify(value));

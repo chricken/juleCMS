@@ -1,0 +1,65 @@
+/* Login View – zentrales Formular, sonst nichts */
+.login-container {
+    width: 400px;
+    margin: 80px auto;
+    padding: var(--padding-default);
+    background: var(--white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+.login-container h2 {
+    margin-bottom: 20px;
+    color: var(--primary-color);
+    text-align: center;
+}
+
+.login-container .container-input {
+    width: 100%;
+}
+
+.login-container .container-input .input {
+    width: 100%;
+}
+
+.login-container .container-input .legendInput {
+    display: block;
+    width: 100%;
+    margin-bottom: 6px;
+}
+
+.login-error {
+    min-height: 24px;
+    margin: 8px 0;
+    font-size: 0.9rem;
+    color: var(--secondary-color);
+    visibility: hidden;
+}
+
+.login-error.visible {
+    visibility: visible;
+}
+
+.login-button {
+    display: block;
+    width: 100%;
+    margin-top: 10px;
+    padding: 0.6rem 1.2rem;
+    background-color: var(--accent-color);
+    color: var(--white);
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+.login-button:hover:not([disabled]) {
+    background-color: var(--primary-color);
+}
+
+.login-button[disabled] {
+    background-color: var(--border-color);
+    cursor: not-allowed;
+    opacity: 0.6;
+}

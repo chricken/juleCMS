@@ -173,7 +173,7 @@ const ModalEditImage = ({
         parent: container,
         cssClassName: 'modal-edit-image__image',
         tagName: 'img',
-        src: `/api/getImg/media/${image.filename}`,
+        src: `/api/getImg/media/${image.resized && image.resized.length ? image.resized[0].filename : image.filename}`,
     })
 
 

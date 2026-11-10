@@ -1,11 +1,159 @@
 'use strict';
 
 import data from "./data.js";
-import compPage from "./components/Page/Page.js";
-import compPages from "./components/NavPage/NavPage.js";
 import elements from "./elements.js";
 
 const ajax = {
+
+    loadTestMailMessage() {
+        return fetch('/api/testMailMessage').then(
+            res => res.json()
+        ).catch(
+            () => ({testMailMessage: ''})
+        )
+    },
+
+    saveTestMailMessage(msg) {
+        return fetch('/api/saveTestMailMessage', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({testMailMessage: msg})
+        }).then(
+            res => res.json()
+        ).catch(
+            err => ({status: 'err', msg: String(err)})
+        )
+    },
+
+    loadMaxImageResolution() {
+        return fetch('/api/maxImageResolution').then(
+            res => res.json()
+        ).catch(
+            () => ({maxImageResolution: 2200})
+        )
+    },
+
+    saveMaxImageResolution(val) {
+        return fetch('/api/saveMaxImageResolution', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({maxImageResolution: val})
+        }).then(
+            res => res.json()
+        ).catch(
+            err => ({status: 'err', msg: String(err)})
+        )
+    },
+
+    saveMediaOrder(order) {
+        return fetch('/api/saveMediaOrder', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({order})
+        }).then(
+            res => res.json()
+        ).catch(
+            err => ({status: 'err', msg: String(err)})
+        )
+    },
+
+    loadSmtpSettings() {
+        return fetch('/api/smtpSettings').then(
+            res => res.json()
+        ).catch(
+            () => ({})
+        )
+    },
+
+    saveSmtpSettings(smtp) {
+        return fetch('/api/saveSmtpSettings', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(smtp)
+        }).then(
+            res => res.json()
+        ).catch(
+            err => ({status: 'err', msg: String(err)})
+        )
+    },
+
+    loadLoginValidityDays() {
+        return fetch('/api/loginValidityDays').then(
+            res => res.json()
+        ).catch(
+            () => ({loginValidityDays: 3})
+        )
+    },
+
+    saveLoginValidityDays(days) {
+        return fetch('/api/saveLoginValidityDays', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({loginValidityDays: days})
+        }).then(
+            res => res.json()
+        ).catch(
+            err => ({status: 'err', msg: String(err)})
+        )
+    },
+
+    sendTestMail() {
+        return fetch('/api/sendTestMail', {
+            method: 'POST'
+        }).then(
+            res => res.json()
+        ).catch(
+            err => ({status: 'err', msg: String(err)})
+        )
+    },
+
+    loadAdminEmail() {
+        return fetch('/api/adminEmail').then(
+            res => res.json()
+        ).catch(
+            () => ({adminEmail: ''})
+        )
+    },
+
+    saveAdminEmail(adminEmail) {
+        return fetch('/api/saveAdminEmail', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({adminEmail})
+        }).then(
+            res => res.json()
+        ).catch(
+            err => ({status: 'err', msg: String(err)})
+        )
+    },
+
+    checkAuth() {
+        return fetch('/api/checkAuth').then(
+            res => res.json()
+        ).catch(
+            () => ({authenticated: false})
+        )
+    },
+
+    login(password) {
+        return fetch('/api/login', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({password})
+        }).then(
+            res => res.json()
+        )
+    },
+
+    logout() {
+        return fetch('/api/logout', {
+            method: 'POST'
+        }).then(
+            res => res.json()
+        ).catch(
+            console.warn
+        )
+    },
 
     loadJSON(url) {
         // console.log(url);
@@ -177,6 +325,23 @@ const ajax = {
         )
     },
 
+    movePage({dragID, targetID, position}) {
+
+        return fetch('/api/movePage', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({dragID, targetID, position})
+        }).then(
+            res => res.json()
+        ).then(
+            result => {
+                if (result.status === 'err') throw result.msg;
+                data.pages = result.payload;
+                return result.payload;
+            }
+        )
+    },
+
     savePage(data) {
         console.log('Save Page', data);
         fetch('/api/savePage', {
@@ -190,7 +355,7 @@ const ajax = {
                 data.pages = result.payload;
 
                 elements.pages.innerHTML = '';
-                compPages()
+                window.dispatchEvent(new CustomEvent('jule:rerenderNav'))
             }
         ).catch(
             console.warn
@@ -209,8 +374,8 @@ const ajax = {
             result => {
                 data.pages = result.payload;
                 data.currentPage = result.newID;
-                compPages()
-                compPage(data.pages.find(p => p.id === result.newID));
+                window.dispatchEvent(new CustomEvent('jule:rerenderNav'));
+                window.dispatchEvent(new CustomEvent('jule:renderPage', {detail: data.pages.find(p => p.id === result.newID)}));
             }
         ).catch(
             console.warn
@@ -229,8 +394,8 @@ const ajax = {
             result => {
                 data.pages = result.payload;
                 data.currentPage = result.newID;
-                compPages()
-                compPage(data.pages.find(p => p.id === result.newID));
+                window.dispatchEvent(new CustomEvent('jule:rerenderNav'));
+                window.dispatchEvent(new CustomEvent('jule:renderPage', {detail: data.pages.find(p => p.id === result.newID)}));
             }
         ).catch(
             console.warn
@@ -248,7 +413,7 @@ const ajax = {
         ).then(
             result => {
                 data.pages = result.payload;
-                compPages();
+                window.dispatchEvent(new CustomEvent('jule:rerenderNav'));
                 elements.page.innerHTML = '';
             }
         ).catch(
@@ -267,6 +432,18 @@ const ajax = {
             res => res.payload
         ).catch(
             console.warn
+        )
+    },
+
+    savePassword(password) {
+        return fetch('/api/savePassword', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({password})
+        }).then(
+            res => res.json()
+        ).catch(
+            err => ({status: 'err', msg: String(err)})
         )
     },
 

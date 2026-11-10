@@ -2,14 +2,14 @@
     position: relative;
     cursor: pointer;
     font-size: 16px;
-
 }
 
 .top-nav-link:hover {
     color: var(--accent-color);
 }
 
-.top-nav-link:not(:last-child)::after {
+/* Pipe nur zwischen echten Nav-Links (nicht vor dem Logout-Link rechts) */
+.top-nav-link + .top-nav-link::before {
     content: ' | ';
 }
 
@@ -17,7 +17,6 @@
     font-size: 24px;
 }
 
-.top-nav-link.active::after {
+.top-nav-link.active::before {
     font-size: 16px;
-
 }

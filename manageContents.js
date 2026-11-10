@@ -22,7 +22,7 @@ const manageContents = {
         )).then(
             () => manageContents.pages = structure.pages
         ).then(
-            // () => manageContents.media = media
+            () => manageContents.media = {}
         ).then(
             () => manageContents.watermarks = watermarks
         )
@@ -105,6 +105,52 @@ const manageContents = {
         )
     },
 
+    // Prüft rekursiv, ob descendantID ein Kind (auf beliebiger Ebene) von ancestorID ist
+    isDescendant(ancestorID, descendantID) {
+        let ancestor = manageContents.pages.find(page => page.id === ancestorID);
+        if (!ancestor || !ancestor.children) return false;
+        if (ancestor.children.includes(descendantID)) return true;
+        return ancestor.children.some(childID => manageContents.isDescendant(childID, descendantID));
+    },
+
+    movePage({dragID, targetID, position}) {
+        // position: 'before' | 'after' | 'into'
+
+        // Zirkelbezug verhindern: eine Seite darf nicht in sich selbst oder in ihre eigenen Kinder verschoben werden
+        if (dragID === targetID) return Promise.reject('Seite kann nicht auf sich selbst verschoben werden');
+        if (position === 'into' && manageContents.isDescendant(dragID, targetID)) {
+            return Promise.reject('Seite kann nicht in ihre eigene Unterseite verschoben werden');
+        }
+
+        // Root-Seite darf nicht verschoben werden
+        if (dragID === 'root') return Promise.reject('Die Wurzelseite kann nicht verschoben werden');
+
+        // dragID aus allen children-Listen entfernen (alter Parent)
+        manageContents.pages.forEach(page => {
+            page.children = page.children.filter(child => child !== dragID);
+        });
+
+        if (position === 'into') {
+            // Als Kind an target anhängen
+            let target = manageContents.pages.find(page => page.id === targetID);
+            target.children.push(dragID);
+        } else {
+            // before/after: in die children-Liste des Parents von target einfügen
+            let parent = manageContents.pages.find(page => page.children.includes(targetID));
+            if (!parent) {
+                // target ist root – root hat keinen Parent, daher in root.children an erster Stelle
+                parent = manageContents.pages.find(page => page.id === 'root');
+            }
+            let targetIndex = parent.children.indexOf(targetID);
+            let insertIndex = position === 'before' ? targetIndex : targetIndex + 1;
+            parent.children.splice(insertIndex, 0, dragID);
+        }
+
+        return manageContents.savePages().then(
+            () => manageContents.pages
+        )
+    },
+
     removePage(pageID) {
         // Seite aus allen Kind-Listen entfernen
         manageContents.pages.forEach(
@@ -151,18 +197,22 @@ const manageContents = {
         return manageContents.convertImage({
             path: './contents/media/',
             filename: payload.filename,
-            defRes: settings.get('defaultResolutions')
+            maxRes: settings.get('maxImageResolution') || 2200
         }).then(
             res => payload.resized = res
         ).then(
             () => {
-                // manageContents.media[payload.id] = new Image(payload);
-                // console.log('Media Data', payload);
                 return fs.writeFile(
                     `./contents/media/${payload.id}.json`,
                     JSON.stringify(payload)
                 )
             }
+        ).then(
+            // Original nach erfolgreichem Resize löschen (resized-Dateien bleiben)
+            () => fs.unlink(`./contents/media/${payload.filename}`).catch(() => {})
+        )
+        .then(
+            () => payload
         )
     },
 
@@ -208,7 +258,7 @@ const manageContents = {
                     return manageContents.convertImage({
                         path: './contents/media/',
                         filename: payload.filename,
-                        defRes: settings.get('defaultResolutions')
+                        maxRes: settings.get('maxImageResolution') || 2200
                     }).then(
                         (res) => {
                             content.resized = res
@@ -284,7 +334,7 @@ const manageContents = {
             resolve()
         }).then(
             () => {
-                delete manageContents.media[payload.id]
+                if (manageContents.media) delete manageContents.media[payload.id]
             }
         ).then(
             () => saveMediaFileDebouncer({payload: manageContents.media})
@@ -292,7 +342,7 @@ const manageContents = {
             () => {
                 if (payload.filename) {
                     count++;
-                    return fs.unlink(`./contents/media/${payload.filename}`)
+                    return fs.unlink(`./contents/media/${payload.filename}`).catch(() => {})
                 }
             }
         ).then(
@@ -301,16 +351,18 @@ const manageContents = {
                     count += payload.resized.length;
                     return Promise.all(
                         payload.resized.map(
-                            file => fs.unlink(`./contents/media/${file.filename}`)
+                            file => fs.unlink(`./contents/media/${file.filename}`).catch(() => {})
                         )
                     )
                 }
             }
         ).then(
+            () => fs.unlink(`./contents/media/${payload.id}.json`).catch(() => {})
+        ).then(
             () => {
                 return {
                     status: 'success',
-                    filesDeleted: count
+                    filesDeleted: count + 1
                 }
             }
         ).catch(
@@ -401,7 +453,8 @@ const manageContents = {
     convertImage({
                      path = './',
                      filename = null,
-                     defRes = []
+                     defRes = [],
+                     maxRes = Infinity
                  }) {
         // Die ID wird aus dem Bildnamen gezogen. So kann jedes Bild unabhängig von der
         // ID des Mutter-Datensatzes konvertiert werden
@@ -415,11 +468,18 @@ const manageContents = {
             image => {
                 let img = image.clone();
                 let w = img.bitmap.width;
+                // Auflösungsstufen: max, 2/3, 1/3, fix 160 – nur wenn defRes nicht vorgegeben (Watermarks)
+                let resolutions = defRes;
+                if (maxRes !== Infinity && defRes.length === 0) {
+                    // Basis = min(maxRes, Originalbreite): bei kleinerem Original werden die Stufen auf die Originalbreite gerechnet
+                    const base = Math.min(maxRes, w);
+                    resolutions = [base, Math.round(base * 2 / 3), Math.round(base / 3), 160];
+                }
+                // Duplikate entfernen, nie größer als das Original, absteigend sortieren
+                resolutions = [...new Set(resolutions)].filter(val => val <= w).sort((a, b) => b - a);
                 let filenames = []
                 return Promise.all(
-                    defRes
-                        // Das Bild soll nicht vergrößert werden
-                        .filter(val => val <= w)
+                    resolutions
                         .map(res => {
                             // console.log(`${path}${id}_${res}.png`);
                             filenames.push({

@@ -1,0 +1,222 @@
+/* Settings View */
+.settings-section {
+    max-width: 760px;
+    padding: var(--padding-default);
+}
+
+.settings-section h1 {
+    margin-bottom: 20px;
+    color: var(--primary-color);
+}
+
+.settings-section h2 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    color: var(--primary-color);
+    font-size: 1.2rem;
+}
+
+.password-match-info {
+    min-height: 24px;
+    margin: 8px 0;
+    font-size: 0.9rem;
+    transition: var(--transition);
+}
+
+.password-match-info.match {
+    color: var(--success-color);
+}
+
+.password-match-info.mismatch {
+    color: var(--secondary-color);
+}
+
+.password-feedback {
+    min-height: 24px;
+    margin: 8px 0;
+    font-size: 0.9rem;
+}
+
+.password-feedback.success {
+    color: var(--success-color);
+}
+
+.password-feedback.error {
+    color: var(--secondary-color);
+}
+
+.save-password-button {
+    margin-top: 10px;
+    padding: 0.5rem 1.2rem;
+    background-color: var(--accent-color);
+    color: var(--white);
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+.save-password-button:hover:not([disabled]) {
+    background-color: var(--primary-color);
+}
+
+.save-password-button[disabled] {
+    background-color: var(--border-color);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* E-Mail Feedback */
+.email-feedback {
+    min-height: 24px;
+    margin: 8px 0;
+    font-size: 0.9rem;
+}
+
+.email-feedback.success {
+    color: var(--success-color);
+}
+
+.email-feedback.error {
+    color: var(--secondary-color);
+}
+
+.settings-hint {
+    font-size: 0.85rem;
+    color: var(--dark-color);
+    opacity: 0.7;
+    margin: 4px 0 8px 0;
+}
+
+/* Multiline Input (Test-Nachricht) */
+.container-input .input {
+    min-height: 45px;
+}
+
+/* ===== Settings Layout: Menü links (sticky) + Inhalt rechts ===== */
+.settings-layout {
+    display: flex;
+    align-items: flex-start;
+    gap: 30px;
+    width: 100%;
+    max-width: 1100px;
+}
+
+.settings-menu {
+    position: sticky;
+    top: 20px;
+    flex: 0 0 180px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: var(--padding-default);
+    background: var(--white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    align-self: flex-start;
+}
+
+.settings-menu h1 {
+    font-size: 1.3rem;
+    margin-bottom: 12px;
+    color: var(--primary-color);
+}
+
+.settings-menu-item {
+    display: block;
+    padding: 8px 12px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    color: var(--dark-color);
+    transition: var(--transition);
+    user-select: none;
+}
+
+.settings-menu-item:hover {
+    background-color: var(--light-color);
+    color: var(--accent-color);
+}
+
+.settings-menu-item.active {
+    background-color: var(--accent-color);
+    color: var(--white);
+    font-weight: 600;
+}
+
+.settings-content {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.settings-section {
+    padding: var(--padding-default);
+    background: var(--white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    scroll-margin-top: 20px;
+}
+
+.settings-section h2 {
+    margin-top: 0;
+    margin-bottom: 16px;
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--light-color);
+    padding-bottom: 8px;
+}
+
+.settings-section h3 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    color: var(--primary-color);
+    font-size: 1.05rem;
+}
+
+.settings-section hr {
+    margin: 24px 0 12px 0;
+    border: none;
+    border-top: 1px solid var(--light-color);
+}
+
+/* ===== Textarea (multiline Input) ===== */
+.container-input .input.textarea-input {
+    width: 570px;
+    min-height: 120px;
+    resize: vertical;
+    font-family: inherit;
+    line-height: 1.5;
+}
+
+/* ===== Mehr Abstand zwischen Abschnitten ===== */
+.settings-content {
+    gap: 48px;
+}
+
+.settings-section {
+    padding: 32px var(--padding-default);
+}
+
+.settings-section h3 {
+    margin-top: 36px;
+    margin-bottom: 16px;
+}
+
+.settings-section hr {
+    margin: 40px 0 20px 0;
+}
+
+.settings-section .container-input {
+    margin-bottom: 16px;
+}
+
+.settings-section .save-password-button,
+.settings-section .testmail-button {
+    margin-top: 16px;
+}
+
+.settings-section p {
+    margin-bottom: 8px;
+}

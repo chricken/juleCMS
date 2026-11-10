@@ -15,12 +15,48 @@ const ImageInOverview = ({
                              onDeleted = () => {
                              },
                              onEdited = () => {
-                             }
+                             },
+                             draggable = false,
+                             onDragStart = () => {},
+                             onDropOn = () => {},
+                             onDragEnd = () => {}
                          }) => {
     const container = dom.create({
         parent,
-        cssClassName: 'card card-image transit',
+        cssClassName: 'card card-image transit' + (draggable ? ' draggable' : ''),
+        listeners: {
+            dragstart(evt) {
+                evt.stopPropagation();
+                container.classList.add('dragging');
+                evt.dataTransfer.setData('text/plain', image.id);
+                evt.dataTransfer.effectAllowed = 'move';
+                onDragStart(image.id);
+            },
+            dragover(evt) {
+                evt.preventDefault();
+                evt.stopPropagation();
+                evt.dataTransfer.dropEffect = 'move';
+                container.classList.add('drag-over');
+            },
+            dragleave(evt) {
+                evt.stopPropagation();
+                container.classList.remove('drag-over');
+            },
+            drop(evt) {
+                evt.preventDefault();
+                evt.stopPropagation();
+                container.classList.remove('drag-over');
+                const dragID = evt.dataTransfer.getData('text/plain');
+                if (dragID && dragID !== image.id) onDropOn(dragID, image.id);
+            },
+            dragend(evt) {
+                evt.stopPropagation();
+                container.classList.remove('dragging');
+                onDragEnd();
+            }
+        }
     })
+    if (draggable) container.setAttribute('draggable', true);
 
     const elTitle = dom.create({
         tagName: 'h2',

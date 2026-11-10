@@ -98,8 +98,7 @@ const selectAndUpload = () => {
     })
 
     ajax.loadWatermarkOverview().then(res => {
-         let payload = Object.values(res);
-        payload.sort((a, b) => b.chDate - a.chDate);
+        payload = Array.isArray(res) ? res : Object.values(res);
 
         CompSelect({
             parent: placeholderWatermark,
@@ -314,6 +313,22 @@ const overview = () => {
         parent: containerOverview,
     })
 
+
+    // ===== Drag & Drop Reihenfolge =====
+    let dragMediaID = null;
+
+    const moveMedia = (fromID, toID) => {
+        const fromIndex = payload.findIndex(p => p.id === fromID);
+        const toIndex = payload.findIndex(p => p.id === toID);
+        if (fromIndex === -1 || toIndex === -1 || fromIndex === toIndex) return;
+        const [moved] = payload.splice(fromIndex, 1);
+        payload.splice(toIndex, 0, moved);
+        render();
+        ajax.saveMediaOrder(payload.map(p => p.id)).then(
+            res => { if (res.status !== 'success') console.warn('order save failed', res); }
+        );
+    }
+
     const render = () => {
         allTags = [];
         containerContent.innerHTML = '';
@@ -338,6 +353,10 @@ const overview = () => {
             let elImage = ImageInOverview({
                 image,
                 parent: colsNarrow[slot],
+                draggable: true,
+                onDragStart: (id) => { dragMediaID = id; },
+                onDropOn: (fromID, toID) => { moveMedia(fromID, toID); },
+                onDragEnd: () => { dragMediaID = null; },
                 onDeleted: () => {
                     containerOverview.remove();
                     overview();
@@ -369,8 +388,7 @@ const overview = () => {
 
     ajax.loadMediaOverview().then(res => {
 
-        payload = Object.values(res);
-        payload.sort((a, b) => b.chDate - a.chDate);
+        payload = Array.isArray(res) ? res : Object.values(res);
         return render();
 
     })

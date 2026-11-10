@@ -9,3 +9,17 @@ nav {
     text-align: center;
     font-size: 1.2rem;
 }
+
+/* Logout-Button rechts in der Nav */
+.logout-link {
+    float: right;
+    color: var(--secondary-color);
+}
+
+.logout-link:hover {
+    color: var(--primary-color);
+}
+
+.logout-link::after {
+    content: '' !important;
+}

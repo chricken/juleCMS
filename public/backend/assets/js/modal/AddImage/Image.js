@@ -35,12 +35,13 @@ const CompImage = ({
         parent: container,
         cssClassName: 'img transit',
         styles: {
-            backgroundImage: `url(/api/getImg/media/${gt400.filename})`
+            backgroundImage: `url(/api/getImg/media/${(gt400 || img.resized[img.resized.length - 1] || {filename: img.filename}).filename})`
         },
     })
 
     // fetch(`/api/getImg/media/${key}`)
 
+    return container
 }
 
 export default CompImage;

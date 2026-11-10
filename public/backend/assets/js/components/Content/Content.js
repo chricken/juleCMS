@@ -3,6 +3,7 @@
 import dom from "../../dom.js";
 import elements from "../../elements.js";
 import settings from "../../data.js";
+import cfg from "../../settings.js";
 import lang from "../../lang.js";
 import helpers from "../../helpers.js";
 import ajax from "../../ajax.js";
@@ -11,6 +12,7 @@ import CompSelect from "../Select/Select.js";
 import CompInput from "../Input/Input.js";
 import CompImage from "./Image.js";
 
+import ModalUploadImages from "../../modal/UploadImages/UploadImages.js";
 import ModalAddImage from '../../modal/AddImage/AddImage.js';
 
 // Unterkomponenten
@@ -275,6 +277,26 @@ const Content = ({
             }
         })
 
+        dom.create({
+            parent: elButtons,
+            tagName: 'button',
+            content: lang.getPhrase('uploadImages'),
+            cssClassName: 'button button-small',
+            listeners: {
+                click: () => {
+                    ModalUploadImages({
+                        onUploaded(ids) {
+                            if (ids && ids.length) {
+                                data.images.push(...ids);
+                                renderImages();
+                                saveContent(data);
+                            }
+                        }
+                    })
+                }
+            }
+        })
+
 
     }
 
@@ -395,11 +417,47 @@ const Content = ({
     // Ein Button öffnet die Auswahl
     // der Media-View in einem Modal
 
-    // Type
-    dom.create({
+    // Type-Auswahl mit Icons
+    const typeRow = dom.create({
         parent: elInner,
-        content: data.type,
-        cssClassName: 'type',
+        cssClassName: 'type-row',
+    })
+
+    dom.create({
+        parent: typeRow,
+        tagName: 'span',
+        cssClassName: 'type-legend',
+        content: lang.getPhrase('type'),
+    })
+
+    const typeSelector = dom.create({
+        parent: typeRow,
+        cssClassName: 'type-selector',
+    })
+
+    cfg.elementTypes.forEach(type => {
+        const btn = dom.create({
+            parent: typeSelector,
+            cssClassName: 'type-icon' + (data.type === type ? ' selected' : ''),
+            attr: {title: lang.getPhrase(type)},
+            listeners: {
+                click(evt) {
+                    evt.stopPropagation();
+                    data.type = type;
+                    typeSelector.querySelectorAll('.type-icon').forEach(el => el.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    saveContent(data);
+                }
+            }
+        })
+        dom.create({
+            parent: btn,
+            tagName: 'img',
+            attr: {
+                src: `/backend/assets/img/icons/${type}.svg`,
+                alt: lang.getPhrase(type),
+            },
+        })
     })
 
     // ID

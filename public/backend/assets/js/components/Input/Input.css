@@ -52,13 +52,57 @@
         height: 22px;
         background-color: transparent;
         color: var(--primary-color);
-        /*outline: 1px solid #000;*/
         border-radius: 5px;
+        border: none;
+        cursor: pointer;
     }
 
     .clear-button:hover {
         background-color: var(--light-color);
         color: var(--primary-color);
+    }
+}
+
+/* Passwort-Modus */
+.container-input.is-password {
+    .input.password-input {
+        width: 540px;
+        padding-right: 2rem;
+        font-family: monospace;
+    }
+
+    .buttons {
+        right: 8px;
+        display: flex;
+        gap: 4px;
+    }
+
+    .eye-button {
+        position: relative;
+        display: inline-block;
+        padding: 0;
+        margin: 0;
+        width: 28px;
+        height: 22px;
+        background-color: transparent;
+        color: var(--primary-color);
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+        line-height: 1;
+        opacity: 0.5;
+        transition: var(--transition);
+    }
+
+    .eye-button:hover {
+        opacity: 1;
+        background-color: var(--light-color);
+    }
+
+    .eye-button.visible {
+        opacity: 1;
+        color: var(--accent-color);
     }
 }
 
@@ -83,5 +127,9 @@
 
     .input {
         width: 230px;
+    }
+
+    &.is-password .input.password-input {
+        width: 200px;
     }
 }

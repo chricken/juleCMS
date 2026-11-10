@@ -50,3 +50,17 @@
 .card-image:hover {
     outline: 2px solid var(--accent-color);
 }
+/* Drag & Drop in der Medien-Übersicht */
+.card-image.draggable {
+    cursor: grab;
+}
+
+.card-image.dragging {
+    opacity: 0.4;
+    cursor: grabbing;
+}
+
+.card-image.drag-over {
+    outline: 3px dashed var(--accent-color);
+    outline-offset: 2px;
+}

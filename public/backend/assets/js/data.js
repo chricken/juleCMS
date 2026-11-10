@@ -5,6 +5,7 @@ const data = {
     currentPage: null,
     dropIndex:null,
     dragID:null,
+    dragPageID:null,
 };
 
 export default data;

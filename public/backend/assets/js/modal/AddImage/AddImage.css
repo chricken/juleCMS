@@ -63,3 +63,69 @@
         width: 180px;
     }
 }
+/* ===== Filter-Bar im AddImage-Modal ===== */
+.add-image-modal {
+    max-width: 900px;
+}
+
+.add-image-filter {
+    margin-bottom: 16px;
+    padding: 12px;
+    background: var(--light-color);
+    border-radius: var(--border-radius);
+}
+
+.add-image-filter .container-input {
+    width: 100%;
+}
+
+.add-image-filter .container-input .input {
+    width: calc(100% - 130px);
+}
+
+.add-image-tags {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+.add-image-tags-label {
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-right: 6px;
+}
+
+.add-image-tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.add-image-tag {
+    padding: 3px 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    background: var(--white);
+    cursor: pointer;
+    font-size: 0.85rem;
+    user-select: none;
+    transition: var(--transition);
+}
+
+.add-image-tag:hover {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+}
+
+.add-image-tag.active {
+    background: var(--accent-color);
+    border-color: var(--accent-color);
+    color: var(--white);
+}
+
+.add-image-list {
+    display: flex;
+    flex-wrap: wrap;
+}
