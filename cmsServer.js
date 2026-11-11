@@ -17,7 +17,13 @@ server.use(express.static('public', {
 server.use('/api', router);
 
 server.get('/', (req, res) => {
-    res.status(404).send('404: Seite nicht gefunden');
+    res.sendFile('theme/index.html', {root: './public'});
+})
+
+// SPA-Fallback: alle unbekannten GET-Pfade (nicht /api, /backend – die matchen vorher)
+// liefern das Theme-Index, das clientseitig routet
+server.get('/*splat', (req, res) => {
+    res.sendFile('theme/index.html', {root: './public'});
 })
 
 const init = () => {

@@ -1,6 +1,6 @@
 # MEMORY.md – Langzeitspeicher für den Agenten
 
-> Letzte Aktualisierung: Vollständige Projektanalyse nach User-Anfrage "Mach Dir ein Bild über das Projekt"
+> Letzte Aktualisierung: 2026-05-18 – "Mach Dir ein Bild über das Projekt" (vollständige Re-Analyse aller Dateien)
 
 ---
 
@@ -11,11 +11,40 @@
 | Was | Dateibasiertes CMS ohne Datenbank, für eine Illustratorin (Fokus Bildverarbeitung) |
 | Autor | C. Heisch (Christian Heisch) – für seine Frau Julia |
 | Sprache | JavaScript ES Modules (`"type": "module"`), Vanilla JS + Vanilla CSS |
-| Backend-Server | Node.js + Express 5, Port 80 (`settings.json`) |
+| Backend-Server | Node.js + Express 5, Port **8654** (`settings.json`), startet Browser auf `/backend` |
 | Admin-UI | `/public/backend` – komponentenbasiertes Vanilla JS, kein Framework |
-| Público-Frontend | Theme-basiert (`/themes/default/`), wird nach `/public/` kopiert |
+| Público-Frontend | Theme-basiert (`/themes/default/`), wird nach `/public/` kopiert; **noch leer** (index.js ist Stub) |
 | Datenspeicher | JSON-Dateien unter `/contents/` – beim Serverstart in RAM geladen |
-| Dependencies | express@5, formidable@3 (Upload), jimp@1 (Bild-Resize), better-opn@3 |
+| Dependencies | express@5, formidable@3 (Upload), jimp@1 (Bild-Resize), better-opn@3, **nodemailer@10** (Mail) |
+| Auth | JWT in Cookie `juleToken` (HS256), Secret in `credentials.json`, Passwort PBKDF2-SHA256 100k Iterationen, gültig `loginValidityDays` (default 3) |
+
+---
+
+## Einstiegs- und Datenfluss (heute verifiziert)
+
+```
+cmsServer.js → manageContents.init() (lädt structure.json + watermarks.json in RAM)
+             → themes.init() (kopiert themes/<theme>/ → public/)
+             → server.listen(8654) → opn(http://localhost:8654/backend)
+
+Backend index.js → ajax.checkAuth() → JWT prüfen
+                → authenticated? → init(): /api/pages laden → viewTopNav → viewPages
+                → nicht auth?       → viewLogin (Login-Formular)
+
+Datenfluss: JSON-Dateien ↔ manageContents (RAM) ↔ router.js (/api/*) ↔ ajax.js ↔ Views/Components
+```
+
+## Wichtige Korrekturen gegenüber älterer Analyse
+
+- Port ist **8654**, nicht 80
+- `nodemailer` ist als Dependency vorhanden (SMTP + .eml-Fallback in contents/mails/)
+- `contents/media.json` ist `{}` (leer) — Medien liegen nur als Einzel-JSONs in `contents/media/<id>.json`
+- `contents/watermarks.json` ist ein Objekt keyed by ID (nicht Array)
+- structure.json hat 10 Seiten, eine davon mit Tippfehler `"childen"` statt `"children"` (id=m20938f5923mu023)
+- `themes/default/assets/js/index.js` ist ein leerer Stub — das öffentliche Frontend fehlt komplett
+- `themes/default/index.html` lädt `cms/js/index.js` (existiert nicht) + `assets/js/index.js` (leer)
+- Page.moveChild() und Page.moveContent() sind leere Stubs in classes/Page.js
+- Login-System: JWT-basiert, Middleware schützt alle /api/* außer login/checkAuth/savePassword
 
 ---
 
@@ -287,3 +316,73 @@ Beim Schreiben von Dateien über `run_typescript`/`tools.file_system.write_file`
 - Modal: File-Input multiple → pro Datei eine Karte (Vorschau via FileReader, Titel=Dateiname ohne Extension, Beschreibung (textarea), Alt-Name, Tags, Entfernen-Button ✖).
 - Speichern-Button disabled solange eine Karte keinen Titel hat. Upload sequentiell pro Karte via `ajax.saveMedia(FormData mit image[0])`, sammelt `payload.id`s → `onUploaded(ids)` → Content.js hängt ids an `data.images` an + saveContent + renderImages.
 - Fix: `manageContents.saveMedia` gab undefined zurück → jetzt `.then(() => payload)` damit `res.payload.id` verfügbar ist.
+
+---
+
+## Upload-Architektur (2026-05-18, korrigiert nach User-Feedback)
+
+- **Media-View** (`views/Media.js`): Button "Medien hochladen" → `ModalUploadImages` (modal/UploadImages/UploadImages.js). Multi-File-Input, pro Datei eine Card mit Preview + Titel/Beschreibung/Alt/Tags, sequentieller Upload via `ajax.saveMedia`, danach Overview neu rendern.
+- **Content-Editor** (`components/Content/Content.js`): Button "Bilder hochladen" → Modal mit `UploadMedia` (components/UploadMedia/UploadMedia.js). Einzel-Upload wie früher die linke Spalte im Media-View (Titel/Beschreibung/Alt/Wasserzeichen/Tags/Datei/Upload-Button). `onUploaded(res)` hängt `res.payload.id` an `data.images`.
+- `UploadMedia` ist die wiederverwendbare Einzel-Upload-Komponente; `UploadImages` das Multi-Upload-Modal. Beide nutzen `ajax.saveMedia` (FormData mit `image[0]`).
+
+## Korrektur 2026-05-18 (2): Upload-Button + Content-Upload
+
+- Media-View-Button hat jetzt `button button-small` (gleiche Höhe wie alle anderen Buttons; vorher nur `button` = padding 0.8rem/1.5rem).
+- Content-Editor "Bilder hochladen" öffnet wieder `ModalUploadImages` (Multi-Upload-Modal, identisch mit Media-View); `onUploaded(ids)` hängt alle IDs an `data.images`.
+- `components/UploadMedia/` ist derzeit ungenutzt (liegt brach).
+
+## Auth auf localStorage umgestellt (2026-05-18, keine Cookies mehr)
+
+- `router.js getToken()` liest `Authorization: Bearer <jwt>` statt Cookie `juleToken`.
+- `POST /api/login` liefert Token im JSON-Body (`{status, authenticated, token}`), kein Set-Cookie mehr. `POST /api/logout` löscht serverseitig nichts (nur tokenVersion++), kein Set-Cookie.
+- `ajax.js`: zentrale `apiFetch(url, options)` hängt automatisch `Authorization: Bearer` aus `localStorage.getItem('juleToken')` an alle Requests. `login()` speichert `result.token` im localStorage, `logout()` entfernt ihn.
+- Verifiziert: ohne Token → 401/false; mit signiertem Bearer → checkAuth true, /api/pages 200; keine Set-Cookie-Header in Antworten.
+
+## Vorschaubild pro Seite (2026-05-18)
+
+- `components/Page/Base.js`: Sektion "Vorschaubild" (Feld `previewImage` existiert in Page-Klasse + structure.json). Ohne Bild: Buttons "Bild auswählen" (ModalAddImage) + "Bilder hochladen" (ModalUploadImages, erste ID gewinnt). Mit Bild: Thumbnail (kleinstes resized >= 150px, lazy) + "Bild ändern" + "Hochladen" + "Löschen" (setzt ''). Speichern via saveDebounced → savePage übernimmt komplettes Objekt.
+- Neue lang-Phrases: previewImage, selectImage, changeImage.
+- accept eingeschränkt auf `image/*,.webp,.avif` in `modal/UploadImages/UploadImages.js` und `components/InputFile/InputFile.js`.
+- CSS: `.preview-image` in page.css (Thumb 160px).
+
+## Template-System fürs Frontend (2026-05-18)
+
+- `themes/<name>/` = Theme-Ordner (index.html, assets/, components/, views/, favicon). Aktuell nur `default`.
+- `themes.js`: `list()` listet Theme-Ordner; `init()` löscht `public/theme` (fs.rm recursive force) und kopiert `themes/<settings.theme>/*` nach `public/theme/`.
+- `cmsServer.js`: `express.static('public')` + `GET /` → `sendFile('theme/index.html')`. Altlasten `public/index.html|assets|favicon.png` (vom alten Kopier-nach-public-Mechanismus) wurden entfernt.
+- `public/cms/js/` = theme-unabhängig: ajax.js (loadJSON, getImg), helpers.js, index.js (lädt `/api/structure`, feuert `jule:structure` Event).
+- Theme-index lädt `/cms/js/index.js` (Boot) + `/theme/assets/js/index.js` (theme-eigen), CSS `/theme/assets/css/styles.css` — alles absolute Pfade.
+- API: `GET /api/themes` → {themes, current}; `POST /api/selectTheme {theme}` → prüft Existenz, `settings.set('theme', …)`, greift beim nächsten Server-Start. `GET /api/structure` ist öffentlich (wie getImg) fürs Frontend-Routing.
+- Theme-View (`views/Theme.js`): Card pro Theme, Klick → selectTheme → re-render, aktives mit "✓ aktiv". ajax.loadThemes/selectTheme. CSS `.theme-list/.theme-card` in styles.css.
+- Verifiziert: themes.init kopiert+leert public/theme, Theme-Wechsel nach public/theme, GET / liefert theme/index.html, /cms + /theme statisch 200, /api/structure ohne Token 200, selectTheme schreibt settings.json.
+
+## Theme default – erste vollständige Struktur (2026-05-18)
+
+- `themes/default/assets/js/`: `index.js` (wartet auf `jule:structure`, rendert Header/Nav/Footer, startet Router), `router.js` (`findPage` nach slug||id, `/`→root, history pushState/popstate, `pageURL`), `components/` (Header, Footer, Navigation, Content), `views/Page.js`.
+- Navigation: flaches Menü = sichtbare children von root; hat die aktuelle Seite children → nested `<ul class="nav-sub">` (rekursiv). Klick → router.navigate (kein Reload).
+- Page-View: h1 Titel + pro content-ID `GET /api/content/:id` → `res.payload` → Content-Komponente.
+- Content-Komponente: Typen titleOnly, textOnly/default, textImageLeft/Right (flex row, Reihenfolge via append), textImageBottom, gallery/slideshow (as-is Bilder), contactForm (Platzhalter), Links als Liste. Bilder "as is": größtes resized (`resized[0]`, Original wird serverseitig gelöscht) via `/api/getImgMetaData/media/<id>` → `/api/getImg/media/<filename>`.
+- Öffentlich freigegeben: `/api/structure`, `/api/content/*`, `/api/getImgMetaData/*`, `/api/getImg/*`.
+- `cmsServer.js`: SPA-Fallback `server.get('/*splat')` → theme/index.html (Express 5 Syntax); `/api` + `/backend` matchen vorher.
+- `public/cms/js/`: dom.js (create-Helper), ajax.js, helpers.js, index.js (Boot feuert `jule:structure`).
+- Verifiziert: /, /homeristderkrass → theme index 200; /api/structure, /api/content/:id, /api/getImgMetaData ohne Token 200; /theme + /cms statisch 200; /backend/ 200.
+
+## Theme default – Detailkorrekturen (2026-05-18)
+
+- Nested Routing: `findPage` verfolgt Pfad segmentweise durch den Baum (`/vorfahr-slug/child-slug`); `pageURL` baut verschachtelte URLs aus den Vorfahren-slugs (root → `/`).
+- Untermenü persistent im Zweig: `topLevelOf(page)` = direkter root-Vorfahre; `Navigation` rendert dessen children in `<aside id="subnav">` (links neben main, flex layout) — auch auf allen Unterseiten des Zweigs sichtbar.
+- Header-Titel ist Link auf `/` (Home). Klickbares Breadcrumb (`components/Breadcrumb.js`): Home / Vorfahr / … / aktuelle Seite, letzte ohne Link, Rendern in PageView oben.
+- Verifiziert: findPage('/homeristderkrass/mrj8m969_0') → "Die zweite Seite", topLevelOf(Unterseite) → "Eine Seite", pageURL → '/homeristderkrass/mrj7te8m_1', Breadcrumb-Kette Wurzel > Eine Seite > Unterseite; HTTP: / + nested path → index 200, theme-Dateien frisch kopiert.
+
+## Markdown im Frontend (2026-05-18)
+
+- `public/cms/plugins/marked.esm.js` (marked v18, vom User abgelegt) wird über `public/cms/js/markdown.js` gewrappt: `renderMD(text)` = `marked.parse` mit `{gfm:true, breaks:true}` (einzelne Zeilenumbrüche → <br>).
+- `themes/default`: Content.js rendert `item.content` in allen Typen als Markdown (div.content-md statt p mit Rohtext); Page.js rendert `page.description` als Markdown unter dem Seitentitel. Titel bleiben Klartext.
+- CSS `.content-md` in theme styles.css (Überschriften, Listen, code/pre, blockquote, Tabellen, Bilder max-width 100%).
+- Verifiziert: marked.parse in node liefert korrektes HTML; /cms/plugins/marked.esm.js + /cms/js/markdown.js → 200 text/javascript.
+
+## Markdown-Fix (2026-05-18): public/theme war veraltet + Zeilenumbruch-Normalisierung
+
+- Symptom: Listen rendern nicht. Ursache u.a.: `public/theme` enthielt noch das alte Theme (Kopie erst beim Serverstart) — manuell via themes.init() aktualisiert, Content.js enthält jetzt renderMD (5 Stellen).
+- `markdown.js renderMD()` normalisiert jetzt CRLF/CR → LF vor `marked.parse` (marked v18 verkraftet CRLF zwar, Normalisierung schadet nicht). breaks:true bleibt (einzelnes \n → <br> im Fließtext; Listen brauchen kein <br> davor — verifiziert mit echtem Item mtsmh6r6_0: rendert sauberes <ul>).
+- Test: renderMD('Dies ist eine Liste:\n- Merkur\n...') → <p>..</p><ul><li>Merkur</li>...</ul><p><code>x = 100</code></p>.

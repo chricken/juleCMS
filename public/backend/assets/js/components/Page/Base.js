@@ -6,6 +6,8 @@ import compInput from '../Input/Input.js';
 import ajax from "../../ajax.js";
 import CompContent from "../Content/Content.js";
 import CompAddContent from "../AddContent/AddContent.js";
+import ModalAddImage from "../../modal/AddImage/AddImage.js";
+import ModalUploadImages from "../../modal/UploadImages/UploadImages.js";
 
 import lang from "../../lang.js";
 import helpers, {collapse} from "../../helpers.js";
@@ -91,6 +93,92 @@ const Base = ({
         content: `Last Changed: ${new Date(data.chDate).toLocaleDateString()}`,
         cssClassName: 'info',
     })
+
+    // ===== Vorschaubild (ein einzelnes Bild pro Seite) =====
+    const previewContainer = dom.create({
+        parent: inner,
+        cssClassName: 'preview-image',
+    })
+
+    const renderPreview = () => {
+        previewContainer.innerHTML = '';
+
+        dom.create({
+            parent: previewContainer,
+            tagName: 'h4',
+            content: lang.getPhrase('previewImage'),
+        })
+
+        const setPreview = (id) => {
+            data.previewImage = id;
+            saveDebounced(data);
+            renderPreview();
+        }
+
+        const btnSelect = () => dom.create({
+            parent: previewContainer,
+            tagName: 'button',
+            content: lang.getPhrase(data.previewImage ? 'changeImage' : 'selectImage'),
+            cssClassName: 'button button-small',
+            listeners: {
+                click: () => {
+                    ModalAddImage({onSelected: setPreview})
+                }
+            }
+        })
+
+        const btnUpload = () => dom.create({
+            parent: previewContainer,
+            tagName: 'button',
+            content: lang.getPhrase('uploadImages'),
+            cssClassName: 'button button-small',
+            listeners: {
+                click: () => {
+                    ModalUploadImages({
+                        onUploaded(ids) {
+                            if (ids && ids.length) setPreview(ids[0]);
+                        }
+                    })
+                }
+            }
+        })
+
+        if (data.previewImage) {
+            ajax.loadImageMetaData(data.previewImage).then(
+                payload => {
+                    let resized = (payload.resized || []).filter(item => item.width >= 150);
+                    resized.sort((a, b) => a.width - b.width);
+                    const filename = resized.length ? resized[0].filename : payload.filename;
+
+                    dom.create({
+                        parent: previewContainer,
+                        tagName: 'img',
+                        src: `/api/getImg/media/${filename}`,
+                        attr: {loading: 'lazy', decoding: 'async'},
+                        cssClassName: 'preview-image-thumb',
+                    })
+                }
+            )
+
+            btnSelect();
+            btnUpload();
+
+            dom.create({
+                parent: previewContainer,
+                tagName: 'button',
+                content: lang.getPhrase('delete'),
+                cssClassName: 'button button-small',
+                listeners: {
+                    click: () => setPreview('')
+                }
+            })
+        } else {
+            btnSelect();
+            btnUpload();
+        }
+    }
+
+    renderPreview();
 
 }
 

@@ -3,6 +3,7 @@
 import Modal from '../modal.js';
 import dom from "../../dom.js";
 import lang from "../../lang.js";
+import ajax from "../../ajax.js";
 import CompInput from "../../components/Input/Input.js";
 import CompImage from "./Image.js";
 
@@ -111,9 +112,7 @@ const AddImage = ({
         parent: container,
     })
 
-    fetch('/api/loadMediaOverview').then(
-        res => res.json()
-    ).then(
+    ajax.loadMediaOverview().then(
         res => {
             allImages = Object.values(res);
             allImages.sort((a, b) => (b.chDate || 0) - (a.chDate || 0));

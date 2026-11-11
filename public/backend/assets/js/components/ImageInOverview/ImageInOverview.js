@@ -122,7 +122,11 @@ const ImageInOverview = ({
     let elImg = dom.create({
         tagName: 'img',
         parent: container,
-        src: `/api/getImg/media/${filename}`
+        src: `/api/getImg/media/${filename}`,
+        attr: {
+            loading: 'lazy',
+            decoding: 'async'
+        }
     })
 
     // Tags

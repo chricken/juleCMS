@@ -8,6 +8,7 @@ import {promises as fs} from 'fs';
 import manageContents from "./manageContents.js";
 import Page from "./classes/Page.js";
 import settings from "./settings.js";
+import themes from "./themes.js";
 
 const router = express.Router();
 
@@ -62,8 +63,8 @@ const verifyJWT = (token, secret) => {
 };
 
 const getToken = (req) => {
-    const cookie = req.headers.cookie || '';
-    const match = cookie.match(/juleToken=([A-Za-z0-9_-]+.[A-Za-z0-9_-]+.[A-Za-z0-9_-]+)/);
+    const header = req.headers.authorization || '';
+    const match = header.match(/^Bearer ([A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+)$/);
     return match ? match[1] : null;
 };
 
@@ -105,6 +106,12 @@ const checkHasPassword = () => {
 
 router.use((req, res, next) => {
     if (req.path === '/login' || req.path === '/checkAuth') return next();
+    // Bilder werden per <img src> geladen – ohne Header möglich, daher öffentlich
+    if (req.path.startsWith('/getImg/')) return next();
+    // Seitenstruktur + Inhalte + Bild-Metadaten fürs Frontend-Routing öffentlich
+    if (req.path === '/structure') return next();
+    if (req.path.startsWith('/content/')) return next();
+    if (req.path.startsWith('/getImgMetaData/')) return next();
     if (req.path === '/savePassword') {
         // Erlaubt nur wenn noch kein Passwort gesetzt (initiales Setup)
         return checkHasPassword().then(
@@ -724,8 +731,7 @@ router.post('/login', (req, res) => {
             return loadJwtSecret().then(
                 secret => {
                     const token = signJWT({lastLogin: Date.now(), iat: Date.now(), v: tokenVersion}, secret);
-                    res.setHeader('Set-Cookie', `juleToken=${token}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${30 * 24 * 60 * 60}`);
-                    res.json({status: 'success', authenticated: true});
+                    res.json({status: 'success', authenticated: true, token});
                 }
             );
         }
@@ -744,7 +750,6 @@ router.post('/logout', (req, res) => {
             return fs.writeFile('./credentials.json', JSON.stringify(creds, null, 2));
         }
     ).finally(() => {
-        res.setHeader('Set-Cookie', 'juleToken=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0');
         res.json({status: 'success', authenticated: false});
     });
 });
@@ -914,6 +919,43 @@ router.post('/saveAdminEmail', (req, res) => {
     const {adminEmail} = req.body;
     settings.set('adminEmail', adminEmail || '');
     res.json({status: 'success', adminEmail: adminEmail || ''});
+});
+
+// --- Öffentliche Seitenstruktur fürs Frontend ---
+router.get('/structure', (req, res) => {
+    fs.readFile('./contents/structure.json', 'utf8').then(
+        raw => res.json(JSON.parse(raw))
+    ).catch(
+        err => res.status(500).json({status: 'err', msg: String(err)})
+    );
+});
+
+// --- Themes ---
+router.get('/themes', (req, res) => {
+    themes.list().then(
+        list => res.json({
+            themes: list,
+            current: settings.get('theme') || 'default'
+        })
+    ).catch(
+        err => res.status(500).json({status: 'err', msg: String(err)})
+    );
+});
+
+router.post('/selectTheme', (req, res) => {
+    const {theme} = req.body;
+    if (!theme) return res.status(400).json({status: 'err', msg: 'Kein Theme angegeben'});
+    themes.list().then(
+        list => {
+            if (!list.includes(theme)) {
+                return res.status(404).json({status: 'err', msg: `Theme "${theme}" nicht gefunden`});
+            }
+            settings.set('theme', theme);
+            res.json({status: 'success', theme, msg: 'Theme gespeichert – wird beim nächsten Server-Start übernommen'});
+        }
+    ).catch(
+        err => res.status(500).json({status: 'err', msg: String(err)})
+    );
 });
 
 export default router;

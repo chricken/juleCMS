@@ -255,3 +255,27 @@ footer a:hover {
     border-color: var(--accent-color);
     background-color: #f0f8ff;
 }
+/* Theme-View */
+.theme-list {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+.theme-card {
+    border: 2px solid var(--secondary-color);
+    border-radius: var(--border-radius);
+    padding: 1rem 2rem;
+    cursor: pointer;
+    min-width: 160px;
+}
+.theme-card:hover {
+    border-color: var(--accent-color);
+}
+.theme-card.selected {
+    border-color: var(--accent-color);
+    background-color: var(--light-color);
+}
+.theme-active {
+    color: var(--accent-color);
+    font-weight: bold;
+}

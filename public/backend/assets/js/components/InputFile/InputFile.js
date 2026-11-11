@@ -46,6 +46,7 @@ const inputFile = ({
         attr: {
             type: 'file',
             name: key,
+            accept: 'image/*,.webp,.avif',
         },
         listeners: {
             click(evt) {

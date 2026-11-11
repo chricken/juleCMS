@@ -3,10 +3,22 @@
 import data from "./data.js";
 import elements from "./elements.js";
 
+const TOKEN_KEY = 'juleToken';
+
+const authHeaders = () => {
+    const t = localStorage.getItem(TOKEN_KEY);
+    return t ? {Authorization: 'Bearer ' + t} : {};
+};
+
+const apiFetch = (url, options = {}) => {
+    options.headers = Object.assign({}, authHeaders(), options.headers || {});
+    return fetch(url, options);
+};
+
 const ajax = {
 
     loadTestMailMessage() {
-        return fetch('/api/testMailMessage').then(
+        return apiFetch('/api/testMailMessage').then(
             res => res.json()
         ).catch(
             () => ({testMailMessage: ''})
@@ -14,7 +26,7 @@ const ajax = {
     },
 
     saveTestMailMessage(msg) {
-        return fetch('/api/saveTestMailMessage', {
+        return apiFetch('/api/saveTestMailMessage', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({testMailMessage: msg})
@@ -26,7 +38,7 @@ const ajax = {
     },
 
     loadMaxImageResolution() {
-        return fetch('/api/maxImageResolution').then(
+        return apiFetch('/api/maxImageResolution').then(
             res => res.json()
         ).catch(
             () => ({maxImageResolution: 2200})
@@ -34,7 +46,7 @@ const ajax = {
     },
 
     saveMaxImageResolution(val) {
-        return fetch('/api/saveMaxImageResolution', {
+        return apiFetch('/api/saveMaxImageResolution', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({maxImageResolution: val})
@@ -46,7 +58,7 @@ const ajax = {
     },
 
     saveMediaOrder(order) {
-        return fetch('/api/saveMediaOrder', {
+        return apiFetch('/api/saveMediaOrder', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({order})
@@ -58,7 +70,7 @@ const ajax = {
     },
 
     loadSmtpSettings() {
-        return fetch('/api/smtpSettings').then(
+        return apiFetch('/api/smtpSettings').then(
             res => res.json()
         ).catch(
             () => ({})
@@ -66,7 +78,7 @@ const ajax = {
     },
 
     saveSmtpSettings(smtp) {
-        return fetch('/api/saveSmtpSettings', {
+        return apiFetch('/api/saveSmtpSettings', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(smtp)
@@ -78,7 +90,7 @@ const ajax = {
     },
 
     loadLoginValidityDays() {
-        return fetch('/api/loginValidityDays').then(
+        return apiFetch('/api/loginValidityDays').then(
             res => res.json()
         ).catch(
             () => ({loginValidityDays: 3})
@@ -86,7 +98,7 @@ const ajax = {
     },
 
     saveLoginValidityDays(days) {
-        return fetch('/api/saveLoginValidityDays', {
+        return apiFetch('/api/saveLoginValidityDays', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({loginValidityDays: days})
@@ -98,7 +110,7 @@ const ajax = {
     },
 
     sendTestMail() {
-        return fetch('/api/sendTestMail', {
+        return apiFetch('/api/sendTestMail', {
             method: 'POST'
         }).then(
             res => res.json()
@@ -108,7 +120,7 @@ const ajax = {
     },
 
     loadAdminEmail() {
-        return fetch('/api/adminEmail').then(
+        return apiFetch('/api/adminEmail').then(
             res => res.json()
         ).catch(
             () => ({adminEmail: ''})
@@ -116,7 +128,7 @@ const ajax = {
     },
 
     saveAdminEmail(adminEmail) {
-        return fetch('/api/saveAdminEmail', {
+        return apiFetch('/api/saveAdminEmail', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({adminEmail})
@@ -128,7 +140,7 @@ const ajax = {
     },
 
     checkAuth() {
-        return fetch('/api/checkAuth').then(
+        return apiFetch('/api/checkAuth').then(
             res => res.json()
         ).catch(
             () => ({authenticated: false})
@@ -136,17 +148,23 @@ const ajax = {
     },
 
     login(password) {
-        return fetch('/api/login', {
+        return apiFetch('/api/login', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({password})
         }).then(
             res => res.json()
+        ).then(
+            result => {
+                if (result.token) localStorage.setItem(TOKEN_KEY, result.token);
+                return result;
+            }
         )
     },
 
     logout() {
-        return fetch('/api/logout', {
+        localStorage.removeItem(TOKEN_KEY);
+        return apiFetch('/api/logout', {
             method: 'POST'
         }).then(
             res => res.json()
@@ -157,13 +175,13 @@ const ajax = {
 
     loadJSON(url) {
         // console.log(url);
-        return fetch(url).then(res => res.json());
+        return apiFetch(url).then(res => res.json());
     },
 
     saveContent(data) {
         // console.log('save content', data);
 
-        fetch('/api/saveContent', {
+        apiFetch('/api/saveContent', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(data)
@@ -178,7 +196,7 @@ const ajax = {
 
     saveMedia(formData) {
         // console.log('save media', formData);
-        return fetch('/api/saveMedia', {
+        return apiFetch('/api/saveMedia', {
             method: 'POST',
             body: formData
         }).then(
@@ -194,7 +212,7 @@ const ajax = {
 
     saveWatermark(formData) {
         console.log('save Watermark', formData);
-        return fetch('/api/saveWatermark', {
+        return apiFetch('/api/saveWatermark', {
             method: 'POST',
             body: formData
         }).then(
@@ -210,7 +228,7 @@ const ajax = {
 
     updateMedia(formData) {
         console.log('update media', formData);
-        return fetch('/api/updateMedia', {
+        return apiFetch('/api/updateMedia', {
             method: 'POST',
             body: formData
         }).then(
@@ -226,7 +244,7 @@ const ajax = {
 
     updateWatermark(formData) {
         console.log('update Watermark', formData);
-        return fetch('/api/updateWatermark', {
+        return apiFetch('/api/updateWatermark', {
             method: 'POST',
             body: formData
         }).then(
@@ -239,7 +257,7 @@ const ajax = {
     },
 
     loadMediaOverview() {
-        return fetch('/api/loadMediaOverview').then(
+        return apiFetch('/api/loadMediaOverview').then(
             res => res.json()
         )
     },
@@ -247,7 +265,7 @@ const ajax = {
     loadImageMetaData(id) {
         // console.log('load image meta data', id);
         // /getImg/:folder/:filename',
-        return fetch(`/api/getImgMetaData/media/${id}`).then(
+        return apiFetch(`/api/getImgMetaData/media/${id}`).then(
             result => result.json()
         ).then(
             result => {
@@ -264,14 +282,14 @@ const ajax = {
     },
 
     loadWatermarkOverview() {
-        return fetch('/api/loadWatermarkOverview').then(
+        return apiFetch('/api/loadWatermarkOverview').then(
             res => res.json()
         )
     },
 
     createContent(pageID, index) {
         console.log('create content');
-        return fetch('/api/createContent', {
+        return apiFetch('/api/createContent', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({pageID, index})
@@ -289,7 +307,7 @@ const ajax = {
     },
 
     removeContent(contentID) {
-        return fetch('/api/removeContent', {
+        return apiFetch('/api/removeContent', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({contentID})
@@ -304,7 +322,7 @@ const ajax = {
 
     moveContent() {
         console.log(data);
-        return fetch('/api/moveContent', {
+        return apiFetch('/api/moveContent', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
@@ -327,7 +345,7 @@ const ajax = {
 
     movePage({dragID, targetID, position}) {
 
-        return fetch('/api/movePage', {
+        return apiFetch('/api/movePage', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({dragID, targetID, position})
@@ -344,7 +362,7 @@ const ajax = {
 
     savePage(data) {
         console.log('Save Page', data);
-        fetch('/api/savePage', {
+        apiFetch('/api/savePage', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(data)
@@ -364,7 +382,7 @@ const ajax = {
     },
 
     newPageAfter(page) {
-        fetch('/api/newPageAfter', {
+        apiFetch('/api/newPageAfter', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(page)
@@ -384,7 +402,7 @@ const ajax = {
     },
 
     newPageIn(page) {
-        fetch('/api/newPageIn', {
+        apiFetch('/api/newPageIn', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(page)
@@ -404,7 +422,7 @@ const ajax = {
     },
 
     removePage(page) {
-        fetch('/api/removePage', {
+        apiFetch('/api/removePage', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(page)
@@ -422,7 +440,7 @@ const ajax = {
     },
 
     deleteMedia(image) {
-        return fetch('/api/deleteMedia', {
+        return apiFetch('/api/deleteMedia', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(image)
@@ -436,7 +454,7 @@ const ajax = {
     },
 
     savePassword(password) {
-        return fetch('/api/savePassword', {
+        return apiFetch('/api/savePassword', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({password})
@@ -448,7 +466,7 @@ const ajax = {
     },
 
     deleteWatermark(image) {
-        return fetch('/api/deleteWatermark', {
+        return apiFetch('/api/deleteWatermark', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(image)
@@ -458,6 +476,24 @@ const ajax = {
             res => res.payload
         ).catch(
             console.warn
+        )
+    },
+
+    loadThemes() {
+        return apiFetch('/api/themes').then(
+            res => res.json()
+        ).catch(
+            () => ({themes: [], current: 'default'})
+        )
+    },
+
+    selectTheme(theme) {
+        return apiFetch('/api/selectTheme', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({theme})
+        }).then(
+            res => res.json()
         )
     }
 }

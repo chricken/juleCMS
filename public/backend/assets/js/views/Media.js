@@ -7,177 +7,31 @@ import lang from "../lang.js";
 import ajax from "../ajax.js";
 
 import ImageInOverview from "../components/ImageInOverview/ImageInOverview.js";
+import ModalUploadImages from "../modal/UploadImages/UploadImages.js";
 
 import CompInput from "../components/Input/Input.js";
-// import CompInputForm from "../components/Input/Input.js";
-import CompInputFile from "../components/InputFile/InputFile.js";
-import CompImageInOverview from "../components/ImageInOverview/ImageInOverview.js";
 import CompBtnSort from "../components/BtnSort/BtnSort.js";
 import CompTag from "../components/Tag/Tag.js";
-import CompSelect from "../components/Select/Select.js";
 
 let containerOverview = null;
 
-const selectAndUpload = () => {
-
-    // Muss auch einen oder mehrere Watermarks wählen können
-
-    // Der File-Input verlangt ein FormData-Objekt
-    let media = new FormData();
-    media.set('title', '');
-    media.set('description', '');
-    media.set('altName', '');
-    media.set('tags', '');
-    media.set('watermark', '');
-
-    const validate = () => {
-        let valid = true;
-
-        if (!inpTitle.get()) {
-            valid = false;
-        }
-        if (inpImage.getFiles().length === 0) {
-            valid = false;
-        }
-        console.log(valid, !inpTitle.get(), inpImage.getFiles().length === 0);
-
-        if (valid) {
-            elButton.removeAttribute('disabled');
-        } else {
-            elButton.setAttribute('disabled', true);
-
-        }
-    }
-
-    const containerUpload = dom.create({
-        cssClassName: 'column column-left',
-        parent: elements.main,
-    })
-
+const uploadButton = () => {
     dom.create({
-        tagName: 'h1',
-        content: lang.getPhrase('uploadMedia'),
-        parent: containerUpload,
-    })
-
-    // Title
-    let inpTitle = CompInput({
-        parent: containerUpload,
-        value: media.get("title"),
-        legend: lang.getPhrase('title'),
-        onInput: (value) => {
-            media.set('title', value);
-            validate();
-        }
-    })
-
-    let inpDescription = CompInput({
-        parent: containerUpload,
-        value: media.get("description"),
-        legend: lang.getPhrase('description'),
-        multiline: true,
-        onInput: (value) => {
-            media.set('description', value);
-            validate();
-        }
-    })
-
-    let inpAltName = CompInput({
-        parent: containerUpload,
-        value: media.altName,
-        legend: lang.getPhrase('alternativeName'),
-        onInput: (value) => {
-            media.set('altName', value);
-            validate();
-        }
-    })
-
-    let placeholderWatermark = dom.create({
-        // content: 'Placeholder for Watermarks',
-        parent: containerUpload,
-    })
-
-    ajax.loadWatermarkOverview().then(res => {
-        payload = Array.isArray(res) ? res : Object.values(res);
-
-        CompSelect({
-            parent: placeholderWatermark,
-            legend: lang.getPhrase('watermark'),
-            options: [
-                {
-                    value: 0,
-                    label: lang.getPhrase('noWatermark')
-                },
-                ...payload.map(watermark => {
-                return {
-                    value: watermark.id,
-                    label: watermark.title
-                }
-            })],
-            value: media.get('watermark'),
-            onSelected: (value) => {
-                media.set('watermark', value);
-                console.log('media', media);
-                validate();
-            }
-        })
-
-
-    })
-
-    let inpTags = CompInput({
-        parent: containerUpload,
-        // Die Tags werden nicht als Array verarbeitet, da Array in einer Form kompliziert sind
-        value: media.get("tags"),
-        toLowerCase: true,
-        legend: `${lang.getPhrase('tags')}`,
-        onInput: (value) => {
-            media.set('tags', value);
-            validate();
-        }
-    })
-
-    let inpImage = CompInputFile({
-        parent: containerUpload,
-        legend: lang.getPhrase('image'),
-        key: 'image',
-        formData: media,
-        // multiple: true,
-        onChange: () => {
-            validate();
-        },
-    })
-
-    let elButton = dom.create({
         tagName: 'button',
-        content: 'Upload',
-        parent: containerUpload,
+        content: lang.getPhrase('uploadMedia'),
+        cssClassName: 'button button-small button-upload-media',
+        parent: elements.main,
         listeners: {
-            click(evt) {
-                evt.stopPropagation();
-                console.log(media);
-
-                // console.log('Upload', media);
-                ajax.saveMedia(media).then(
-                    res => {
-                        inpImage.clear();
-                        inpTitle.clear();
-                        inpDescription.clear();
-                        inpAltName.clear();
-                        inpTags.clear();
-                        inpTitle.focus();
-                        // console.log('res', res);
-                        containerOverview.remove();
+            click() {
+                ModalUploadImages({
+                    onUploaded() {
+                        if (containerOverview) containerOverview.remove();
                         overview();
-                        validate();
                     }
-                )
-
+                })
             }
         }
     })
-    elButton.setAttribute('disabled', true);
-
 }
 
 const overview = () => {
@@ -397,7 +251,7 @@ const overview = () => {
 const viewMedia = () => {
 
     elements.main.innerHTML = '';
-    selectAndUpload();
+    uploadButton();
     overview();
 
     elements.allTopNavs['media']?.highlight()

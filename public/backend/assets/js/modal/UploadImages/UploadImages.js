@@ -41,7 +41,7 @@ const UploadImages = ({
         cssClassName: 'upload-images-fileinput',
         attr: {
             type: 'file',
-            accept: 'image/*',
+            accept: 'image/*,.webp,.avif',
             multiple: true
         }
     })

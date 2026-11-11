@@ -75,3 +75,16 @@ page, .column {
 .content-column {
 
 }
+.preview-image {
+    margin-top: 1rem;
+
+    h4 {
+        margin-bottom: 0.5rem;
+    }
+
+    .preview-image-thumb {
+        display: block;
+        width: 160px;
+        margin-bottom: 0.5rem;
+    }
+}

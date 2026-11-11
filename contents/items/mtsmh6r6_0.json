@@ -1,18 +1,1 @@
-{
-  "title": "abc",
-  "type": "default",
-  "content": "",
-  "links": [
-    {
-      "legend": "Ein Link",
-      "url": "",
-      "target": "_blank"
-    }
-  ],
-  "visible": true,
-  "images": [],
-  "tags": [],
-  "id": "mtsmh6r6_0",
-  "crDate": 1788869104242,
-  "chDate": 1788869104242
-}
+{"title":"abc","type":"default","content":"Dies ist eine Liste:\n- Merkur\n- Venus\n- Erde\n- Mars\n\n``` x = 100 ```\n","links":[{"legend":"Ein Link","url":"","target":"_blank"}],"visible":true,"images":[],"tags":[],"id":"mtsmh6r6_0","crDate":1788869104242,"chDate":1788869104242}

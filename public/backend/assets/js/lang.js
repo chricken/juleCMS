@@ -488,6 +488,18 @@ const lang = {
         uploadError: {
             de: 'Fehler beim Hochladen:',
             en: 'Upload error:'
+        },
+        previewImage: {
+            de: 'Vorschaubild',
+            en: 'Preview image'
+        },
+        selectImage: {
+            de: 'Bild auswählen',
+            en: 'Select image'
+        },
+        changeImage: {
+            de: 'Bild ändern',
+            en: 'Change image'
         }
     }
 }
