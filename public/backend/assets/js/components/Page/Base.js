@@ -3,6 +3,7 @@
 import elements from "../../elements.js";
 import dom from "../../dom.js";
 import compInput from '../Input/Input.js';
+import CompCheckbox from '../Checkbox/Checkbox.js';
 import ajax from "../../ajax.js";
 import CompContent from "../Content/Content.js";
 import CompAddContent from "../AddContent/AddContent.js";
@@ -43,6 +44,12 @@ const Base = ({
         content: '⯈',
         cssClassName: 'indicatorOpen transit',
         parent: containerInner,
+        listeners: {
+            click(evt) {
+                evt.stopPropagation();
+                collapse(container, inner);
+            }
+        }
     })
 
     // Header
@@ -92,6 +99,21 @@ const Base = ({
         parent: inner,
         content: `Last Changed: ${new Date(data.chDate).toLocaleDateString()}`,
         cssClassName: 'info',
+    })
+
+    // ===== Sichtbarkeit =====
+    CompCheckbox({
+        parent: inner,
+        legend: lang.getPhrase('pageHidden'),
+        value: data.visible === false,
+        onChanged: (val) => { data.visible = !val; saveDebounced(data); }
+    })
+
+    CompCheckbox({
+        parent: inner,
+        legend: lang.getPhrase('pageInMenu'),
+        value: data.menuVisible !== false,
+        onChanged: (val) => { data.menuVisible = val; saveDebounced(data); }
     })
 
     // ===== Vorschaubild (ein einzelnes Bild pro Seite) =====

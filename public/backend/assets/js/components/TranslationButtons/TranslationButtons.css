@@ -1,0 +1,113 @@
+.translation-buttons {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+    margin-left: 120px;
+    margin-bottom: 10px;
+}
+
+.trans-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.trans-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    font-size: 12px;
+    line-height: 1;
+    padding: 0;
+    margin: 0;
+    color: white;
+    transition: var(--transition);
+}
+
+.trans-icon.status-red { background: var(--secondary-color); }
+.trans-icon.status-yellow { background: var(--warning-color); animation: pulse 1s infinite; }
+.trans-icon.status-green { background: var(--success-color); }
+
+.trans-lang {
+    font-size: 0.65rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: var(--dark-color);
+    opacity: 0.7;
+}
+
+.trans-go {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 1px solid var(--border-color);
+    background: white;
+    color: var(--dark-color);
+    cursor: pointer;
+    font-size: 13px;
+    line-height: 1;
+    padding: 0;
+    margin: 0;
+    transition: var(--transition);
+}
+
+.trans-go:hover {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+    transform: rotate(90deg);
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.translation-hint {
+    font-size: 0.85rem;
+    color: var(--dark-color);
+    opacity: 0.7;
+    margin-bottom: 10px;
+}
+
+.translation-original {
+    margin-bottom: 10px;
+    padding: 8px;
+    background: var(--light-color);
+    border-radius: var(--border-radius);
+    font-size: 0.9rem;
+}
+
+.translation-original-label { font-weight: bold; }
+
+.translation-textarea {
+    width: 100%;
+    min-width: 560px;
+    box-sizing: border-box;
+    min-height: 120px;
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-family: inherit;
+    font-size: 0.95rem;
+    resize: vertical;
+    margin-bottom: 10px;
+}
+
+.translation-btn-row {
+    display: flex;
+    gap: 8px;
+}
+
+.page-title-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    margin-bottom:2rem;
+
+    .translation-buttons {
+        margin-left:0;
+    }
+}

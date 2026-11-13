@@ -2,6 +2,7 @@
 
 import data from "./data.js";
 import elements from "./elements.js";
+import infoBar from "./infoBar.js";
 
 const TOKEN_KEY = 'juleToken';
 
@@ -188,7 +189,9 @@ const ajax = {
         }).then(
             res => res.json()
         ).then(
-            // console.log
+            result => {
+                if (result && result.status === 'success') infoBar.notify('Inhalt gespeichert');
+            }
         ).catch(
             console.warn
         )
@@ -203,8 +206,7 @@ const ajax = {
             res => res.json()
         ).then(
             payload => {
-                // Debug Ausgabe und Weiterleitung
-                // console.log(payload);
+                if (payload && payload.status === 'success') infoBar.notify('Medium gespeichert');
                 return payload;
             }
         )
@@ -219,8 +221,7 @@ const ajax = {
             res => res.json()
         ).then(
             payload => {
-                // Debug Ausgabe und Weiterleitung
-                // console.log(payload);
+                if (payload && payload.status === 'success') infoBar.notify('Wasserzeichen gespeichert');
                 return payload;
             }
         )
@@ -235,8 +236,7 @@ const ajax = {
             res => res.json()
         ).then(
             payload => {
-                // Debug Ausgabe und Weiterleitung
-                // console.log(payload);
+                if (payload && payload.status === 'success') infoBar.notify('Medium gespeichert');
                 return payload;
             }
         )
@@ -251,6 +251,7 @@ const ajax = {
             res => res.json()
         ).then(
             payload => {
+                if (payload && payload.status === 'success') infoBar.notify('Wasserzeichen gespeichert');
                 return payload;
             }
         )
@@ -371,6 +372,7 @@ const ajax = {
         ).then(
             result => {
                 data.pages = result.payload;
+                if (result.status === 'success') infoBar.notify('Seite gespeichert');
 
                 elements.pages.innerHTML = '';
                 window.dispatchEvent(new CustomEvent('jule:rerenderNav'))
@@ -383,6 +385,26 @@ const ajax = {
 
     newPageAfter(page) {
         apiFetch('/api/newPageAfter', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(page)
+        }).then(
+            res => res.json()
+        ).then(
+            result => {
+                data.pages = result.payload;
+                data.currentPage = result.newID;
+                window.dispatchEvent(new CustomEvent('jule:rerenderNav'));
+                window.dispatchEvent(new CustomEvent('jule:renderPage', {detail: data.pages.find(p => p.id === result.newID)}));
+            }
+        ).catch(
+            console.warn
+        )
+
+    },
+
+    newPageBefore(page) {
+        apiFetch('/api/newPageBefore', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(page)
@@ -479,6 +501,50 @@ const ajax = {
         )
     },
 
+    loadLlmSettings() {
+        return apiFetch('/api/llmSettings').then(
+            res => res.json()
+        ).catch(
+            () => ({provider: '', model: '', apiKey: ''})
+        )
+    },
+
+    saveLlmSettings(llm) {
+        return apiFetch('/api/saveLlmSettings', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(llm)
+        }).then(
+            res => res.json()
+        ).catch(
+            err => ({status: 'err', msg: String(err)})
+        )
+    },
+
+    translate(text, lang) {
+        return apiFetch('/api/translate', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({text, lang})
+        }).then(
+            res => res.json()
+        ).catch(
+            err => ({status: 'err', msg: String(err)})
+        )
+    },
+
+    spellcheck(text) {
+        return apiFetch('/api/spellcheck', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({text})
+        }).then(
+            res => res.json()
+        ).catch(
+            err => ({status: 'err', msg: String(err)})
+        )
+    },
+
     loadThemes() {
         return apiFetch('/api/themes').then(
             res => res.json()
@@ -494,6 +560,30 @@ const ajax = {
             body: JSON.stringify({theme})
         }).then(
             res => res.json()
+        )
+    },
+
+    uploadFile(formData) {
+        // Kein Content-Type setzen – der Browser ergänzt den multipart-Boundary
+        return apiFetch('/api/uploadFile', {
+            method: 'POST',
+            body: formData
+        }).then(
+            res => res.json()
+        ).catch(
+            err => ({status: 'err', msg: String(err)})
+        )
+    },
+
+    sendContact(data) {
+        return fetch('/api/contact', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        }).then(
+            res => res.json()
+        ).catch(
+            err => ({status: 'err', msg: String(err)})
         )
     }
 }

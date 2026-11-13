@@ -133,3 +133,90 @@
         width: 200px;
     }
 }
+
+/* ===== Spellcheck-Knopf (Rechtschreibung per KI, liegt im translation-buttons-Container) ===== */
+.spell-btn {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    background: var(--light-color);
+    color: var(--dark-color);
+    cursor: pointer;
+    font-size: 13px;
+    line-height: 1;
+    padding: 0;
+    transition: var(--transition);
+}
+
+.spell-btn:hover {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+}
+
+.spell-btn.status-yellow { background: var(--warning-color); color: #fff; animation: spellpulse 1s infinite; }
+.spell-btn.status-green { background: var(--success-color); color: #fff; }
+.spell-btn.status-red { background: var(--secondary-color); color: #fff; }
+
+@keyframes spellpulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* ===== Markdown-Hilfe an Textareas ===== */
+.legend-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    width: 120px;
+    vertical-align: top;
+}
+
+.legend-wrap .legendInput {
+    width: auto;
+}
+
+.md-help-btn {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 1px solid var(--border-color);
+    background: #fff;
+    color: var(--accent-color);
+    font-size: 11px;
+    font-weight: bold;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0;
+    transition: var(--transition);
+}
+
+.md-help-btn:hover {
+    border-color: var(--accent-color);
+    background: var(--accent-color);
+    color: #fff;
+}
+
+.md-help-intro {
+    margin-bottom: 10px;
+}
+
+.md-help-row {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 6px;
+}
+
+.md-help-code {
+    background: var(--light-color);
+    border-radius: var(--border-radius);
+    padding: 2px 8px;
+    font-family: monospace;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.md-help-label {
+    font-size: 0.9rem;
+}

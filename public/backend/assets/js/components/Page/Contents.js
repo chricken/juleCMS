@@ -37,6 +37,12 @@ const Contents = ({
         content: '⯈',
         cssClassName: 'indicatorOpen',
         parent: containerInner,
+        listeners: {
+            click(evt) {
+                evt.stopPropagation();
+                collapse(container, inner);
+            }
+        }
     })
 
     // Header

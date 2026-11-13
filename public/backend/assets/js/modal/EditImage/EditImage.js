@@ -51,6 +51,7 @@ const ModalEditImage = ({
         parent: container,
         value: media.get("title"),
         legend: lang.getPhrase('title'),
+        translation: {data: image, field: 'title', saveFn: (d) => { Object.assign(image, d); }},
         onInput: (value) => {
             media.set('title', value);
             validate();
@@ -61,6 +62,7 @@ const ModalEditImage = ({
         parent: container,
         value: media.get("description").replaceAll('\r\n', '<br>').replaceAll('\n', '<br>'),
         legend: lang.getPhrase('description'),
+        translation: {data: image, field: 'description', saveFn: (d) => { Object.assign(image, d); }},
         multiline: true,
         onInput: (value) => {
             media.set('description', value);
@@ -72,6 +74,7 @@ const ModalEditImage = ({
         parent: container,
         value: media.altName,
         legend: lang.getPhrase('alternativeName'),
+        translation: {data: image, field: 'altName', saveFn: (d) => { Object.assign(image, d); }},
         onInput: (value) => {
             media.set('altName', value);
             validate();
@@ -120,6 +123,7 @@ const ModalEditImage = ({
         value: media.get("tags").replaceAll(',', ', '),
         toLowerCase: true,
         legend: `${lang.getPhrase('tags')}`,
+        translation: {data: image, field: 'tags', saveFn: (d) => { Object.assign(image, d); }, isArray: true},
         onInput: (value) => {
             media.set('tags', value);
             validate();
@@ -153,6 +157,14 @@ const ModalEditImage = ({
             click(evt) {
                 evt.stopPropagation();
                 console.log(media);
+
+                // Übersetzungsfelder (title_en, etc.) in die FormData übertragen
+                Object.keys(image).forEach(k => {
+                    if (k.includes('_') && /_(en|nl|fr)(_src)?$/.test(k)) {
+                        const v = image[k];
+                        media.set(k, Array.isArray(v) ? v.join(',') : v);
+                    }
+                });
 
                 ajax.updateMedia(media).then(
                     res => {

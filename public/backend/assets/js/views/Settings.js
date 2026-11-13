@@ -8,6 +8,8 @@ import ajax from "../ajax.js";
 import helpers from "../helpers.js";
 import CompInput from "../components/Input/Input.js";
 import CompCheckbox from "../components/Checkbox/Checkbox.js";
+import TranslationButtons from "../components/TranslationButtons/TranslationButtons.js";
+import CompSelect from "../components/Select/Select.js";
 
 const viewSettings = () => {
 
@@ -51,16 +53,26 @@ const viewSettings = () => {
             listeners: {
                 click(evt) {
                     evt.stopPropagation();
-                    const target = document.getElementById('settings-' + key);
-                    if (target) target.scrollIntoView({behavior: 'smooth', block: 'start'});
+                    showSection(key);
                 }
             }
         })
     }
 
+    const sectionKeys = ['cms', 'personal', 'tech', 'api'];
+
+    const showSection = (key) => {
+        sectionKeys.forEach(k => {
+            const el = document.getElementById('settings-' + k);
+            if (el) el.style.display = (k === key) ? '' : 'none';
+            if (menuItems[k]) menuItems[k].classList.toggle('active', k === key);
+        });
+    }
+
     addMenuItem({key: 'cms', label: lang.getPhrase('settingsCMS')})
     addMenuItem({key: 'personal', label: lang.getPhrase('settingsPersonal')})
     addMenuItem({key: 'tech', label: lang.getPhrase('settingsTech')})
+    addMenuItem({key: 'api', label: lang.getPhrase('settingsApi')})
 
     // ===== Rechte Seite: Inhalt =====
     const content = dom.create({
@@ -524,29 +536,174 @@ const viewSettings = () => {
         }
     )
 
-    // ==================== Scrollspy ====================
-    const sections = [
-        {id: 'settings-cms', key: 'cms'},
-        {id: 'settings-personal', key: 'personal'},
-        {id: 'settings-tech', key: 'tech'}
-    ];
 
-    const onScroll = () => {
-        let activeKey = 'cms';
-        sections.forEach(sec => {
-            const el = document.getElementById(sec.id);
-            if (el && el.getBoundingClientRect().top <= 140) {
-                activeKey = sec.key;
-            }
-        });
-        Object.entries(menuItems).forEach(([key, el]) => {
-            el.classList.toggle('active', key === activeKey);
-        });
+    // ==================== API (LLM) ====================
+    const secApi = dom.create({
+        tagName: 'section',
+        cssClassName: 'settings-section',
+        parent: content,
+        attr: {id: 'settings-api'}
+    })
+
+    dom.create({
+        tagName: 'h2',
+        content: lang.getPhrase('settingsApi'),
+        parent: secApi,
+    })
+
+    const llmProviders = ['mistral', 'gemini', 'claude', 'openai', 'langdock'];
+
+    const llmModels = {
+        mistral: ['mistral-large-latest', 'mistral-medium-latest', 'mistral-small-latest', 'codestral-latest'],
+        gemini: ['gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-pro', 'gemini-1.5-flash'],
+        claude: ['claude-3-5-sonnet-latest', 'claude-3-5-haiku-latest', 'claude-3-opus-latest'],
+        openai: ['gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo', 'o1'],
+        langdock: ['langdock-default'],
     };
 
-    elements.settingsScrollHandler = onScroll;
-    window.addEventListener('scroll', onScroll);
-    onScroll();
+    let llm = {provider: '', model: '', apiKey: '', spellcheck: true};
+
+    const elLlmFeedback = dom.create({
+        tagName: 'p',
+        cssClassName: 'email-feedback',
+        parent: secApi,
+    })
+
+    const saveLlmDebounced = helpers.debouncer(() => {
+        ajax.saveLlmSettings(llm).then(
+            result => {
+                if (result.status === 'success') {
+                    elLlmFeedback.innerText = lang.getPhrase('llmSaved');
+                    elLlmFeedback.className = 'email-feedback success';
+                }
+            }
+        ).catch(
+            () => {
+                elLlmFeedback.innerText = lang.getPhrase('emailSaveError');
+                elLlmFeedback.className = 'email-feedback error';
+            }
+        )
+    }, 800)
+
+    const modelContainer = dom.create({
+        parent: secApi,
+    })
+
+    let selModel = null;
+
+    const renderModelSelect = () => {
+        modelContainer.innerHTML = '';
+        const models = llmModels[llm.provider] || [];
+        const options = [{value: '', label: lang.getPhrase('llmSelectModel')}].concat(
+            models.map(m => ({value: m, label: m}))
+        );
+        selModel = CompSelect({
+            parent: modelContainer,
+            legend: lang.getPhrase('llmModel'),
+            value: llm.model,
+            options,
+            onSelected: (val) => { llm.model = val; elLlmFeedback.innerText = ''; saveLlmDebounced(); }
+        });
+    }
+
+    CompSelect({
+        parent: secApi,
+        legend: lang.getPhrase('llmProvider'),
+        value: llm.provider,
+        options: [{value: '', label: lang.getPhrase('llmSelectProvider')}].concat(
+            llmProviders.map(p => ({value: p, label: p}))
+        ),
+        onSelected: (val) => {
+            llm.provider = val;
+            llm.model = '';
+            renderModelSelect();
+            elLlmFeedback.innerText = '';
+            saveLlmDebounced();
+        }
+    });
+
+    renderModelSelect();
+
+    CompInput({
+        parent: secApi,
+        legend: lang.getPhrase('llmApiKey') + ' ' + lang.getPhrase('llmApiKeyHint'),
+        isPassword: true,
+        hasClearButton: true,
+        onInput: (val) => { llm.apiKey = val; elLlmFeedback.innerText = ''; saveLlmDebounced(); },
+        onClear: () => { llm.apiKey = ''; }
+    })
+
+
+    // ==================== Übersetzungssprachen (manuell) ====================
+    dom.create({
+        tagName: 'h3',
+        content: lang.getPhrase('manualTranslate'),
+        parent: secApi,
+    })
+
+    llm.autoTranslate = llm.autoTranslate || {en: false, nl: false, fr: false};
+
+    const saveAutoTranslate = helpers.debouncer(() => {
+        ajax.saveLlmSettings(llm).then(
+            result => {
+                if (result.status === 'success') {
+                    TranslationButtons.invalidateCache();
+                    elLlmFeedback.innerText = lang.getPhrase('llmSaved');
+                    elLlmFeedback.className = 'email-feedback success';
+                }
+            }
+        )
+    }, 500)
+
+    const cbEn = CompCheckbox({
+        parent: secApi,
+        legend: lang.getPhrase('translateEn'),
+        value: !!(llm.autoTranslate && llm.autoTranslate.en),
+        onChanged: (val) => { llm.autoTranslate.en = val; elLlmFeedback.innerText = ''; saveAutoTranslate(); }
+    })
+
+    const cbNl = CompCheckbox({
+        parent: secApi,
+        legend: lang.getPhrase('translateNl'),
+        value: !!(llm.autoTranslate && llm.autoTranslate.nl),
+        onChanged: (val) => { llm.autoTranslate.nl = val; elLlmFeedback.innerText = ''; saveAutoTranslate(); }
+    })
+
+    const cbFr = CompCheckbox({
+        parent: secApi,
+        legend: lang.getPhrase('translateFr'),
+        value: !!(llm.autoTranslate && llm.autoTranslate.fr),
+        onChanged: (val) => { llm.autoTranslate.fr = val; elLlmFeedback.innerText = ''; saveAutoTranslate(); }
+    })
+
+    const cbSpell = CompCheckbox({
+        parent: secApi,
+        legend: lang.getPhrase('spellcheckEnabled'),
+        value: llm.spellcheck !== false,
+        onChanged: (val) => { llm.spellcheck = val; elLlmFeedback.innerText = ''; saveAutoTranslate(); }
+    })
+
+    ajax.loadLlmSettings().then(
+        result => {
+            llm.provider = result.provider || '';
+            llm.model = result.model || '';
+            llm.autoTranslate = result.autoTranslate || {en: false, nl: false, fr: false};
+            // Checkboxen auf gespeicherten Stand setzen (set() feuert nicht onChanged)
+            cbEn.set(!!llm.autoTranslate.en);
+            cbNl.set(!!llm.autoTranslate.nl);
+            cbFr.set(!!llm.autoTranslate.fr);
+            llm.spellcheck = result.spellcheck !== false;
+            cbSpell.set(llm.spellcheck);
+            // Selects aktualisieren
+            const providerSelect = secApi.querySelectorAll('select')[0];
+            if (providerSelect) providerSelect.value = llm.provider;
+            renderModelSelect();
+            if (selModel && llm.model) selModel.get(); // wert bleibt
+        }
+    )
+
+    // Initiales Segment anzeigen
+    showSection('cms');
 
     elements.allTopNavs['settings']?.highlight()
 }

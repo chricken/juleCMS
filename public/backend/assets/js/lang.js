@@ -11,6 +11,52 @@ const lang = {
             return phrase;
     },
     translations: {
+        showFE: {
+            de: 'Show FE',
+            en: 'Show FE',
+        },
+        spellcheck: {
+            de: 'Rechtschreibung korrigieren (KI, nur Rechtschreibung)',
+            en: 'Correct spelling (AI, spelling only)',
+        },
+        spellcheckEnabled: {
+            de: 'Rechtschreib-Korrektur per KI anzeigen',
+            en: 'Show AI spelling correction',
+        },
+        customLayout: {
+            de: 'Eigenes Raster',
+            en: 'Custom grid',
+        },
+        gridCols: {de: 'Spalten', en: 'Columns'},
+        gridRows: {de: 'Zeilen', en: 'Rows'},
+        gridHint: {
+            de: 'Klick markiert eine Zelle, dann SHIFT+Klick auf zweite = tauschen, STRG+Klick auf zweite = verbinden (verdrängte Zellen werden angehängt), X = aufteilen. Zellen sind 1..n nummeriert (Bildreihenfolge), Zeilen ergeben sich automatisch.',
+            en: 'Click marks a cell, then SHIFT+click on second = swap, CTRL+click on second = merge (displaced cells appended), X = split. Cells numbered 1..n (image order), rows automatic.',
+        },
+        splitCell: {de: 'Zelle aufteilen', en: 'Split cell'},
+        resizeCell: {de: 'Zelle vergrößern', en: 'Resize cell'},
+        confirmSelection: {
+            de: 'Auswahl bestätigen',
+            en: 'Confirm selection',
+        },
+        llmNotConfigured: {
+            de: 'Kein KI-Anbieter konfiguriert – bitte in den Einstellungen unter „AI“ Anbieter, Modell und API-Key hinterlegen.',
+            en: 'No AI provider configured – please set provider, model and API key in Settings → AI.',
+        },
+        mdHelp: {
+            de: 'Markdown-Hilfe',
+            en: 'Markdown help',
+        },
+        mdHelpIntro: {
+            de: 'In Textareas wird Markdown unterstützt:',
+            en: 'Textareas support Markdown:',
+        },
+        mdBold: {de: 'Fett', en: 'Bold'},
+        mdItalic: {de: 'Kursiv', en: 'Italic'},
+        mdList: {de: 'Aufzählung', en: 'List'},
+        mdHr: {de: 'Trennlinie', en: 'Horizontal rule'},
+        mdHeading: {de: 'Überschrift', en: 'Heading'},
+        mdLink: {de: 'Link', en: 'Link'},
         newPageAfter: {
             de: 'Neue Seite Nach',
             en: 'New Page After',
@@ -18,6 +64,10 @@ const lang = {
         newPageIn: {
             de: 'Neue Seite In',
             en: 'New Page In',
+        },
+        newPageBefore: {
+            de: 'Neue Seite Davor',
+            en: 'New Page Before',
         },
         savePage: {
             de: 'Seite Speichern',
@@ -297,6 +347,66 @@ const lang = {
 
             en: 'contactForm',
         },
+        divider: {
+            de: 'Trenner',
+            en: 'Divider'
+        },
+        newsletter: {
+            de: 'Newsletter',
+            en: 'Newsletter'
+        },
+        fileDownload: {
+            de: 'Datei-Download',
+            en: 'File Download'
+        },
+        layout: {
+            de: 'Layout',
+            en: 'Layout'
+        },
+        file: {
+            de: 'Datei',
+            en: 'File'
+        },
+        fileHint: {
+            de: 'Datei hochladen (PDF, ZIP, etc.)',
+            en: 'Upload file (PDF, ZIP, etc.)'
+        },
+        contactName: {
+            de: 'Name',
+            en: 'Name'
+        },
+        contactEmail: {
+            de: 'E-Mail',
+            en: 'Email'
+        },
+        contactMessage: {
+            de: 'Nachricht',
+            en: 'Message'
+        },
+        contactSend: {
+            de: 'Nachricht senden',
+            en: 'Send message'
+        },
+        contactSent: {
+            de: 'Nachricht wurde gesendet. Vielen Dank!',
+            en: 'Message sent. Thank you!'
+        },
+        contactError: {
+            de: 'Fehler beim Senden. Bitte später erneut versuchen.',
+            en: 'Error sending. Please try again later.'
+        },
+        contactConsent: {
+            de: 'Ich stimme der Verarbeitung meiner Daten zum Zweck der Bearbeitung der Anfrage zu.',
+            en: 'I consent to the processing of my data for handling this request.'
+        },
+        newsletterEmail: {
+            de: 'E-Mail-Adresse',
+            en: 'Email address'
+        },
+        newsletterSubscribe: {
+            de: 'Anmelden',
+            en: 'Subscribe'
+        },
         type:{
             de: 'Typ',
             en: 'Type'
@@ -449,6 +559,82 @@ const lang = {
             de: 'Tech',
             en: 'Tech'
         },
+        settingsApi: {
+            de: 'AI',
+            en: 'AI'
+        },
+        llmProvider: {
+            de: 'LLM-Anbieter',
+            en: 'LLM Provider'
+        },
+        llmModel: {
+            de: 'Modell',
+            en: 'Model'
+        },
+        llmApiKey: {
+            de: 'API-Key',
+            en: 'API Key'
+        },
+        llmApiKeyHint: {
+            de: '(leer lassen = unverändert)',
+            en: '(leave empty = unchanged)'
+        },
+        llmSaved: {
+            de: 'API-Einstellungen gespeichert.',
+            en: 'API settings saved.'
+        },
+        llmSelectProvider: {
+            de: 'Anbieter wählen',
+            en: 'Select provider'
+        },
+        llmSelectModel: {
+            de: 'Modell wählen',
+            en: 'Select model'
+        },
+        manualTranslate: {
+            de: 'Übersetzungssprachen (manuell)',
+            en: 'Translation languages (manual)'
+        },
+        translateEn: {
+            de: 'Deutsch → Englisch',
+            en: 'German → English'
+        },
+        translateNl: {
+            de: 'Deutsch → Niederländisch',
+            en: 'German → Dutch'
+        },
+        translateFr: {
+            de: 'Deutsch → Französisch',
+            en: 'German → French'
+        },
+        translateModalTitle: {
+            de: 'Übersetzung',
+            en: 'Translation'
+        },
+        translateAuto: {
+            de: 'Automatisch übersetzen',
+            en: 'Translate automatically'
+        },
+        translateSave: {
+            de: 'Speichern',
+            en: 'Save'
+        },
+        translateOriginal: {
+            de: 'Original (de)',
+            en: 'Original (de)'
+        },
+        translateHint: {
+            de: 'Hier kann die Übersetzung bearbeitet werden.',
+            en: 'The translation can be edited here.'
+        },
+        translateRunning: {
+            de: 'Übersetzung läuft…',
+            en: 'Translating…'
+        },
+        translateError: {
+            de: 'Übersetzung fehlgeschlagen',
+            en: 'Translation failed'
+        },
         maxImageResolution: {
             de: 'Maximale Bild-Auflösung bei Upload',
             en: 'Max image resolution on upload'
@@ -488,6 +674,22 @@ const lang = {
         uploadError: {
             de: 'Fehler beim Hochladen:',
             en: 'Upload error:'
+        },
+        pageHidden: {
+            de: 'Seite ausgeblendet (nicht öffentlich sichtbar)',
+            en: 'Page hidden (not publicly visible)'
+        },
+        pageInMenu: {
+            de: 'Seite im Menü anzeigen',
+            en: 'Show page in menu'
+        },
+        collapse: {
+            de: 'Auf-/Zuklappen',
+            en: 'Collapse/Expand'
+        },
+        toggleVisible: {
+            de: 'Sichtbarkeit umschalten',
+            en: 'Toggle visibility'
         },
         previewImage: {
             de: 'Vorschaubild',

@@ -21,12 +21,14 @@ const viewPages = () => {
         parent: elements.main,
     })
 
-    data.currentPage = pageRoot.id;
+    data.currentPage = localStorage.getItem('jule:currentPage') || pageRoot.id;
+    // gespeicherte Seite existiert noch?
+    if (!data.pages.find(pg => pg.id === data.currentPage)) data.currentPage = pageRoot.id;
 
     elements.pages.innerHTML = '';
     CompNavPage();
 
-    compDetailsPage(pageRoot);
+    compDetailsPage(data.pages.find(pg => pg.id === data.currentPage) || pageRoot);
 
     elements.allTopNavs['pages']?.highlight()
 }

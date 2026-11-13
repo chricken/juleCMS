@@ -8,6 +8,7 @@ class Page {
                     title = '',
                     slug = '',
                     visible = true,
+                    menuVisible = true,
                     crDate = null,
                     chDate = null,
                     password = null,
@@ -27,7 +28,7 @@ class Page {
 
                 }) {
         Object.assign(this, {
-            title, slug, visible, password,
+            title, slug, visible, menuVisible, password,
             content, children, description, previewImage,
             metaTitle, metaDescription, metaKeywords,
             ogTitle, ogDescription, ogImage

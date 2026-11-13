@@ -9,6 +9,7 @@ import manageContents from "./manageContents.js";
 import Page from "./classes/Page.js";
 import settings from "./settings.js";
 import themes from "./themes.js";
+import llm from "./llm.js";
 
 const router = express.Router();
 
@@ -112,6 +113,9 @@ router.use((req, res, next) => {
     if (req.path === '/structure') return next();
     if (req.path.startsWith('/content/')) return next();
     if (req.path.startsWith('/getImgMetaData/')) return next();
+    // Kontaktformular (Frontend) und Datei-Download öffentlich
+    if (req.path === '/contact') return next();
+    if (req.path.startsWith('/getFile/')) return next();
     if (req.path === '/savePassword') {
         // Erlaubt nur wenn noch kein Passwort gesetzt (initiales Setup)
         return checkHasPassword().then(
@@ -205,6 +209,7 @@ router.post('/movePage', (req, res) => {
 
 router.post('/savePage', (req, res) => {
     // console.log('save Page', req.body);
+
     let page = manageContents.pages.find(page => page.id === req.body.id);
     // console.log(page);
     // Attribute übertragen, Referenz behalten
@@ -263,6 +268,12 @@ router.post('/saveMedia', (req, response) => {
             fields.tags = fields.tags.split(',');
             fields.tags = fields.tags.filter(tag => (tag !== '') && (tag !== ' '));
             fields.tags = fields.tags.map(tag => tag.toLowerCase());
+            // Übersetzte Tag-Arrays auch konvertieren
+            ['tags_en', 'tags_nl', 'tags_fr'].forEach(tk => {
+                if (fields[tk]) {
+                    fields[tk] = String(fields[tk]).split(',').filter(t => t.trim() !== '').map(t => t.trim());
+                }
+            });
 
             manageContents.saveMedia(fields).then(
                 res =>
@@ -365,6 +376,12 @@ router.post('/updateMedia', (req, response) => {
             fields.tags = fields.tags.split(',');
             fields.tags = fields.tags.filter(tag => (tag !== '') && (tag !== ' '));
             fields.tags = fields.tags.map(tag => tag.toLowerCase());
+            // Übersetzte Tag-Arrays auch konvertieren
+            ['tags_en', 'tags_nl', 'tags_fr'].forEach(tk => {
+                if (fields[tk]) {
+                    fields[tk] = String(fields[tk]).split(',').filter(t => t.trim() !== '').map(t => t.trim());
+                }
+            });
 
             fields.chDate = +fields.chDate;
 
@@ -597,6 +614,37 @@ router.post('/newPageAfter', (req, res) => {
     )
 });
 
+router.post('/newPageBefore', (req, res) => {
+    let beforeMe = req.body;
+
+    let myPage = new Page({
+        title: 'Neue Seite',
+    });
+
+    manageContents.pages.push(myPage);
+
+    // Element suchen, dessen Kind die Ausgangsseite ist
+    let parent = manageContents.pages.find(page => page.children.includes(beforeMe.id));
+    let index = parent.children.indexOf(beforeMe.id);
+    parent.children.splice(index, 0, myPage.id);
+
+    manageContents.savePages().then(
+        () => res.json({
+            status: 'success',
+            payload: manageContents.pages,
+            newID: myPage.id
+        })
+    ).catch(
+        err => {
+            console.warn(err)
+            res.json({
+                type: 'err',
+                msg: err
+            })
+        }
+    )
+});
+
 router.post('/newPageIn', (req, res) => {
     let inMe = req.body;
 
@@ -772,6 +820,148 @@ router.post('/saveLoginValidityDays', (req, res) => {
 });
 
 // --- Testmail senden ---
+
+// Datei-Upload für FileDownload-Content (Backend, auth-geschützt)
+router.post('/uploadFile', (req, response) => {
+    fs.mkdir('./contents/files', {recursive: true}).then(
+        () => {
+            const form = formidable({
+                multiples: false,
+                uploadDir: './contents/files',
+                keepExtensions: true,
+            });
+            form.parse(req, (err, fields, files) => {
+                if (err) {
+                    console.warn(err);
+                    return response.status(500).json({status: 'err', msg: String(err)});
+                }
+                const fileArr = Object.values(files);
+                if (!fileArr.length || !fileArr[0].length) {
+                    return response.status(400).json({status: 'err', msg: 'Keine Datei empfangen'});
+                }
+                const f = fileArr[0][0];
+                const id = f.newFilename.split('.')[0];
+                const original = f.originalFilename || f.newFilename;
+                response.json({
+                    status: 'success',
+                    file: {
+                        id: id,
+                        filename: original,
+                        storedFilename: f.newFilename,
+                        size: f.size,
+                        mimetype: f.mimetype
+                    }
+                });
+            });
+        }
+    ).catch(
+        err => response.status(500).json({status: 'err', msg: String(err)})
+    );
+});
+
+// Kontaktformular (öffentlich, aus dem Frontend)
+router.post('/contact', (req, res) => {
+    // express.json() hat den Body bereits geparst
+    {
+        const data = req.body || {};
+        const name = String(data.name || '').trim().slice(0, 200);
+        const email = String(data.email || '').trim().slice(0, 200);
+        const message = String(data.message || '').trim().slice(0, 5000);
+        const consent = !!data.consent;
+        if (!name || !email || !message) {
+            return res.status(400).json({status: 'err', msg: 'Name, E-Mail und Nachricht sind Pflichtfelder'});
+        }
+        if (!consent) {
+            return res.status(400).json({status: 'err', msg: 'Bitte die Datenschutzerklärung bestätigen'});
+        }
+        if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+            return res.status(400).json({status: 'err', msg: 'Ungültige E-Mail-Adresse'});
+        }
+
+        let adminEmail = '';
+        try { adminEmail = settings.get('adminEmail') || ''; } catch(e) {}
+
+        const subject = 'Kontaktanfrage von ' + name + ' (' + email + ')';
+        const text = 'Name: ' + name + '\nE-Mail: ' + email + '\nSeite: ' + String(data.pageID || '') + '\n\n' + message + '\n\nZeitstempel: ' + new Date().toISOString();
+
+        const sendViaFile = () => {
+            return fs.mkdir('./contents/mails', {recursive: true}).then(
+                () => {
+                    const file = './contents/mails/contact_' + Date.now() + '.eml';
+                    const eml = 'From: ' + (adminEmail || 'noreply@julecms.local') + '\nTo: ' + (adminEmail || 'noreply@julecms.local') + '\nSubject: ' + subject + '\nDate: ' + new Date().toUTCString() + '\nContent-Type: text/plain; charset=utf-8\n\n' + text;
+                    return fs.writeFile(file, eml).then(
+                        () => res.json({status: 'success', msg: 'Nachricht gespeichert (kein SMTP konfiguriert)', sent: false})
+                    );
+                }
+            );
+        };
+
+        let smtpHost = null, smtpPort = 587, smtpUser = null, smtpPass = null, smtpSecure = false;
+        try {
+            smtpHost = settings.get('smtpHost');
+            smtpPort = settings.get('smtpPort') || 587;
+            smtpUser = settings.get('smtpUser');
+            smtpPass = settings.get('smtpPass');
+            smtpSecure = settings.get('smtpSecure') || false;
+        } catch(e) {}
+
+        if (!smtpHost || !adminEmail) return sendViaFile();
+
+        import('nodemailer').then(
+            nodemailer => {
+                const transporter = nodemailer.default.createTransport({
+                    host: smtpHost,
+                    port: smtpPort,
+                    secure: smtpSecure,
+                    auth: smtpUser ? {user: smtpUser, pass: smtpPass} : undefined
+                });
+                return transporter.sendMail({
+                    from: adminEmail,
+                    to: adminEmail,
+                    replyTo: email,
+                    subject: subject,
+                    text: text
+                }).then(
+                    () => res.json({status: 'success', msg: 'Nachricht gesendet', sent: true})
+                ).catch(
+                    err => {
+                        console.warn('Kontaktmail fehlgeschlagen:', err);
+                        sendViaFile();
+                    }
+                );
+            }
+        ).catch(() => sendViaFile());
+    }
+});
+
+// Datei ausliefern (öffentlich) – PDFs inline für Vorschau, sonst als Download
+router.get('/getFile/:id/:filename', (req, res) => {
+    const id = String(req.params.id || '').replace(/[^a-zA-Z0-9_-]/g, '');
+    const filename = String(req.params.filename || '').replace(/[^a-zA-Z0-9._-]/g, '');
+    if (!id || !filename) return res.status(400).json({status: 'err', msg: 'Ungültige Anfrage'});
+    const dir = './contents/files';
+    fs.readdir(dir).then(
+        files => {
+            const match = files.find(f => f.startsWith(id + '.'));
+            if (!match) return res.status(404).json({status: 'err', msg: 'Datei nicht gefunden'});
+            const filePath = dir + '/' + match;
+            const isPdf = match.toLowerCase().endsWith('.pdf');
+            const wantDownload = req.query.download === '1';
+            const mime = isPdf ? 'application/pdf' : 'application/octet-stream';
+            return fs.readFile(filePath).then(
+                buf => {
+                    res.setHeader('Content-Type', mime);
+                    res.setHeader('Content-Length', buf.length);
+                    res.setHeader('Content-Disposition', (wantDownload || !isPdf ? 'attachment' : 'inline') + '; filename="' + filename.replace(/"/g, '') + '"');
+                    res.end(buf);
+                }
+            );
+        }
+    ).catch(
+        () => res.status(404).json({status: 'err', msg: 'Datei nicht gefunden'})
+    );
+});
+
 router.post('/sendTestMail', (req, res) => {
     let email = '';
     try { email = settings.get('adminEmail') || ''; } catch(e) {}
@@ -919,6 +1109,71 @@ router.post('/saveAdminEmail', (req, res) => {
     const {adminEmail} = req.body;
     settings.set('adminEmail', adminEmail || '');
     res.json({status: 'success', adminEmail: adminEmail || ''});
+});
+
+// --- LLM API-Einstellungen ---
+router.get('/llmSettings', (req, res) => {
+    let llm = {};
+    try { llm = settings.get('llm') || {}; } catch(e) { llm = {}; }
+    res.json({
+        provider: llm.provider || '',
+        model: llm.model || '',
+        hasApiKey: !!(llm.apiKey && llm.apiKey.length > 0),
+        autoTranslate: llm.autoTranslate || {en: false, nl: false, fr: false},
+        spellcheck: llm.spellcheck !== false
+    });
+});
+
+router.post('/saveLlmSettings', (req, res) => {
+    const {provider, model, apiKey, autoTranslate, spellcheck} = req.body;
+    let llm = {};
+    try { llm = settings.get('llm') || {}; } catch(e) { llm = {}; }
+    llm.provider = provider || '';
+    llm.model = model || '';
+    // API-Key nur überschreiben wenn nicht leer
+    if (apiKey && apiKey.length > 0) {
+        llm.apiKey = apiKey;
+    }
+    if (autoTranslate && typeof autoTranslate === 'object') {
+        llm.autoTranslate = {en: !!autoTranslate.en, nl: !!autoTranslate.nl, fr: !!autoTranslate.fr};
+    }
+    llm.spellcheck = spellcheck !== false;
+    settings.set('llm', llm);
+    res.json({status: 'success', provider: llm.provider, model: llm.model, hasApiKey: !!llm.apiKey, autoTranslate: llm.autoTranslate, spellcheck: llm.spellcheck});
+});
+
+// --- Manuelle Übersetzung (einmalig pro Klick) ---
+router.post('/translate', (req, res) => {
+    const {text, lang} = req.body;
+    if (!text || !lang) return res.status(400).json({status: 'err', msg: 'text und lang erforderlich'});
+    llm.translate(text, lang).then(
+        translation => {
+            if (translation === null || translation === '') {
+                res.json({status: 'err', msg: 'Keine Übersetzung erhalten'});
+            } else {
+                res.json({status: 'success', translation});
+            }
+        }
+    ).catch(
+        err => res.status(500).json({status: 'err', msg: String(err.message || err)})
+    );
+});
+
+// Rechtschreibkorrektur (nur Rechtschreibung, kein Stil) – manuell per Knopf
+router.post('/spellcheck', (req, res) => {
+    const {text} = req.body;
+    if (!text || !String(text).trim()) return res.status(400).json({status: 'err', msg: 'text erforderlich'});
+    llm.spellcheck(String(text)).then(
+        corrected => {
+            if (corrected === null || corrected === '') {
+                res.json({status: 'err', msg: 'Keine Korrektur erhalten'});
+            } else {
+                res.json({status: 'success', text: corrected});
+            }
+        }
+    ).catch(
+        err => res.status(500).json({status: 'err', msg: String(err.message || err)})
+    );
 });
 
 // --- Öffentliche Seitenstruktur fürs Frontend ---

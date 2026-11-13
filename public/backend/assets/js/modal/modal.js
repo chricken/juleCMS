@@ -4,6 +4,8 @@ import elements from "../elements.js";
 import dom from "../dom.js";
 import TopNav from "../views/TopNav.js";
 
+const modalStack = [];
+
 const Modal = ({
                    legend = '',
                    onClose = () => {
@@ -23,16 +25,18 @@ const Modal = ({
             },
             click(evt) {
                 evt.stopPropagation();
-                console.log(elBG.mouseDown);
-
+                if (elements.modalBG !== elBG) return; // nur oberstes Modal schließt
                 if (elBG.mouseDown) elBG.remove();
                 elBG.mouseDown = false;
+                const idx = modalStack.indexOf(elBG);
+                if (idx >= 0) modalStack.splice(idx, 1);
+                elements.modalBG = modalStack.length ? modalStack[modalStack.length - 1] : null;
                 onClose();
             }
         }
     })
 
-    elements.modalBG && elements.modalBG.remove();
+    modalStack.push(elBG);
     elements.modalBG = elBG;
 
     const elModal = dom.create({
@@ -54,8 +58,10 @@ const Modal = ({
     })
 
     elInner.closeModal = () => {
-        elements.modalBG = null;
         elBG.remove();
+        const idx = modalStack.indexOf(elBG);
+        if (idx >= 0) modalStack.splice(idx, 1);
+        elements.modalBG = modalStack.length ? modalStack[modalStack.length - 1] : null;
         onClose();
     };
 
@@ -66,7 +72,11 @@ const Modal = ({
         listeners: {
             click(evt) {
                 evt.stopPropagation();
+                if (elements.modalBG !== elBG) return;
                 elBG.remove();
+                const idx = modalStack.indexOf(elBG);
+                if (idx >= 0) modalStack.splice(idx, 1);
+                elements.modalBG = modalStack.length ? modalStack[modalStack.length - 1] : null;
                 onClose();
             }
         }

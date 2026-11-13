@@ -1,0 +1,30 @@
+.info-bar {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%) translateY(100%);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--dark-color);
+    color: white;
+    padding: 10px 20px;
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+    box-shadow: var(--box-shadow-far);
+    font-size: 0.9rem;
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    z-index: 10000;
+    pointer-events: none;
+}
+
+.info-bar.visible {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
+.info-bar-time {
+    font-size: 0.75rem;
+    opacity: 0.7;
+    font-variant-numeric: tabular-nums;
+}

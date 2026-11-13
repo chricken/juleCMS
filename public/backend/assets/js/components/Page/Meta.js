@@ -38,6 +38,12 @@ const Meta = ({
         content: '⯈',
         cssClassName: 'indicatorOpen',
         parent: containerInner,
+        listeners: {
+            click(evt) {
+                evt.stopPropagation();
+                collapse(container, inner);
+            }
+        }
     })
 
     // Header
@@ -62,6 +68,7 @@ const Meta = ({
         parent: inner,
         legend: lang.getPhrase('title'),
         value: data.metaTitle,
+        translation: {data, field: 'metaTitle', saveFn: (d) => savePage(d)},
         onInput(value) {
             console.log('metaTitel', value);
             data.metaTitle = value;
@@ -73,6 +80,7 @@ const Meta = ({
         parent: inner,
         legend: 'Beschreibung',
         value: data.metaDescription,
+        translation: {data, field: 'metaDescription', saveFn: (d) => savePage(d)},
         onInput(value) {
             console.log('metaDescription', value);
             data.metaDescription = value;
@@ -85,6 +93,7 @@ const Meta = ({
         legend: 'Schlüsselwörter',
         value: data.metaKeywords,
         valueIsArray: true,
+        translation: {data, field: 'metaKeywords', saveFn: (d) => savePage(d), isArray: true},
         onInput(value) {
             console.log('metaKeywords', value);
             data.metaKeywords = value;

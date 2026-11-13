@@ -1,18 +1,1 @@
-{
-  "title": "Erstes Element",
-  "type": "default",
-  "content": " woeijf ofjk öerkjf poiwejroigj eqiwrj  g\nwergj eqpoirgj adsjvlkajdnmföioj erpi qreok fkjdnfvöklmaädröofk wqokewqefio jwfek ijawesföjasdöfk därpfgoüreog #fgübkpotrgkdpojksdögj a re weifj sadofij arepo apwoe aiosejf äawoepk paowefr poas \nafe lkahsdfij aopa po aawepfoki sapef awe \nas fluih a ioj oaisjdf oiak üpäoak üpäo afpo aspofk apsfioj ",
-  "visible": true,
-  "images": [],
-  "tags": [],
-  "links": [
-    {
-      "legend": "Der letzte",
-      "url": "mrj7te8m_1",
-      "target": "_blank"
-    }
-  ],
-  "id": "mtk2osah_0",
-  "crDate": 1788352137017,
-  "chDate": 1788352137017
-}
+{"title":"Nummer eins","type":"default","content":"Mein erster Inhalt. Wow. voll krass\n","visible":true,"images":[],"tags":[],"links":[{"legend":"Der letzte","url":"mrj7te8m_1","target":"_blank"}],"id":"mtk2osah_0","crDate":1788352137017,"chDate":1788352137017,"links_en":[{"legend":"The last one","url":"mrj7te8m_1","target":"_blank"}],"links_nl":[{"legend":"De laatste","url":"mrj7te8m_1","target":"_blank"}],"title_en":"Number one","content_en":"My first content. Wow. Totally awesome.","tags_en":[],"title_nl":"Nummer één","content_nl":"Mijn eerste inhoud. Wow. Heel gaaf","tags_nl":[]}

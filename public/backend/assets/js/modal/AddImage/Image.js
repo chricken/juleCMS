@@ -17,8 +17,8 @@ const CompImage = ({
         parent,
         cssClassName: 'add-image transit',
         listeners:{
-            click(){
-                onSelected(img.id)
+            click(evt){
+                onSelected(img.id, evt)
             }
         }
     })

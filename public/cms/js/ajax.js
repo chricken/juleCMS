@@ -14,6 +14,19 @@ const ajax = {
     getImg(folder, filename) {
         return `/api/getImg/${folder}/${filename}`;
     },
+
+    // Kontaktformular ans Backend senden (oeffentlicher Endpunkt)
+    sendContact(data) {
+        return fetch('/api/contact', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        }).then(
+            res => res.json()
+        ).catch(
+            err => ({status: 'err', msg: String(err)})
+        )
+    },
 }
 
 export default ajax;

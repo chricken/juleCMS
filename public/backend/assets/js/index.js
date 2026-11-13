@@ -9,8 +9,13 @@ import viewMedia from "./views/Media.js";
 import viewWatermarks from "./views/Watermarks.js";
 import viewTopNav from "./views/TopNav.js";
 import viewLogin from "./views/Login.js";
+import infoBar from "./infoBar.js";
+import ShowFE from "./components/ShowFE/ShowFE.js";
 import compDetailsPage from "./components/Page/Page.js";
 import CompNavPage from "./components/NavPage/NavPage.js";
+
+infoBar.init();
+ShowFE();
 
 // Zentrale Event-Listener für CustomEvents (vermeidet zirkuläre Imports)
 window.addEventListener('jule:rerenderNav', () => {

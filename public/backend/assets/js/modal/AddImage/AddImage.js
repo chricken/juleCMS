@@ -36,6 +36,7 @@ const AddImage = ({
     let selectedTags = new Set();
     let allImages = [];
     let imageElements = {}; // id -> element
+    const multiSelected = new Set(); // ids per STRG-Klick
 
     const applyFilter = () => {
         const q = searchText.trim().toLowerCase();
@@ -112,6 +113,32 @@ const AddImage = ({
         parent: container,
     })
 
+    // ===== Confirm-Bar: fixed unten mittig, erscheint bei Mehrfachauswahl =====
+    const confirmBar = dom.create({
+        parent: elModal,
+        cssClassName: 'add-image-confirm-bar',
+        styles: {display: 'none'},
+    })
+    const confirmBtn = dom.create({
+        tagName: 'button',
+        parent: confirmBar,
+        cssClassName: 'button add-image-confirm-btn',
+        content: lang.getPhrase('confirmSelection'),
+        listeners: {
+            click(evt) {
+                evt.stopPropagation();
+                const ids = [...multiSelected];
+                multiSelected.clear();
+                ids.forEach(id => onSelected(id));
+                elModal.closeModal();
+            }
+        }
+    })
+    const updateConfirmBar = () => {
+        confirmBar.style.display = multiSelected.size ? '' : 'none';
+        confirmBtn.textContent = lang.getPhrase('confirmSelection') + ' (' + multiSelected.size + ')';
+    }
+
     ajax.loadMediaOverview().then(
         res => {
             allImages = Object.values(res);
@@ -121,7 +148,16 @@ const AddImage = ({
                 imageElements[img.id] = CompImage({
                     parent: imageContainer,
                     img: img,
-                    onSelected(value) {
+                    onSelected(value, evt) {
+                        if (evt && (evt.ctrlKey || evt.metaKey)) {
+                            evt.preventDefault();
+                            evt.stopPropagation();
+                            if (multiSelected.has(value)) multiSelected.delete(value);
+                            else multiSelected.add(value);
+                            imageElements[value].classList.toggle('selected', multiSelected.has(value));
+                            updateConfirmBar();
+                            return;
+                        }
                         onSelected(value);
                         elModal.closeModal();
                     },

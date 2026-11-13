@@ -36,7 +36,7 @@ const PageView = ({page = null, parent = null} = {}) => {
 
     ;(page.content || []).forEach(contentID => {
         ajax.loadJSON(`/api/content/${contentID}`).then(
-            res => Content({item: res.payload, parent: contentContainer})
+            res => Content({item: res.payload, parent: contentContainer, pageID: page.id || ''})
         ).catch(
             console.warn
         )

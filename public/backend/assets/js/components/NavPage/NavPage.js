@@ -6,8 +6,20 @@ import dom from "../../dom.js";
 import ajax from "../../ajax.js";
 
 import compDetailsPage from "../Page/Page.js";
+import lang from "../../lang.js";
 
 let activeMenuLink = null;
+
+// Collapse-Status aus localStorage
+const getCollapsed = () => {
+    try { return JSON.parse(localStorage.getItem('jule:collapsedPages') || '[]'); } catch(e) { return []; }
+};
+const setCollapsed = (id, collapsed) => {
+    let arr = getCollapsed();
+    if (collapsed) { if (!arr.includes(id)) arr.push(id); }
+    else arr = arr.filter(x => x !== id);
+    localStorage.setItem('jule:collapsedPages', JSON.stringify(arr));
+};
 
 const rerenderNav = () => {
     elements.pages.innerHTML = '';
@@ -26,6 +38,13 @@ const CompNavPage = ({
         cssClasses: ['page', 'page-single'],
         parent,
         listeners: {
+            mouseenter() {
+                elements.pages.querySelectorAll('.page.hovered').forEach(el => el.classList.remove('hovered'));
+                container.classList.add('hovered');
+            },
+            mouseleave() {
+                container.classList.remove('hovered');
+            },
             click(evt) {
                 evt.stopPropagation();
 
@@ -34,6 +53,7 @@ const CompNavPage = ({
                 activeMenuLink.classList.add('active');
 
                 data.currentPage = page.id;
+                localStorage.setItem('jule:currentPage', page.id);
                 compDetailsPage(data.pages.find(item => item.id === page.id));
             },
             dragstart(evt) {
@@ -97,10 +117,31 @@ const CompNavPage = ({
         }
     })
 
+    // Collapse-Pfeil (nur wenn Kinder vorhanden)
+    const hasChildren = page.children && page.children.length > 0;
+    const isCollapsed = getCollapsed().includes(page.id);
+    if (hasChildren) {
+        container.classList.add('has-arrow');
+        dom.create({
+            cssClassName: 'collapse-arrow' + (isCollapsed ? ' collapsed' : ''),
+            content: '▸',
+            parent: container,
+            attr: {title: lang.getPhrase('collapse'), tabindex: '-1'},
+            listeners: {
+                click(evt) {
+                    evt.stopPropagation();
+                    const nowCollapsed = !getCollapsed().includes(page.id);
+                    setCollapsed(page.id, nowCollapsed);
+                    rerenderNav();
+                }
+            }
+        })
+    }
+
     // Titel – gleichzeitig Drop-Zone für "into"
     dom.create({
         cssClassName: 'page-title',
-        content: `${page.title}`,
+        content: `${page.title}` + (page.visible === false ? ' <span class="page-hidden-icon" title="' + lang.getPhrase('toggleVisible') + '">(🚫)</span>' : ''),
         parent: container,
         listeners: {
             dragover(evt) {
@@ -127,14 +168,98 @@ const CompNavPage = ({
         }
     })
 
-    // Verschachtelte Seiten
-    if (page.children.length) {
+    // Aktions-Icons (nur bei hover sichtbar, via CSS)
+    const actions = dom.create({
+        cssClassName: 'page-actions',
+        parent: container,
+    })
+
+    if (!isRoot) {
+        dom.create({
+            cssClassName: 'page-action page-action-delete',
+            content: '✖',
+            parent: actions,
+            attr: {title: lang.getPhrase('removePage')},
+            listeners: {
+                click(evt) {
+                    evt.stopPropagation();
+                    if (confirm(lang.getPhrase('sureDeletePage'))) {
+                        ajax.removePage(page);
+                    }
+                }
+            }
+        })
+    }
+
+    if (!isRoot) {
+        const isVisible = page.visible !== false;
+        dom.create({
+            cssClassName: 'page-action eye-toggle' + (isVisible ? ' visible' : ' hidden'),
+            content: isVisible ? '👁' : '🚫',
+            parent: actions,
+            attr: {title: lang.getPhrase('toggleVisible')},
+            listeners: {
+                click(evt) {
+                    evt.stopPropagation();
+                    page.visible = isVisible ? false : true;
+                    ajax.savePage(page);
+                    rerenderNav();
+                }
+            }
+        })
+    }
+
+    dom.create({
+        cssClassName: 'page-action page-action-into',
+        content: '↳',
+        parent: actions,
+        attr: {title: lang.getPhrase('newPageIn')},
+        listeners: {
+            click(evt) {
+                evt.stopPropagation();
+                ajax.newPageIn(page);
+            }
+        }
+    })
+
+    dom.create({
+        cssClassName: 'page-action page-action-before',
+        content: '↑',
+        parent: actions,
+        attr: {title: lang.getPhrase('newPageBefore')},
+        listeners: {
+            click(evt) {
+                evt.stopPropagation();
+                ajax.newPageBefore(page);
+            }
+        }
+    })
+
+    dom.create({
+        cssClassName: 'page-action page-action-after',
+        content: '↓',
+        parent: actions,
+        attr: {title: lang.getPhrase('newPageAfter')},
+        listeners: {
+            click(evt) {
+                evt.stopPropagation();
+                ajax.newPageAfter(page);
+            }
+        }
+    })
+
+    // Verschachtelte Seiten in eigenem Baum-Container
+    if (page.children && page.children.length) {
+        const childrenContainer = dom.create({
+            cssClassName: 'page-children' + (isCollapsed ? ' collapsed' : ''),
+            parent: container,
+        })
         page.children.forEach((pageID, index) => {
             const childPage = data.pages.find(p => p.id === pageID);
             CompNavPage({
                 page: childPage,
                 index,
-                parent: container
+                parent: childrenContainer
             });
         })
     }

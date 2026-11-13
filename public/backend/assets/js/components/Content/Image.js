@@ -7,6 +7,7 @@ import lang from "../../lang.js";
 const Image = ({
                    imageID = '',
     index = 0,
+                   numbered = false,
                    parent = null,
                    draggable = false,
                    onDelete = () => {
@@ -99,6 +100,15 @@ const Image = ({
                     }
                 }
             })
+
+            // Laufende Nummer (10% Deckung) – Reihenfolge im Galerie-Raster
+            if (numbered) {
+                dom.create({
+                    parent: elInner,
+                    cssClassName: 'image-order-num',
+                    content: String(index + 1),
+                })
+            }
 
             dom.create({
                 parent: elInner,

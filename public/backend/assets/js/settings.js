@@ -10,6 +10,9 @@ const settings = {
         'slideshow',
         'gallery',
         'contactForm',
+        'divider',
+        'newsletter',
+        'fileDownload',
     ]
 }
 

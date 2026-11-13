@@ -30,6 +30,7 @@ const Link = ({
         parent: containerLink,
         legend: lang.getPhrase('legend'),
         value: link.legend,
+        translation: {data: link, field: 'legend', saveFn: () => saveContent()},
         onInput(value) {
             link.legend = value;
             saveContent();

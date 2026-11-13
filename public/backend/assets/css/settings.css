@@ -184,7 +184,7 @@
 /* ===== Textarea (multiline Input) ===== */
 .container-input .input.textarea-input {
     width: 570px;
-    min-height: 120px;
+    min-height: 170px;
     resize: vertical;
     font-family: inherit;
     line-height: 1.5;

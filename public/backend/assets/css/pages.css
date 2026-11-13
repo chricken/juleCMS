@@ -44,11 +44,19 @@ pages .page:hover {
 }
 
 pages .page.active {
-    background-color: var(--dark-color);
+    outline: 1px solid var(--accent-color);
+    outline-offset: -2px;
+    border-radius: var(--border-radius);
     padding-left: 5px;
 }
 
 pages .page.active > .page-title {
+    color: var(--accent-color);
+    font-weight: bold;
+}
+
+pages .page.active:hover > .page-title {
+    background-color: var(--dark-color);
     color: white;
 }
 
@@ -136,4 +144,132 @@ pages .page.drag-over-into > .page-title::before {
 
 .invisible-while-dragging {
     opacity: 0.3;
+}
+
+
+/* === Baumstruktur === */
+pages .page-children {
+    position: relative;
+    margin-left: 18px;
+    padding-left: 12px;
+    border-left: 2px solid var(--border-color);
+}
+
+/* Horizontale Verbindungslinie von der vertikalen Baumlinie zum Kind */
+pages .page-children > .page::before {
+    content: '';
+    position: absolute;
+    left: -14px;
+    top: 22px;
+    width: 14px;
+    height: 2px;
+    background-color: var(--border-color);
+}
+
+/* Aktiver Knoten: Linie und Verbinder einfärben */
+pages .page-children > .page.active::before {
+    background-color: var(--accent-color);
+}
+
+/* Kinder-Container ohne eigene Border, damit die Baumlinie durchgeht */
+pages .page .page-children .page {
+    border-left: none;
+    background-color: transparent;
+}
+
+pages .page .page-children .page:hover {
+    background-color: var(--light-color);
+}
+
+pages .page .page-children .page.active {
+    outline: 1px solid var(--accent-color);
+    outline-offset: -2px;
+    border-radius: var(--border-radius);
+}
+
+
+/* === Aktions-Icons im Seiten-Menü (nur bei hover) === */
+pages .page .page-actions {
+    position: absolute;
+    right: 4px;
+    top: 4px;
+    display: flex;
+    gap: 2px;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    z-index: 100;
+}
+
+pages .page.hovered > .page-actions {
+    opacity: 1;
+}
+
+pages .page .page-action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    font-size: 14px;
+    line-height: 1;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    color: var(--dark-color);
+    background-color: white;
+    border: 1px solid var(--border-color);
+    transition: var(--transition);
+}
+
+pages .page .page-action:hover {
+    background-color: var(--accent-color);
+    color: white;
+    border-color: var(--accent-color);
+}
+
+pages .page .page-action-delete:hover {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+
+/* === Collapse-Pfeil + Auge in der Seitenübersicht === */
+pages .page .collapse-arrow {
+    position: absolute;
+    left: 2px;
+    top: 2px;
+    cursor: pointer;
+    font-size: 40px;
+    line-height: 1;
+    color: var(--accent-color);
+    transition: transform 0.2s ease;
+    z-index: 10;
+    user-select: none;
+    text-shadow: 0 0 3px rgba(0,0,0,0.2);
+}
+
+pages .page .collapse-arrow:not(.collapsed) {
+    transform: rotate(90deg);
+}
+
+pages .page.has-arrow > .page-title {
+    padding-left: 42px;
+}
+
+pages .page .page-hidden-icon {
+    font-size: 0.75em;
+    opacity: 0.7;
+    vertical-align: middle;
+}
+
+pages .page .eye-toggle {
+    font-size: 13px;
+}
+
+pages .page .eye-toggle.hidden {
+    filter: grayscale(1);
+    opacity: 0.5;
+}
+
+pages .page-children.collapsed {
+    display: none;
 }
